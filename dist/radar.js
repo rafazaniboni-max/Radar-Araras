@@ -184,6 +184,30 @@ function contar(lista) {
   return [...resultado].sort((a, b) => b[1] - a[1] || nameOrder.compare(a[0], b[0]));
 }
 
+const rankingsPropostas = {
+  projetos: 'Quem mais propôs Projetos de Lei',
+  homenagens: 'Quem mais propôs Homenagens',
+  ruas: 'Quem mais propôs Nomes de Rua'
+};
+
+function propostaNoRanking(proposta, grupo) {
+  if (grupo === 'projetos') return /^projeto de lei(?: complementar)?\b/.test(normalize(proposta.titulo));
+  if (grupo === 'homenagens') return proposta.grupo === 'homenagens';
+  if (grupo !== 'ruas' || proposta.grupo === 'perguntas') return false;
+  const assunto = normalize(proposta.assunto).replace(/\s+/g, ' ').trim();
+  const ato = /^(?:(?:dispoe sobre|trata d[ae]|propoe|solicita|indica|requer)\s+(?:a\s+)?|passa a\s+)?(?:denomina(?:r|cao)?\b|nomeia\b|da (?:o )?nome\b|da denominacao\b|atribui (?:o )?nome\b|altera (?:a )?denominacao\b|oficializa (?:o )?nome\b)/;
+  if (!ato.test(assunto)) return false;
+  const via = assunto.search(/\b(?:ruas?|avenidas?|vias? publicas?|logradouros?|travessas?|alamedas?|estradas?|vielas?|rodovias?|calcadao|calcadoes)\b/);
+  const outroEspaco = assunto.search(/\b(?:pracas?|parques?|escolas?|creches?|pontes?|rotatorias?|predios?|centro|unidades? de saude|ginasios?|cemiterios?)\b/);
+  return via >= 0 && (outroEspaco < 0 || via < outroEspaco);
+}
+
+function rankingDeAutores(pedidos, grupo) {
+  const unicos = [...new Map(pedidos.filter(p => propostaNoRanking(p, grupo)).map(p => [String(p.id), p])).values()];
+  return contar(unicos.flatMap(p => [...new Set(p.autores)]))
+    .sort((a,b) => b[1] - a[1] || nameOrder.compare(publicName(peopleById.get(a[0]) || {nome:a[0]}), publicName(peopleById.get(b[0]) || {nome:b[0]})));
+}
+
 function registrosDoLocal(indice, consulta, selecionado) {
   const termo = textoLocal(consulta);
   if (!termo) return indice.pedidos;
@@ -260,6 +284,7 @@ async function instalarRadar(raiz, consultaInicial = '') {
   let boletimLocal = new Map();
   let limiteRepeticoes = 9;
   let digitacao;
+  let rankingCompleto = false;
   formulario.addEventListener('submit', event => {
     event.preventDefault();
     clearTimeout(digitacao);
@@ -270,9 +295,7 @@ async function instalarRadar(raiz, consultaInicial = '') {
   const recarregarBusca = () => {
     const consulta = busca.value.trim();
     const encontrados = registrosDoLocal(indice, consulta, selecionado);
-    const porAutor = contar(encontrados.flatMap(p => p.autores)).slice(0,5);
-    const porTema = contar(encontrados.flatMap(p => p.grupo === 'melhorias' || p.grupo === 'perguntas' ? p.temas : [])).slice(0,5);
-    const porBairro = contar(encontrados.flatMap(p => p.bairros)).slice(0,5);
+    const rankings = Object.keys(rankingsPropostas).map(grupo => [grupo, rankingDeAutores(encontrados, grupo)]);
     const siteFonte = fonteLocal(consulta);
     const ids = new Set(encontrados.map(p => p.id));
     boletimLocal = new Map();
@@ -282,14 +305,17 @@ async function instalarRadar(raiz, consultaInicial = '') {
     }
     raiz.querySelectorAll('.radar-chips button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.radarLugar === selecionado?.key)));
     resultado.innerHTML = `<div class="radar-contagem" role="status"><strong>${numeric(encontrados.length, siteFonte, 'Propostas encontradas')}</strong><p>${consulta ? `${encontrados.length === 1 ? 'proposta cita' : 'propostas citam'} <b>${escapeHtml(consulta)}</b> até agora` : 'propostas para <b>a cidade inteira</b> até agora'}</p></div>
-      ${encontrados.length ? `<div class="radar-breakdown ${consulta ? 'radar-breakdown-local' : ''}">
-        <div><h3>${consulta ? 'Quem mais pediu' : 'Quem mais propôs'}</h3><ol>${porAutor.map(([id,total]) => {
-          const autor = peopleById.get(id);
-          return autor ? `<li><div class="radar-rank"><span>${avatar(autor)}<span><a href="${profilePath(autor)}">${escapeHtml(publicName(autor))}</a>${autor.partido ? `<small> · ${escapeHtml(autor.partido)}</small>` : ''}</span></span><strong>${numeric(total,proposalIndex(autor)?.fonte || siteFonte,'Propostas do autor')}</strong></div><i aria-hidden="true" style="--barra:${Math.round(total/porAutor[0][1]*100)}%"></i></li>` : '';
-        }).join('')}</ol></div>
-        ${porTema.length ? `<div><h3>O que mais pedem</h3><ol>${porTema.map(([tema,total]) => `<li class="radar-rank"><span><span class="radar-icon" aria-hidden="true">⌖</span>${escapeHtml(tema)}</span><strong>${numeric(total,siteFonte,tema)}</strong></li>`).join('')}</ol></div>` : ''}
-        ${!consulta && porBairro.length ? `<div><h3>Bairros mais citados</h3><ol>${porBairro.map(([key,total]) => `<li class="radar-rank"><span><span class="radar-icon" aria-hidden="true">⌖</span>${chipLugar(indice.locais.get(key))}</span><strong>${numeric(total,fonteLocal(indice.locais.get(key).nome),'Propostas que citam o bairro')}</strong></li>`).join('')}</ol></div>` : ''}
-      </div>${boletimLocal.size ? `<h3 class="radar-list-titulo">Problemas que voltam aqui</h3><div class="radar-repeat-grid">${[...boletimLocal.values()].slice(0,3).map(r=>cartaoRepetido(r,indice.mapa)).join('')}</div>` : ''}
+      ${encontrados.length ? `<div class="radar-breakdown">
+        ${rankings.map(([grupo, autores]) => `<section class="radar-ranking" aria-label="${rankingsPropostas[grupo]}"><h3>${rankingsPropostas[grupo]}</h3>
+          ${autores.length ? `<ol>${autores.filter(([,total], pos) => rankingCompleto || pos < 5 || total === autores[4]?.[1]).map(([id,total]) => {
+            const autor = peopleById.get(id);
+            return autor ? `<li><div class="radar-rank"><span>${avatar(autor)}<span><button type="button" class="radar-ranking-nome" data-ranking-grupo="${grupo}" data-ranking-autor="${id}" aria-label="Ver propostas de ${escapeHtml(publicName(autor))}: ${rankingsPropostas[grupo]}">${escapeHtml(publicName(autor))}</button>${autor.partido ? `<small> · ${escapeHtml(autor.partido)}</small>` : ''}</span></span><strong>${numeric(total,proposalIndex(autor)?.fonte || siteFonte,`${rankingsPropostas[grupo]} · ${publicName(autor)}`)}</strong></div><i aria-hidden="true" style="--barra:${Math.round(total/autores[0][1]*100)}%"></i></li>` : '';
+          }).join('')}</ol><button type="button" class="radar-link" data-ranking-grupo="${grupo}">Ver todas as propostas <span aria-hidden="true">→</span></button>` : '<p class="radar-nota">Nenhuma proposta deste grupo no recorte da busca.</p>'}
+        </section>`).join('')}
+      </div>
+      <p class="radar-nota">Toque no nome para ler as propostas. ${consulta ? 'Os rankings seguem o bairro ou a rua pesquisados. ' : ''}Cada proposta conta uma vez por autor; coautores recebem a mesma contagem. Mostramos os cinco primeiros e os empatados na última posição. <a href="#fontes">Entenda os critérios</a>.</p>
+      ${!rankingCompleto && rankings.some(([,autores])=>autores.length > 5) ? '<button type="button" class="radar-link radar-ranking-completo" data-ranking-completo>Ver ranking completo</button>' : ''}
+      ${boletimLocal.size ? `<h3 class="radar-list-titulo">Problemas que voltam aqui</h3><div class="radar-repeat-grid">${[...boletimLocal.values()].slice(0,3).map(r=>cartaoRepetido(r,indice.mapa)).join('')}</div>` : ''}
       <h3 class="radar-list-titulo">${consulta ? 'Os pedidos mais recentes' : 'As propostas mais recentes da cidade'}</h3><ul class="radar-pedidos"></ul><button type="button" class="more radar-more" hidden></button>` : '<p class="notice">Nenhum registro encontrado. Tente outro nome ou uma parte dele.</p>'}`;
     if (encontrados.length) paginarPedidos(resultado.querySelector('.radar-pedidos'), resultado.querySelector('.radar-more'), encontrados, 4);
   };
@@ -344,6 +370,15 @@ async function instalarRadar(raiz, consultaInicial = '') {
       sugestoes.hidden = true;
       recarregarBusca();
       busca.focus();
+    } else if (button.dataset.rankingGrupo) {
+      const grupo = button.dataset.rankingGrupo;
+      const autorId = button.dataset.rankingAutor;
+      const autor = autorId && peopleById.get(autorId);
+      const pedidos = registrosDoLocal(indice, busca.value.trim(), selecionado).filter(p => propostaNoRanking(p, grupo) && (!autorId || p.autores.includes(autorId)));
+      mostrarModal(`${rankingsPropostas[grupo]}${autor ? ` · ${publicName(autor)}` : ''}`, autor ? proposalIndex(autor)?.fonte || proposalsSource : fonteLocal(busca.value.trim()), pedidos, 'propostas no recorte da busca');
+    } else if (button.hasAttribute('data-ranking-completo')) {
+      rankingCompleto = true;
+      recarregarBusca();
     } else if (button.dataset.abrirRepetido) {
       const chave = button.dataset.abrirRepetido;
       const rep = chave.endsWith('-local') ? boletimLocal.get(chave.replace('-local','')) : indice.cruzamentos.get(chave);

@@ -16,6 +16,9 @@ const dateFormat = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long', timeZon
 const monthFormat = new Intl.DateTimeFormat('pt-BR', { year: 'numeric', month: 'long', timeZone: 'UTC' });
 const nameOrder = new Intl.Collator('pt-BR', { sensitivity: 'base' });
 const panel = document.querySelector('#painel');
+const atualizarAlturaCabecalho = () => document.documentElement.style.setProperty('--cabecalho-altura', `${document.querySelector('.site-header').getBoundingClientRect().height}px`);
+atualizarAlturaCabecalho();
+new ResizeObserver(atualizarAlturaCabecalho).observe(document.querySelector('.site-header'));
 
 const proposalGroups = proposals?.grupos || {};
 // Nomes públicos e retratos exibidos na página inicial da Câmara Municipal.
@@ -537,6 +540,7 @@ function sources() {
   return `${intro('Fontes e como os dados são contados', 'Os números levam aos registros da Câmara Municipal ou do Tribunal de Contas.')}
     ${updated}
     <ul class="source-list">
+      <li><h2>Critérios dos rankings</h2><p>Projetos de Lei reúne os documentos identificados oficialmente como projeto de lei ou projeto de lei complementar, inclusive quando tratam de homenagens. Homenagens segue o grupo de assuntos explicado abaixo. Nomes de Rua identifica ementas cujo objetivo inicial é dar ou alterar o nome de uma via pública, incluindo avenidas, estradas e calçadões. Nomear praças ou prédios e pedir manutenção de placas não entra nesse último ranking. Cada documento conta uma vez para cada autor ou coautor. Uma proposta pode aparecer em mais de uma coluna; esses rankings não devem ser somados. A busca por bairro ou rua também filtra os rankings. Os números levam à lista oficial do autor e cada proposta pode ser aberta para conferência. ${official('Pesquisa oficial de proposituras', proposalsSource)}.</p></li>
       <li><h2>Quem aparece</h2><p>A lista em exercício vem da consulta oficial. Parlamentares que aparecem nas sessões do período também podem ser consultados. ${official('Lista de vereadores no Siscam', rosterSource)}.</p></li>
       <li><h2>Presença</h2><p>O recorte usa a data da sessão ordinária ou extraordinária. O percentual no cartão divide as presenças pelas sessões com situação de chamada registrada para o vereador. Cada sessão conta uma vez. A ausência em uma votação só descreve aquela votação.${presence} ${official('Consulta de sessões no Siscam', sessionSource)}.</p>${auditNote}</li>
       <li><h2>Como classificamos as propostas</h2><p>A classificação automática usa o tipo e o assunto publicados no Siscam. Cada matéria entra em um só grupo. A mesma regra e a ordem abaixo valem para todos os autores.</p>
