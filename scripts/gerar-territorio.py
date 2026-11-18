@@ -131,6 +131,8 @@ def ler_propostas():
                 pedidos[identificador] = {"id": identificador, "titulo": linha["titulo"], "data": linha["data"],
                                           "assunto": linha["assunto"], "grupo": grupo, "autores": [],
                                           "ruas": ruas, "bairros": bairros, "temas": temas}
+                if linha.get('acompanhamento'):
+                    pedidos[identificador]['acompanhamento'] = linha['acompanhamento']
             pedido = pedidos[identificador]
             if pedido["grupo"] != grupo:
                 raise ValueError(f"Grupo divergente para a proposta {identificador}")

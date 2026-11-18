@@ -36,6 +36,7 @@ coletor = modulo('coletar-legislativo')
 propostas = modulo('ler-propostas-por-autor')
 classificacao = modulo('classificar-propostas')
 validacao = modulo('validar-atualizacao')
+historico = modulo('historico-documentos')
 
 
 def executar(*comando):
@@ -99,7 +100,7 @@ def coletar_atas(sessoes, cache, raw):
     pasta = raw / 'atas'
     pasta.mkdir(parents=True, exist_ok=True)
 
-    def por_sessao(sessao):
+    def ler_sessao(sessao, tentativa):
         pagina = coletor.buscar(sessao['url'], cache)
         anexos = []
         for link in pagina.xpath("//h4/a[starts-with(@href,'/Sessoes/Documento/')]"):
@@ -115,6 +116,7 @@ def coletar_atas(sessoes, cache, raw):
         if not anexos:
             return {'id': sessao['id'], 'pdf': None}, None
         url = urljoin(coletor.BASE, anexos[0].get('href'))
+        tentativa['pdf'] = url
         if not url.startswith(coletor.BASE + '/arquivo?'):
             raise ValueError('Anexo da ata fora do endereço oficial.')
         conteudo = baixar_bytes(url)
@@ -125,12 +127,29 @@ def coletar_atas(sessoes, cache, raw):
             raise ValueError('Ata sem páginas.')
         return {'id': sessao['id'], 'pdf': url}, leitor.pages[0].extract_text()
 
+    def por_sessao(sessao):
+        tentativa = {chave: sessao[chave] for chave in ('id', 'titulo', 'data', 'url')}
+        try:
+            resultado = ler_sessao(sessao, tentativa)
+            tentativa['situacao'] = 'lida' if resultado[0]['pdf'] else 'sem_pdf_publicado'
+            return resultado, tentativa
+        except Exception as erro:
+            tentativa.update(situacao='falha', erro=f'{type(erro).__name__}: {erro}')
+            print(f'Falha na ata: {sessao["titulo"]} ({sessao["data"]}), {sessao["url"]}; PDF: {tentativa.get("pdf", "não identificado")}; {erro}', flush=True)
+            return None, tentativa
+
     with ThreadPoolExecutor(max_workers=4) as pool:
-        resultados = list(pool.map(por_sessao, sessoes))
+        tentativas = list(pool.map(por_sessao, sessoes))
+    diagnostico = [r[1] for r in tentativas]
+    (pasta / 'diagnostico.json').write_text(json.dumps(diagnostico, ensure_ascii=False, indent=2), encoding='utf-8')
+    resultados = [r[0] for r in tentativas if r[0] is not None]
     (pasta / 'downloads.json').write_text(json.dumps([r[0] for r in resultados], ensure_ascii=False), encoding='utf-8')
     textos = {r[0]['id']: r[1] for r in resultados if r[1] is not None}
     (pasta / 'primeiras-paginas.json').write_text(json.dumps(textos, ensure_ascii=False), encoding='utf-8')
     print(f'Atas oficiais baixadas e lidas em {len(textos)} de {len(sessoes)} sessões.', flush=True)
+    falhas = [r for r in diagnostico if r['situacao'] == 'falha']
+    if falhas:
+        raise ValueError(f'Falha ao consultar {len(falhas)} ata(s). Sessões: {", ".join(r["id"] for r in falhas)}. Consulte raw/atas/diagnostico.json para os links e erros.')
     return pasta
 
 
@@ -167,6 +186,8 @@ def atualizar(trabalho, fim):
     legislativo = validacao.ler_dados(destino, 'legislativo.js', 'ARARAS_LEGISLATIVO')
     anteriores = validacao.ler_dados(RAIZ / 'dist', 'propostas.js', 'ARARAS_PROPOSTAS')['perfis']
     origem_propostas = coletar_propostas(legislativo['vereadores'], anteriores, cache, raw, fim)
+    acompanhamento = historico.reconciliar(RAIZ / 'dist', origem_propostas, destino, fim)
+    print(f'Histórico das propostas: {acompanhamento}', flush=True)
     classificacao.publicar(origem_propostas, destino, '2025-01-01', fim)
     executar(sys.executable, 'scripts/gerar-territorio.py', '--destino', destino)
     pasta_atas = coletar_atas(legislativo['sessoes'], cache, raw)

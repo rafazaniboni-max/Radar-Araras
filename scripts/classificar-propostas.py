@@ -112,7 +112,10 @@ def publicar(origem, destino, inicio, fim):
             chave = str(proposta["id"])
             if materias.setdefault(chave, grupo) != grupo:
                 raise ValueError(f"Classificação divergente para o documento oficial {chave}")
-            grandes_grupos[grupo].append({chave: proposta[chave] for chave in ("id", "titulo", "data", "assunto", "tipo", "url")})
+            registro = {chave: proposta[chave] for chave in ("id", "titulo", "data", "assunto", "tipo", "url")}
+            if proposta.get('acompanhamento'):
+                registro['acompanhamento'] = proposta['acompanhamento']
+            grandes_grupos[grupo].append(registro)
         contagens = {grupo: len(lista) for grupo, lista in grandes_grupos.items()}
         for grupo, lista in grandes_grupos.items():
             if lista:

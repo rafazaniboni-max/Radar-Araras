@@ -317,8 +317,37 @@ function personProposals(person, group) {
 function proposalEntry(proposal) {
   return `<li class="entry"><div><h3>${official(proposal.titulo, proposal.url)}</h3>
     <p class="meta">${official(dateLabel(proposal.data), proposal.url)}${proposal.tipo ? ` · ${escapeHtml(proposal.tipo)}` : ''}</p>
-    <p class="body-copy">${escapeHtml(proposal.assunto || 'Assunto sem texto na listagem da Câmara.')}</p></div></li>`;
+    <p class="body-copy">${escapeHtml(proposal.assunto || 'Assunto sem texto na listagem da Câmara.')}</p>${documentoAcompanhamento(proposal)}</div></li>`;
 }
+
+function documentoAcompanhamento(proposta) {
+  const registro = proposta.acompanhamento || globalThis.ARARAS_HISTORICO_DOCUMENTOS?.documentos?.[String(proposta.id)];
+  if (!registro) return '';
+  const aviso = registro.estado === 'nao_localizado'
+    ? `Não localizado na consulta de ${dateLabel(registro.verificadoEm)}. Preservamos o último registro encontrado em ${dateLabel(registro.ultimaConfirmacao)}. O motivo não foi confirmado pela Câmara.`
+    : `Há mudanças registradas neste documento. Última mudança observada em ${dateLabel(registro.ultimaAlteracao || registro.eventos?.at(-1)?.data)}.`;
+  return `<aside class="documento-acompanhamento"><p>${escapeHtml(aviso)}</p><details data-historico-id="${escapeHtml(proposta.id)}"><summary>Ver versões registradas</summary><div data-versoes><p>Abra para consultar o histórico.</p></div></details></aside>`;
+}
+
+let historicoDocumentosConsulta;
+document.addEventListener('toggle', async evento => {
+  const detalhe = evento.target;
+  if (!(detalhe instanceof HTMLDetailsElement) || !detalhe.open || !detalhe.dataset.historicoId || detalhe.dataset.carregado) return;
+  const destino = detalhe.querySelector('[data-versoes]');
+  try {
+    historicoDocumentosConsulta ??= fetch('historico-documentos.json', {cache:'no-store'}).then(resposta => {
+      if (!resposta.ok) throw new Error('Histórico indisponível');
+      return resposta.json();
+    }).catch(erro => { historicoDocumentosConsulta = null; throw erro; });
+    const historico = await historicoDocumentosConsulta;
+    const item = historico.documentos[detalhe.dataset.historicoId];
+    if (!item) throw new Error('Documento sem histórico');
+    destino.innerHTML = `<p>Estas são cópias dos dados da listagem oficial coletados pelo Radar. Não substituem o arquivo original nem confirmam retirada ou validade da proposta.</p><ol>${[...item.versoes].reverse().map(versao => `<li><p><strong>Versão observada em ${escapeHtml(dateLabel(versao.observadaEm))}</strong></p><p>${official(versao.dados.titulo, versao.dados.url)}</p><p>Data publicada: ${escapeHtml(dateLabel(versao.dados.data))}. Tipo: ${escapeHtml(versao.dados.tipo)}.</p><p>${escapeHtml(versao.dados.assunto)}</p><p>Autoria: ${versao.dados.autores.map(id => escapeHtml(peopleById.has(id) ? publicName(peopleById.get(id)) : `Identificador oficial ${id}`)).join(', ')}.</p></li>`).join('')}</ol>`;
+    detalhe.dataset.carregado = 'sim';
+  } catch {
+    destino.innerHTML = '<p>Não foi possível abrir o histórico. Feche e abra novamente para tentar outra vez.</p>';
+  }
+}, true);
 
 async function loadProposals(person, group) {
   const container = panel.querySelector('[data-proposal-list]');
@@ -540,6 +569,7 @@ function sources() {
   return `${intro('Fontes e como os dados são contados', 'Os números levam aos registros da Câmara Municipal ou do Tribunal de Contas.')}
     ${updated}
     <ul class="source-list">
+      <li><h2>Documentos alterados ou não localizados</h2><p>Guardamos o histórico das informações da listagem oficial: título, assunto, data, tipo e autoria. Uma mudança não apaga a versão anterior. Se um documento deixa de aparecer em uma coleta completa, mantemos o último registro, com a data da última confirmação e um aviso de motivo não confirmado. Isso não significa retirada pelo autor. Os totais de propostas apresentadas incluem esses registros históricos. Quedas grandes e coletas incompletas continuam bloqueando a publicação. O histórico começa com as versões que já haviam sido coletadas; não recupera versões anteriores a elas. <a href="historico-documentos.json">Baixar o histórico dos registros em JSON</a>.</p></li>
       <li><h2>Critérios dos rankings</h2><p>Projetos de Lei reúne os documentos identificados oficialmente como projeto de lei ou projeto de lei complementar, inclusive quando tratam de homenagens. Homenagens segue o grupo de assuntos explicado abaixo. Nomes de Rua identifica ementas cujo objetivo inicial é dar ou alterar o nome de uma via pública, incluindo avenidas, estradas e calçadões. Nomear praças ou prédios e pedir manutenção de placas não entra nesse último ranking. Cada documento conta uma vez para cada autor ou coautor. Uma proposta pode aparecer em mais de uma coluna; esses rankings não devem ser somados. A busca por bairro ou rua também filtra os rankings. Os números levam à lista oficial do autor e cada proposta pode ser aberta para conferência. ${official('Pesquisa oficial de proposituras', proposalsSource)}.</p></li>
       <li><h2>Quem aparece</h2><p>A lista em exercício vem da consulta oficial. Parlamentares que aparecem nas sessões do período também podem ser consultados. ${official('Lista de vereadores no Siscam', rosterSource)}.</p></li>
       <li><h2>Presença</h2><p>O recorte usa a data da sessão ordinária ou extraordinária. O percentual no cartão divide as presenças pelas sessões com situação de chamada registrada para o vereador. Cada sessão conta uma vez. A ausência em uma votação só descreve aquela votação.${presence} ${official('Consulta de sessões no Siscam', sessionSource)}.</p>${auditNote}</li>

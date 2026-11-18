@@ -85,6 +85,12 @@ def validar(base, candidata, fim):
     docs_anteriores = documentos(base, anterior["propostas"]["perfis"])
     ausentes = sorted(docs_anteriores.keys() - docs.keys())
     exigir(not ausentes, f"Propostas anteriores desapareceram. Identificadores oficiais ausentes: {', '.join(ausentes[:20])}.")
+    # A preservação é explícita e cumulativa; remover a trava sem reconciliar continua proibido.
+    from importlib.util import module_from_spec, spec_from_file_location
+    spec = spec_from_file_location('historico_validado', Path(__file__).with_name('historico-documentos.py'))
+    historico = module_from_spec(spec)
+    spec.loader.exec_module(historico)
+    historico.validar_historico(base, candidata)
     dias = max(1, (date.fromisoformat(fim) - date.fromisoformat(anterior["propostas"]["fim"])).days)
     exigir(len(docs) - len(docs_anteriores) <= 300 * dias, "Aumento inesperado de propostas. A coleta precisa de revisão.")
     exigir(all("2025-01-01" <= linha["data"] <= fim for _, linha in docs.values()), "Proposta fora do período.")
