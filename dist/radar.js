@@ -164,6 +164,7 @@ function dashboard() {
         <button class="radar-link" data-abrir-grupo="${id}" aria-label="Ver todas as propostas do grupo ${escapeHtml(label)}" type="button">Ver todas <span aria-hidden="true">→</span></button></article>`).join('')}</div>
     </section>
     ${home()}
+    ${quadroTransparencia()}
     <dialog id="radar-dialog" aria-labelledby="radar-dialog-titulo"><header><div><h2 id="radar-dialog-titulo"></h2><p id="radar-dialog-meta"></p></div><form method="dialog"><button type="submit" aria-label="Fechar">×</button></form></header><div id="radar-dialog-conteudo"></div></dialog>
   </div>`;
 }

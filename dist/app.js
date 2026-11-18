@@ -119,7 +119,7 @@ function officialUrl(url) {
   try {
     const parsed = new URL(url);
     if (parsed.protocol !== 'https:') return '';
-    if (['araras.siscam.com.br', 'araras.sp.leg.br', 'www.araras.sp.leg.br', 'www.camara-araras.sp.gov.br', 'transparencia.tce.sp.gov.br', 'transparencia.betha.cloud', 'pncp.gov.br'].includes(parsed.hostname)) {
+    if (['araras.siscam.com.br', 'araras.sp.leg.br', 'www.araras.sp.leg.br', 'www.camara-araras.sp.gov.br', 'transparencia.tce.sp.gov.br', 'transparencia.betha.cloud', 'pncp.gov.br', 'legislacaodigital.com.br', 'www.legislacaodigital.com.br'].includes(parsed.hostname)) {
       return parsed.href;
     }
   } catch {
@@ -266,6 +266,31 @@ function home() {
   <div class="councillors" id="em-exercicio">${current.map(personCard).join('')}</div>
   ${former.length ? `<section class="former" id="outros"><h2>Também atuaram no período</h2><p class="section-note">Parlamentares com registros nas sessões consultadas.</p><div class="councillors" id="fora-exercicio">${former.map(personCard).join('')}</div></section>` : ''}
   <p class="notice" id="sem-resultados" role="status" hidden>Nenhum nome ou partido encontrado.</p></section>`;
+}
+
+function quadroTransparencia() {
+  const comChamada = sessions.filter(sessao => sessao.chamadas?.length).length;
+  const semChamada = sessions.length - comChamada;
+  const {total, iguais} = votacoesComVotosIguais();
+  const fim = legislative?.fim || proposals?.fim;
+  const cartoes = [
+    ['Presença', `Contamos uma presença por sessão quando a chamada oficial registra o vereador como presente. O percentual considera as sessões com situação de chamada para aquela pessoa. Na base publicada, há ${numeric(comChamada, sessionSource, 'Sessões com chamada')} de ${numeric(sessions.length, sessionSource, 'Sessões consultadas')} sessões com chamada; as ${numeric(semChamada, sessionSource, 'Sessões sem chamada')} sem chamada ficam fora desse cálculo. <a href="#fontes">Veja a conferência com as atas</a>.`],
+    ['Homenagem ou trabalho', `A classificação usa o tipo e as palavras do assunto oficial, com a mesma regra para todos. Uma proposta que dá nome a uma rua entra em homenagens. Os rankings usam os critérios explicados em Fontes. Abra cada grupo e leia proposta por proposta. ${official('Consultar as propostas na Câmara', proposalsSource)}.`],
+    ['Pedido não é obra feita', `Um pedido de melhoria é um pedido apresentado pelo vereador. O Radar não confirma se a Prefeitura executou o serviço. Pedido repetido não prova que a Prefeitura ignorou: os documentos podem tratar de trechos diferentes da mesma rua. ${official('Conferir os pedidos oficiais', proposalsSource)}.`],
+    ['Salário', `Somamos os subsídios e vencimentos identificados como pagamentos aos vereadores e suplentes. Incluímos décimo terceiro e férias quando identificados nos registros. O valor efetivamente pago aparece abaixo do contador. O contador é uma estimativa pela média desses pagamentos ao longo do tempo. ${official('Ver os pagamentos na fonte oficial', bethaSource)}. <a href="#fontes">Entenda o cálculo</a>.`],
+    ['Votos', `Mostramos os votos divulgados para cada vereador. A comparação considera votações nominais com pelo menos dois votos de “sim”, “não” ou abstenção. São ${numeric(total, sessionSource, 'Votações nominais consideradas')} na base publicada; em ${numeric(iguais, sessionSource, 'Votações com votos iguais')}, os votos registrados foram iguais. ${official('Consultar as votações oficiais', sessionSource)}.`],
+    ['Contas da Câmara', `Os valores vêm do portal de transparência da Câmara e do TCE-SP. Separamos salários dos vereadores, demais despesas e viagens. O valor de um contrato não significa que tudo já foi pago. O último pagamento na base é de ${radarPagamentos?.ultimaData ? official(dateLabel(radarPagamentos.ultimaData), bethaSource) : 'data não informada'}. <a href="#contas">Consultar as contas e suas fontes</a>.`],
+    ['Documentos e atualizações', `Se um documento deixa de aparecer, preservamos o último registro coletado e sinalizamos que o motivo não foi confirmado. Mudanças no título, assunto, data, tipo ou autoria ficam no histórico. Novos dados só entram depois da conferência; uma coleta incompleta mantém a última base aprovada. <a href="#fontes">Ver como funciona o histórico</a>.`],
+    ['Achou um erro?', `Abra a fonte oficial pelo link do número ou do documento e compare os registros. Uma correção feita pela Câmara será refletida após uma nova coleta aprovada. Você também pode ${official('consultar o Serviço de Informação ao Cidadão', 'https://www.araras.sp.leg.br/Sic/Cidadao')} ou <a href="https://wa.me/5519997538385" target="_blank" rel="noopener noreferrer">avisar o Radar pelo WhatsApp</a>.`]
+  ];
+  return `<section id="transparencia" class="radar-section radar-transparencia" tabindex="-1" aria-labelledby="titulo-transparencia">
+    <p class="radar-chamada">Transparência</p>
+    <h2 id="titulo-transparencia">De onde vêm os números</h2>
+    <p class="radar-intro">Os dados vêm dos sistemas oficiais da Câmara Municipal de Araras e do Tribunal de Contas do Estado de São Paulo. Os números são calculados a partir desses registros, com fontes para conferência.</p>
+    <p class="transparencia-periodo">Base publicada: ${periodLabel(sessionSource, legislative?.inicio, fim)}. As fontes podem publicar registros com atraso. <a href="#fontes">Consultar fontes e critérios completos</a>.</p>
+    <div class="transparencia-grid">${cartoes.map(([titulo,texto]) => `<article><h3>${titulo}</h3><p>${texto}</p></article>`).join('')}</div>
+    <p class="transparencia-normas">Regras de Araras: ${official('Lei Orgânica do Município', 'https://legislacaodigital.com.br/Araras-SP/LeisOrganicas/0')} e ${official('Regimento Interno da Câmara', 'https://legislacaodigital.com.br/Araras-SP/Resolucoes/1-2015')}, nos endereços indicados pelo ${official('site oficial da Câmara', council)}. Os valores dos quadros são calculados a partir dos pagamentos registrados nas fontes acima.</p>
+  </section>`;
 }
 
 function personPage(person, selected, group) {
@@ -653,7 +678,7 @@ function showPage() {
       installSearch();
       instalarRadar(panel.querySelector('#radar'), texto);
     }
-    const section = ['bairros','repetidos','propostas','vereadores'].includes(page) && document.getElementById(page);
+    const section = ['bairros','repetidos','propostas','vereadores','transparencia'].includes(page) && document.getElementById(page);
     if (section) requestAnimationFrame(() => { section.scrollIntoView(); section.focus({preventScroll:true}); });
     else window.scrollTo(0, 0);
   }
