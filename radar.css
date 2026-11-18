@@ -293,3 +293,7 @@ img { max-width: 100%; }
 @media (max-width: 410px) {
   .funding-metrics { grid-template-columns: minmax(0, 1fr); }
 }
+.documento-acompanhamento { margin-top:12px; padding:12px 14px; background:#fff8e8; border-left:3px solid #a76500; border-radius:6px; color:#4a360c; font-size:.875rem; line-height:1.6; overflow-wrap:anywhere; }
+.documento-acompanhamento p { margin:0 0 8px; }
+.documento-acompanhamento summary { cursor:pointer; text-decoration:underline; font-weight:600; padding:6px 0; }
+.documento-acompanhamento li { margin:14px 0; }

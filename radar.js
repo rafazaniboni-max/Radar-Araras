@@ -228,7 +228,7 @@ function pedidoNoRadar(pedido) {
   return `<li class="radar-pedido"><span class="radar-icon tom-${coresGrupos[pedido.grupo]}" aria-hidden="true">${marcasGrupos[pedido.grupo]}</span>
     <div><p class="radar-ementa">${escapeHtml(pedido.assunto || pedido.titulo)}</p>
     <p class="radar-pedido-meta"><span class="radar-tipo-pedido tom-${coresGrupos[pedido.grupo]}">${escapeHtml(categoria)}</span> ${official(dateLabel(pedido.data, dataCurta), fonte)} · ${official(pedido.titulo, fonte)}</p>
-    <div class="radar-autores">${autores.map(autor => `<a href="${profilePath(autor)}">${avatar(autor)}${escapeHtml(publicName(autor))}</a>`).join('')}</div></div>
+    <div class="radar-autores">${autores.map(autor => `<a href="${profilePath(autor)}">${avatar(autor)}${escapeHtml(publicName(autor))}</a>`).join('')}</div>${documentoAcompanhamento(pedido)}</div>
     <span class="radar-documento">${official('Abrir na Câmara ↗', fonte)}</span></li>`;
 }
 
