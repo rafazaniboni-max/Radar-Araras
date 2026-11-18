@@ -297,3 +297,4 @@ img { max-width: 100%; }
 .documento-acompanhamento p { margin:0 0 8px; }
 .documento-acompanhamento summary { cursor:pointer; text-decoration:underline; font-weight:600; padding:6px 0; }
 .documento-acompanhamento li { margin:14px 0; }
+.proposal-count { flex-shrink:0; white-space:nowrap; overflow-wrap:normal; }
