@@ -8,7 +8,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -33,3 +33,14 @@ jobs:
       - name: Publicar a versão boa já existente
         id: publicacao
         uses: actions/deploy-pages@v4
+      - name: Atualizar a versão de referência para a Hostinger
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin codex/site-publicado
+          radar_hostinger_base=$(git rev-parse FETCH_HEAD)
+          radar_hostinger_arvore=$(git rev-parse HEAD:dist)
+          if [ "$radar_hostinger_arvore" != "$(git rev-parse "$radar_hostinger_base^{tree}")" ]; then
+            radar_hostinger_commit=$(git commit-tree "$radar_hostinger_arvore" -p "$radar_hostinger_base" -m 'Publicar a versão de referência conferida na Hostinger')
+            git push origin "$radar_hostinger_commit:refs/heads/codex/site-publicado"
+          fi

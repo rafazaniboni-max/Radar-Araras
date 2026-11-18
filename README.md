@@ -15,3 +15,9 @@ As regras de bloqueio estão em `scripts/validar-atualizacao.py`. A conferência
 Para executar a mesma coleta localmente, instale Python 3.12, Node.js 24 e as bibliotecas de `requirements.txt`. Execute `python scripts/testar-validacao.py` e `python scripts/atualizar-site.py`. A coleta candidata e o relatório ficam em `.build/atualizacao`. Esses comandos preservam os arquivos de referência.
 
 O projeto também mantém o servidor utilizado na hospedagem Sites. Para montar esse servidor, execute `node scripts/montar-servidor.mjs`. O GitHub Pages utiliza os arquivos estáticos da coleta validada.
+
+Para preparar o pacote da Hostinger, execute `python scripts/empacotar-hostinger.py`. O arquivo `.build/hostinger/radar-araras.zip` contém os arquivos públicos de `dist`, com `index.html` na raiz e sem o servidor da hospedagem Sites. O pacote usa a última versão de referência; uma coleta rejeitada não substitui esses dados. Extraia o conteúdo na pasta pública do domínio `radarararas.com.br`.
+
+O código do AdSense com o identificador `ca-pub-2804798076254345` fica uma única vez no `<head>` de `dist/index.html`, compartilhado por todas as telas do site.
+
+Após uma coleta aprovada, a rotina diária também atualiza a branch `codex/site-publicado` com somente os arquivos públicos de `dist`. Essa branch deve ser selecionada na integração Git da Hostinger, com destino `public_html` e publicação automática ativa. Uma coleta rejeitada não altera essa branch. A conexão oficial da Hostinger com o GitHub deve estar autorizada somente para o repositório Radar-Araras.

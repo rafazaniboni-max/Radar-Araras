@@ -67,3 +67,12 @@ jobs:
           git add dist
           git commit -m 'Atualizar os dados oficiais após coleta e publicação validadas' || test -z "$(git status --porcelain dist)"
           git push origin HEAD:main
+      - name: Atualizar somente a versão aprovada para a Hostinger
+        run: |
+          git fetch origin codex/site-publicado
+          radar_hostinger_base=$(git rev-parse FETCH_HEAD)
+          radar_hostinger_arvore=$(git rev-parse HEAD:dist)
+          if [ "$radar_hostinger_arvore" != "$(git rev-parse "$radar_hostinger_base^{tree}")" ]; then
+            radar_hostinger_commit=$(git commit-tree "$radar_hostinger_arvore" -p "$radar_hostinger_base" -m 'Publicar os dados oficiais conferidos na Hostinger')
+            git push origin "$radar_hostinger_commit:refs/heads/codex/site-publicado"
+          fi
