@@ -1,0 +1,47 @@
+{
+  "mestreSha256": "2d93691acbe37d61022f4bb4ae0f0c1b551c9651800527249d050ad400704347",
+  "arquivos": [
+    {
+      "arquivo": "favicon-16x16.png",
+      "largura": 16,
+      "altura": 16,
+      "bytes": 869
+    },
+    {
+      "arquivo": "favicon-32x32.png",
+      "largura": 32,
+      "altura": 32,
+      "bytes": 2788
+    },
+    {
+      "arquivo": "favicon-48x48.png",
+      "largura": 48,
+      "altura": 48,
+      "bytes": 5615
+    },
+    {
+      "arquivo": "favicon-96x96.png",
+      "largura": 96,
+      "altura": 96,
+      "bytes": 18053
+    },
+    {
+      "arquivo": "apple-touch-icon.png",
+      "largura": 180,
+      "altura": 180,
+      "bytes": 50886
+    },
+    {
+      "arquivo": "favicon-192x192.png",
+      "largura": 192,
+      "altura": 192,
+      "bytes": 56604
+    },
+    {
+      "arquivo": "favicon-512x512.png",
+      "largura": 512,
+      "altura": 512,
+      "bytes": 289330
+    }
+  ]
+}
