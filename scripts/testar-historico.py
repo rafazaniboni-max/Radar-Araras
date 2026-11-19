@@ -5,11 +5,12 @@ from copy import deepcopy
 from importlib.util import module_from_spec, spec_from_file_location
 from io import StringIO
 from hashlib import sha256
+import gzip
 import json
 from pathlib import Path
 import tempfile
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 RAIZ = Path(__file__).resolve().parents[1]
 
@@ -171,12 +172,49 @@ class HistoricoDocumentos(unittest.TestCase):
             return atualizador.html.fromstring(conteudo)
         with patch.object(atualizador.historico, 'registros_anteriores', return_value=({}, {'1':self.perfil['registros']})), \
              patch.object(atualizador.coletor, 'buscar', side_effect=buscar), \
-             patch.object(atualizador.propostas, 'ler_perfil', return_value=perfil), \
+             patch.object(atualizador.propostas, 'ler_perfil', side_effect=[perfil, self.perfil]), \
              patch.object(atualizador.propostas, 'ler_pesquisa', return_value=self.perfil) as pesquisa:
             with redirect_stdout(StringIO()):
                 pasta = atualizador.coletar_propostas([{'id':'1'}], {'1':{}}, cache, self.raiz/'raw', '2026-11-19')
         pesquisa.assert_called_once()
         self.assertEqual(len(json.loads((pasta/'1.json').read_text(encoding='utf-8'))['registros']),10)
+
+    def test_pesquisa_sem_emendas_exige_nova_leitura_integral(self):
+        integral = deepcopy(self.perfil)
+        integral['registros'][-1]['tipo'] = 'Emendas'
+        integral['registros'][-1]['titulo'] = 'Emenda Nº 1 ao Projeto de Lei Nº 1/2026'
+        pesquisa = deepcopy(integral)
+        pesquisa['registros'].pop()
+        cache = self.raiz / 'cache'
+        cache.mkdir()
+        def buscar(url, cache, **kwargs):
+            conteudo = b'<html><title>Camara</title><p>9 registro(s) encontrado(s)</p></html>'
+            (cache / f'{sha256(url.encode()).hexdigest()}.html').write_bytes(conteudo)
+            return atualizador.html.fromstring(conteudo)
+        with patch.object(atualizador.historico, 'registros_anteriores', return_value=({}, {'1':integral['registros']})), \
+             patch.object(atualizador.coletor, 'buscar', side_effect=buscar), \
+             patch.object(atualizador.propostas, 'ler_perfil', side_effect=[RuntimeError('tempo esgotado'), integral]), \
+             patch.object(atualizador.propostas, 'ler_pesquisa', return_value=pesquisa):
+            with redirect_stdout(StringIO()):
+                pasta = atualizador.coletar_propostas([{'id':'1'}], {'1':{}}, cache, self.raiz/'raw', '2026-11-19')
+        obtido = json.loads((pasta/'1.json').read_text(encoding='utf-8'))
+        self.assertEqual(len(obtido['registros']), 10)
+        self.assertIn('Emendas', {r['tipo'] for r in obtido['registros']})
+
+    def test_html_comprimido_e_lido_e_guardado_em_cache_sem_compressao(self):
+        conteudo = '<html><title>Câmara Municipal de Araras</title><h3>Emendas (1)</h3></html>'.encode()
+        resposta = MagicMock()
+        resposta.read.return_value = gzip.compress(conteudo)
+        resposta.headers = {'Content-Encoding':'gzip'}
+        resposta.__enter__.return_value = resposta
+        cache = self.raiz/'cache'
+        cache.mkdir()
+        url = 'https://araras.siscam.com.br/Vereadores/Proposituras/1'
+        with patch.object(atualizador.coletor, 'urlopen', return_value=resposta) as rede:
+            pagina = atualizador.coletor.buscar(url, cache)
+        self.assertIn('Emendas (1)', pagina.text_content())
+        self.assertEqual((cache/f'{sha256(url.encode()).hexdigest()}.html').read_bytes(), conteudo)
+        self.assertEqual(rede.call_args.args[0].get_header('Accept-encoding'), 'gzip')
 
     def test_nova_base_muda_os_enderecos_dos_arquivos_para_evitar_cache_antigo(self):
         nomes=('legislativo','auditoria-presencas','financas','pagamentos','propostas','territorio-resumo','historico-documentos')

@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime
 from math import ceil
 from hashlib import sha256
+import gzip
 import json
 from pathlib import Path
 import re
@@ -73,9 +74,11 @@ def buscar(url, cache, timeout=22):
         return html.fromstring(destino.read_bytes(), parser=html.HTMLParser(encoding="utf-8"))
     for tentativa in range(3):
         try:
-            requisicao = Request(url, headers={"User-Agent": "ArarasEmDados/1.0 (consulta pública)"})
+            requisicao = Request(url, headers={"User-Agent": "ArarasEmDados/1.0 (consulta pública)", "Accept-Encoding": "gzip"})
             with urlopen(requisicao, timeout=timeout) as resposta:
                 conteudo = resposta.read()
+                if resposta.headers.get('Content-Encoding', '').lower() == 'gzip':
+                    conteudo = gzip.decompress(conteudo)
             pagina = html.fromstring(conteudo, parser=html.HTMLParser(encoding="utf-8"))
             if not pagina.xpath("//title[contains(.,'Câmara Municipal de Araras')]"):
                 raise ValueError("Página inesperada no Siscam")

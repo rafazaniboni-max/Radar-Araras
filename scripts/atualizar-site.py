@@ -83,13 +83,30 @@ def coletar_propostas(pessoas, anteriores, cache, raw, fim):
                 raise ValueError(f'Pesquisa oficial sem total para o autor {identificador}.')
             with ThreadPoolExecutor(max_workers=3) as paginas:
                 caminhos = [caminho] + list(paginas.map(lambda pagina: pesquisa(pagina)[1], range(2, ceil(int(total[1]) / 15) + 1)))
-            return propostas.ler_pesquisa(identificador, caminhos, '2025-01-01', fim)
+            pesquisa_completa = propostas.ler_pesquisa(identificador, caminhos, '2025-01-01', fim)
+            # A pesquisa geral conta somente matérias principais. Emendas e
+            # substitutivos ficam nos documentos relacionados e exigem o perfil integral.
+            print(f'Autor {identificador}: pesquisa conferida; relendo o perfil integral para incluir emendas e substitutivos.', flush=True)
+            cache_reconsulta = cache / 'reconsulta' / identificador
+            cache_reconsulta.mkdir(parents=True, exist_ok=True)
+            coletor.buscar(url, cache_reconsulta, timeout=120)
+            pasta_reconsulta = pasta / 'reconsulta'
+            pasta_reconsulta.mkdir(exist_ok=True)
+            arquivo_reconsulta = pasta_reconsulta / f'{identificador}.html'
+            arquivo_reconsulta.write_bytes((cache_reconsulta / f'{sha256(url.encode()).hexdigest()}.html').read_bytes())
+            integral = propostas.ler_perfil(arquivo_reconsulta, '2025-01-01', fim)
+            registros = {str(r['id']): r for r in pesquisa_completa['registros']}
+            registros.update({str(r['id']): r for r in integral['registros']})
+            integral['registros'] = list(registros.values())
+            integral['fontesComplementares'] = [pesquisa_completa['fonte']]
+            return integral
 
         try:
             coletor.buscar(url, cache, timeout=120)
             arquivo.write_bytes((cache / f'{sha256(url.encode()).hexdigest()}.html').read_bytes())
             perfil = propostas.ler_perfil(arquivo, '2025-01-01', fim)
-        except (RuntimeError, ValueError):
+        except (RuntimeError, ValueError) as erro:
+            print(f'Autor {identificador}: lista integral não conferida ({erro}); consultando a pesquisa oficial.', flush=True)
             perfil = pela_pesquisa()
         else:
             esperados = {str(r['id']) for r in registros_anteriores.get(identificador, [])

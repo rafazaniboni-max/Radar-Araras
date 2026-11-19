@@ -3,7 +3,7 @@ name: Coletar, validar e publicar o Radar Araras
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 3 * * *'
+    - cron: '17 3,5 * * *'
       timezone: America/Sao_Paulo
   push:
     branches: [main]

@@ -2,7 +2,7 @@
 
 Site com dados oficiais da Câmara Municipal de Araras/SP desde 1º de janeiro de 2025.
 
-A rotina em `.github/workflows/atualizar-site.yml` coleta sessões, presença, votos, propostas de cada autor, atas, contratos, execução de despesas e os arquivos mensais do TCE-SP. A publicação diária está programada para 03h17 no horário de São Paulo. Também pode ser iniciada em Actions, pelo botão Run workflow.
+A rotina em `.github/workflows/atualizar-site.yml` coleta sessões, presença, votos, propostas de cada autor, atas, contratos, execução de despesas e os arquivos mensais do TCE-SP. A publicação diária está programada para 03h17 no horário de São Paulo, com outra tentativa às 05h17, em ambiente novo, para fontes que estejam temporariamente indisponíveis na primeira consulta. Também pode ser iniciada em Actions, pelo botão Run workflow.
 
 O GitHub Pages precisa estar configurado para publicar por GitHub Actions nas configurações do repositório. A publicação usa a pasta candidata produzida pela coleta. O endereço segue o padrão do GitHub Pages para este repositório.
 
@@ -13,6 +13,8 @@ Uma falha de rede, página incompleta, perda de documentos anteriores, aumento i
 As regras de bloqueio estão em `scripts/validar-atualizacao.py`. A conferência compara a coleta com a versão de referência em `dist`. Recuos de valores exigem investigação porque também podem resultar de retificações oficiais. Documentos isolados não localizados ficam preservados no histórico; quedas grandes e fontes incompletas continuam bloqueadas. Quando a lista de um autor perde muitos registros, o coletor confere a pesquisa oficial paginada antes da validação. A rotina só substitui a referência depois que a publicação termina com sucesso.
 
 A exportação Betha repete falhas temporárias de rede, espera a geração do arquivo e identifica conjunto e exercício em cada falha. `raw/diagnostico-financeiro.json` e `raw/atas/diagnostico.json` acompanham o relatório nos artefatos do GitHub. Não são registrados tokens ou URLs de download assinadas. A conferência financeira passa a guardar os pagamentos por empenho: campos sem valor e sem parcelas ficam identificados, sem serem convertidos em zero. Perda de pagamentos anteriores, soma divergente ou parcela sem valor consolidado continuam impedindo a publicação. O primeiro ciclo com essa conferência também preserva as verificações dos totais da referência anterior.
+
+As páginas Siscam são solicitadas com compressão gzip para reduzir a transferência dos perfis integrais. A pesquisa geral por autor não conta emendas e substitutivos como resultados principais. Por isso, quando usada como alternativa, ela exige uma nova leitura do perfil integral em uma pasta de cache separada e complementa os registros, sem presumir que documentos relacionados foram retirados. Se a leitura integral continuar indisponível, a publicação permanece bloqueada.
 
 Uma base aprovada recebe URLs de dados versionadas para evitar que o navegador exiba arquivos de uma coleta anterior. A data da consulta é separada da data do último pagamento ou documento efetivamente publicado pela fonte.
 
