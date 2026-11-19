@@ -49,6 +49,12 @@ class BloqueioDeColeta(unittest.TestCase):
         resultado = validacao.validar(self.base, self.candidata, self.fim)
         self.assertEqual(resultado['propostas'], self.dados['territorio']['total'])
 
+    def test_relatorio_nao_inclui_o_hash_da_propria_versao_anterior(self):
+        (self.candidata / 'atualizacao.json').write_text('{"fim":"2026-11-16"}', encoding='utf-8')
+        resultado = validacao.validar(self.base, self.candidata, self.fim)
+        self.assertNotIn('atualizacao.json', resultado['sha256'])
+        self.assertEqual(resultado['sha256']['index.html'], hashlib.sha256((self.candidata / 'index.html').read_bytes()).hexdigest())
+
     def test_sessao_ausente_e_bloqueada(self):
         self.alterar('legislativo', lambda dados: dados['sessoes'].pop())
         self.reprovar()

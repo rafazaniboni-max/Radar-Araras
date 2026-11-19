@@ -44,6 +44,7 @@ jobs:
           python scripts/testar-historico.py
           node --test scripts/testar-financas.mjs
           python scripts/testar-conferencia-financeira.py
+          python scripts/testar-publicacao.py
       - name: Coletar novamente e validar contra a última versão boa
         run: python -u scripts/atualizar-site.py
       - name: Guardar o relatório da execução
@@ -83,3 +84,13 @@ jobs:
             radar_hostinger_commit=$(git commit-tree "$radar_hostinger_arvore" -p "$radar_hostinger_base" -m 'Publicar os dados oficiais conferidos na Hostinger')
             git push origin "$radar_hostinger_commit:refs/heads/codex/site-publicado"
           fi
+      - name: Confirmar a entrega da coleta no domínio oficial
+        run: python -u scripts/conferir-publicacao.py
+      - name: Guardar o resultado da entrega na Hostinger
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conferencia-da-entrega
+          path: .build/hostinger/entrega.json
+          if-no-files-found: ignore
+          retention-days: 30

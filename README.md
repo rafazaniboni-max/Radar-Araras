@@ -25,3 +25,5 @@ Para preparar o pacote da Hostinger, execute `python scripts/empacotar-hostinger
 O código do AdSense com o identificador `ca-pub-2804798076254345` fica uma única vez no `<head>` de `dist/index.html`, compartilhado por todas as telas do site.
 
 Após uma coleta aprovada, a rotina diária também atualiza a branch `codex/site-publicado` com somente os arquivos públicos de `dist`. Essa branch deve ser selecionada na integração Git da Hostinger, com destino `public_html` e publicação automática ativa. Uma coleta rejeitada não altera essa branch. A conexão oficial da Hostinger com o GitHub deve estar autorizada somente para o repositório Radar-Araras.
+
+A execução só termina com sucesso depois que `scripts/conferir-publicacao.py` confirma o relatório da mesma coleta e os hashes de nove arquivos no domínio oficial. Se o GitHub receber os dados, mas a Hostinger não os entregar, a execução falha na etapa de entrega e registra o motivo no artefato `conferencia-da-entrega`. Esse erro é separado de uma coleta reprovada: a base de dados já aprovada permanece no repositório. O relatório não inclui o hash de si mesmo.

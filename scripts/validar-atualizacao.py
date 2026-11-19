@@ -164,7 +164,7 @@ def validar(base, candidata, fim):
     for identificador in anterior["auditoria"]["sessoes"]:
         exigir(identificador in auditoria["sessoes"], f"Ata anteriormente disponível desapareceu da sessão {identificador}.")
     hashes = {str(p.relative_to(candidata)).replace('\\', '/'): hashlib.sha256(p.read_bytes()).hexdigest()
-              for p in sorted(Path(candidata).rglob('*')) if p.is_file()}
+              for p in sorted(Path(candidata).rglob('*')) if p.is_file() and p.name != 'atualizacao.json'}
     return {"vereadoresEmExercicio": 11, "sessoes": len(sessoes), "sessoesAnteriores": len(antigas),
             "propostas": len(docs), "propostasAnteriores": len(docs_anteriores), "contratos": len(contratos),
             "mesesDespesas": len(meses), "pagamentosCentavos": pagamentos["totais"],
