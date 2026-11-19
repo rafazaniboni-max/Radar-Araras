@@ -17,7 +17,7 @@ if len(anuncios) != 1 or anuncios[0].get("src") != endereco:
 if anuncios[0].get("async") is None or anuncios[0].get("crossorigin") != "anonymous":
     raise ValueError("Os atributos do código do AdSense não correspondem ao solicitado.")
 
-permitidas = {".html", ".css", ".js", ".json", ".png", ".svg", ".jpg", ".webp", ".ico", ".txt"}
+permitidas = {".html", ".css", ".js", ".json", ".png", ".svg", ".jpg", ".webp", ".ico", ".txt", ".xml"}
 arquivos = sorted(p for p in dist.rglob("*") if p.is_file()
                   and p.relative_to(dist).parts[0] not in {"server", ".openai"})
 for arquivo in arquivos:

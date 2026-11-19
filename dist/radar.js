@@ -134,14 +134,14 @@ function quadroPagamentos(dados = radarPagamentos, projetar = true) {
     </article>`).join('')}
     <div class="radar-finance-rodape">
       ${dados?.ultimaData ? `<p>Último pagamento nos dados em ${official(dateLabel(dados.ultimaData), bethaSource)}.</p>` : ''}
-      ${dados?.fim ? `<p>Fonte consultada em ${official(dateLabel(dados.fim), bethaSource)}.</p>` : ''}
+      ${dados?.fim ? `<p data-periodo-coleta>Fonte consultada em ${official(dateLabel(dados.fim), bethaSource)}.</p>` : ''}
       <p class="radar-finance-fontes">${official('Dados abertos da Câmara', bethaSource)} <a href="#contas/despesas">Despesas por mês <span aria-hidden="true">→</span></a></p>
     </div>
   </section>`;
 }
 
 async function carregarQuadroPagamentos(raiz) {
-  consultaPagamentos ??= fetch('/api/pagamentos', { cache: 'no-store' })
+  consultaPagamentos ??= document.documentElement.dataset.seo === '1' ? Promise.resolve(null) : fetch('/api/pagamentos', { cache: 'no-store' })
     .then(resposta => resposta.ok && resposta.status !== 204 ? resposta.json() : null)
     .catch(() => null);
   const dados = await consultaPagamentos;

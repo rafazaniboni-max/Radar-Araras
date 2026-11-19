@@ -1,4 +1,13 @@
 # O HTML aponta para a revisão diária dos dados. Não guardar uma abertura antiga.
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www\.radarararas\.com\.br$ [NC]
+  RewriteRule ^ https://radarararas.com.br%{REQUEST_URI} [R=301,L,NE]
+</IfModule>
+
 <IfModule LiteSpeed>
   CacheDisable public /
 </IfModule>

@@ -249,6 +249,12 @@ def versionar_dados(destino):
     assinatura.update((destino / 'territorio.json').read_bytes())
     for nome in ('estilos', 'radar'):
         assinatura.update((destino/f'{nome}.css').read_bytes())
+    for caminho in ('navegacao.js', 'privacidade.js', 'seo.css'):
+        if (destino / caminho).exists():
+            assinatura.update((destino / caminho).read_bytes())
+    for caminho in ('templates/base.html', 'config/seo.json', 'scripts/gerar-seo.mjs'):
+        if (RAIZ / caminho).exists():
+            assinatura.update((RAIZ / caminho).read_bytes())
     versao = assinatura.hexdigest()[:20]
     arquivo = destino / 'index.html'
     texto = arquivo.read_text(encoding='utf-8')
@@ -294,6 +300,8 @@ def atualizar(trabalho, fim):
              '--origem', raw, '--destino', destino)
     ETAPA_ATUAL = 'validação final'
     versionar_dados(destino)
+    executar('node', 'scripts/gerar-seo.mjs', '--dist', destino)
+    executar('node', 'scripts/conferir-seo.mjs', '--dist', destino)
     return destino, validacao.validar(RAIZ / 'dist', destino, fim)
 
 

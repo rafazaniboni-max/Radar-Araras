@@ -1,5 +1,13 @@
 # Radar Araras
 
+As páginas públicas são geradas por `scripts/gerar-seo.mjs`, com a mesma base de dados aprovada da interface. Incluem perfis, grupos paginados de propostas, sessões, despesas, locais citados, guias, fontes, contato e privacidade. O gerador não faz consultas de rede. `scripts/conferir-seo.mjs` bloqueia páginas sem conteúdo, links internos quebrados, títulos repetidos, divergência no sitemap e perda de perfis. As regras de preservação dos dados continuam em vigor.
+
+O robô diário gera e confere o HTML antes da validação final. O workflow `publicar-seo.yml` permite atualizar a apresentação sobre a coleta já aprovada, preservando `concluidoEm` e o período dos dados. Pushes com `[publicar-seo]` acionam esse fluxo; a rotina diária não faz uma coleta paralela nesse mesmo push. Atualizações de código não podem ser exibidas como uma nova conferência das fontes.
+
+O arquivo `config/seo.json` mantém o domínio canônico e o identificador público do Analytics. O sitemap usa endereços sem fragmentos, com datas de alteração de conteúdo. Páginas de grupos vazios ou sem coleta de propostas são `noindex`. As páginas de lugares identificados automaticamente informam os limites da extração; outros termos continuam disponíveis na busca. Redirecionamentos e erro 404 são definidos em `dist/.htaccess`.
+
+O Analytics e o AdSense só são carregados após a escolha de serviços opcionais no aviso de privacidade. A preferência pode ser revista no rodapé. A medição exclui os parâmetros da busca local, desativa sinais do Google e a personalização de anúncios do Analytics; a medição otimizada foi desativada no fluxo Web. A aprovação do AdSense e eventuais configurações de consentimento regional no painel do Google são independentes da publicação do código.
+
 Site com dados oficiais da Câmara Municipal de Araras/SP desde 1º de janeiro de 2025.
 
 A rotina em `.github/workflows/atualizar-site.yml` coleta sessões, presença, votos, propostas de cada autor, atas, contratos, execução de despesas e os arquivos mensais do TCE-SP. A publicação diária está programada para 03h17 no horário de São Paulo, com outra tentativa às 05h17, em ambiente novo, para fontes que estejam temporariamente indisponíveis na primeira consulta. Também pode ser iniciada em Actions, pelo botão Run workflow.

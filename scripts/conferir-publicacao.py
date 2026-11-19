@@ -38,7 +38,14 @@ def conferir(pasta, ler=baixar):
     revisao = re.search(r'data-coleta="([a-f0-9]{20})"', html)
     if not revisao:
         raise ValueError('A coleta aprovada não tem revisão de dados.')
-    for nome in ARQUIVOS:
+    arquivos = list(ARQUIVOS)
+    manifesto = pasta / 'seo-manifest.json'
+    if manifesto.exists():
+        paginas = json.loads(manifesto.read_text(encoding='utf-8'))['paginas']
+        arquivos.extend(('sitemap.xml', 'robots.txt', 'ads.txt', 'navegacao.js', 'privacidade.js', 'seo.css', 'rotas.js'))
+        arquivos.extend(next(p['arquivo'] for p in paginas if p['url'].startswith(prefixo))
+                        for prefixo in ('/vereadores/', '/bairros/', '/sessoes/'))
+    for nome in arquivos:
         caminho = '' if nome == 'index.html' else f'{nome}?v={revisao[1]}'
         conteudo = ler(urljoin(DOMINIO, caminho))
         assinatura = hashlib.sha256(conteudo).hexdigest()
@@ -46,7 +53,7 @@ def conferir(pasta, ler=baixar):
             raise ValueError(f'O domínio ainda não entrega a versão aprovada de {nome}.')
     return {'aprovado': True, 'dominio': DOMINIO, 'fim': esperado['fim'],
             'coletaConcluidaEm': esperado['concluidoEm'], 'revisao': revisao[1],
-            'arquivosConferidos': len(ARQUIVOS)}
+            'arquivosConferidos': len(arquivos)}
 
 
 def main():

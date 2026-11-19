@@ -1,0 +1,85 @@
+name: Publicar apresentação e SEO com a última coleta aprovada
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'config/seo.json'
+      - 'templates/**'
+      - 'scripts/gerar-seo.mjs'
+      - 'scripts/conferir-seo.mjs'
+      - 'scripts/preparar-publicacao-seo.py'
+      - 'dist/app.js'
+      - 'dist/navegacao.js'
+      - 'dist/privacidade.js'
+      - 'dist/seo.css'
+      - '.github/workflows/publicar-seo.yml'
+
+concurrency:
+  group: radar-araras-producao
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  publicar:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[publicar-seo]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacao.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: pip
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+      - run: python -m pip install -r requirements.txt
+      - name: Preparar HTML e manter a data real da coleta
+        run: python scripts/preparar-publicacao-seo.py
+      - name: Conferir as proteções dos dados
+        run: |
+          python scripts/testar-validacao.py
+          python scripts/testar-historico.py
+          node --test scripts/testar-financas.mjs
+          node --test scripts/testar-status.mjs
+          python scripts/testar-conferencia-financeira.py
+          python scripts/testar-publicacao.py
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: .build/atualizacao/dist
+      - name: Publicar a apresentação conferida
+        id: publicacao
+        uses: actions/deploy-pages@v4
+      - name: Guardar a referência e enviar à Hostinger
+        run: |
+          python scripts/promover-atualizacao.py
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add dist
+          git commit -m 'Publicar páginas de consulta e SEO sobre a coleta aprovada' || test -z "$(git status --porcelain dist)"
+          git push origin HEAD:main
+          git fetch origin codex/site-publicado
+          radar_hostinger_base=$(git rev-parse FETCH_HEAD)
+          radar_hostinger_arvore=$(git rev-parse HEAD:dist)
+          radar_hostinger_commit=$(git commit-tree "$radar_hostinger_arvore" -p "$radar_hostinger_base" -m 'Publicar páginas e metadados de busca na Hostinger')
+          git push origin "$radar_hostinger_commit:refs/heads/codex/site-publicado"
+      - name: Confirmar entrega no domínio oficial
+        run: python -u scripts/conferir-publicacao.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: publicacao-seo
+          path: |
+            .build/atualizacao/relatorio.json
+            .build/hostinger/entrega.json
+          retention-days: 30
