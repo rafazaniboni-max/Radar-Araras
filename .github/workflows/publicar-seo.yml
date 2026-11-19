@@ -10,6 +10,8 @@ on:
       - 'scripts/gerar-seo.mjs'
       - 'scripts/conferir-seo.mjs'
       - 'scripts/preparar-publicacao-seo.py'
+      - 'scripts/otimizar-imagens.py'
+      - 'requirements.txt'
       - 'dist/app.js'
       - 'dist/navegacao.js'
       - 'dist/privacidade.js'

@@ -28,6 +28,9 @@ for (const p of manifesto.paginas) {
     if (url.endsWith('/')||url.endsWith('.html')) assert(urls.has(url),'Link sem página: '+url+' em '+p.url);
     else assert(fs.existsSync(path.join(dist,url.slice(1))),'Arquivo ausente: '+url);
   }
+  for (const [,url] of html.matchAll(/src="(\/[^"?#]*)(?:[?#][^"]*)?"/g)) {
+    assert(fs.existsSync(path.join(dist,url.slice(1))),'Recurso local ausente: '+url);
+  }
   const anuncios=html.match(/<script\b[^>]*src="https:\/\/pagead2\.googlesyndication\.com\/pagead\/js\/adsbygoogle\.js[^>]*>/g)||[];
   assert.equal(anuncios.length,1,'AdSense ausente ou duplicado');
   assert(anuncios[0].includes('type="text/plain"')&&anuncios[0].includes('data-publicidade'),'Publicidade deve respeitar preferências');

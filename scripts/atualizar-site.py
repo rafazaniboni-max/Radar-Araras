@@ -249,7 +249,7 @@ def versionar_dados(destino):
     assinatura.update((destino / 'territorio.json').read_bytes())
     for nome in ('estilos', 'radar'):
         assinatura.update((destino/f'{nome}.css').read_bytes())
-    for caminho in ('navegacao.js', 'privacidade.js', 'seo.css'):
+    for caminho in ('navegacao.js', 'privacidade.js', 'seo.css', 'imagens.json'):
         if (destino / caminho).exists():
             assinatura.update((destino / caminho).read_bytes())
     for caminho in ('templates/base.html', 'config/seo.json', 'scripts/gerar-seo.mjs'):
@@ -299,6 +299,7 @@ def atualizar(trabalho, fim):
     executar(sys.executable, 'scripts/preparar-financas.py', '--inicio', '2025-01-01', '--fim', fim,
              '--origem', raw, '--destino', destino)
     ETAPA_ATUAL = 'validação final'
+    executar(sys.executable, 'scripts/otimizar-imagens.py', '--dist', destino)
     versionar_dados(destino)
     executar('node', 'scripts/gerar-seo.mjs', '--dist', destino)
     executar('node', 'scripts/conferir-seo.mjs', '--dist', destino)

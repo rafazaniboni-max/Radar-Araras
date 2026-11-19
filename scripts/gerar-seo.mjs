@@ -25,6 +25,7 @@ const revisao = ler('index.html').match(/data-coleta="([a-f0-9]{20})"/)?.[1];
 if (!revisao) throw Error('A base não tem revisão.');
 const territorio = JSON.parse(ler('territorio.json'));
 const historicoCompleto = JSON.parse(ler('historico-documentos.json'));
+const imagens = fs.existsSync(path.join(dist,'imagens.json')) ? JSON.parse(ler('imagens.json')) : null;
 const fakePanel = { addEventListener() {}, querySelector() {return null;} };
 const contexto = vm.createContext({console,Intl,URL,URLSearchParams,document:{
   addEventListener() {},
@@ -148,7 +149,14 @@ adicionar('/404.html','Página não encontrada | Radar Araras','O endereço soli
 const template = fs.readFileSync(path.join(raiz,'templates/base.html'),'utf8');
 const marca = { '@type':'Organization','@id':origem+'/#organizacao',name:config.nome,url:origem+'/',description:'Iniciativa independente de transparência e fiscalização cidadã em Araras/SP.',logo:origem+'/logo-radar-araras.png',founder:{'@type':'Person',name:config.editor}};
 function converter(html) {
-  return html.replace(/<details data-historico-id="(\d+)"><summary>Ver versões registradas<\/summary><div data-versoes><p>Abra para consultar o histórico\.<\/p><\/div><\/details>/g,(original,id)=>{
+  return html.replace(/<img\b[^>]*src="\/?(logo-radar-araras|rafael-zaniboni)\.png"[^>]*>/g,(tag,nome)=>{
+    const variantes=imagens?.[nome]?.variantes;
+    if (!variantes?.length) return tag;
+    const principal=variantes.at(-1);
+    const hero=tag.includes('alt="Radar Araras"');
+    const tamanhos=nome==='logo-radar-araras'?(hero?'(max-width: 760px) 86vw, 460px':'150px'):'(max-width: 760px) 90vw, 340px';
+    return tag.replace(/src="[^"]*"/,`src="/${principal.arquivo}" srcset="${variantes.map(v=>`/${v.arquivo} ${v.largura}w`).join(', ')}" sizes="${tamanhos}"${hero?' fetchpriority="high"':''}`);
+  }).replace(/<details data-historico-id="(\d+)"><summary>Ver versões registradas<\/summary><div data-versoes><p>Abra para consultar o histórico\.<\/p><\/div><\/details>/g,(original,id)=>{
     const item = historicoCompleto.documentos[id];
     if (!item) return original;
     return `<details data-historico-id="${id}" data-carregado="sim"><summary>Ver versões registradas</summary><div data-versoes><p>Estas são cópias dos dados da listagem oficial coletados pelo Radar. Não substituem o arquivo original nem confirmam retirada ou validade da proposta.</p><ol>${[...item.versoes].reverse().map(v=>`<li><p><strong>Versão observada em ${escapar(data(v.observadaEm))}</strong></p><p>${oficial(v.dados.titulo,v.dados.url)}</p><p>Data publicada: ${escapar(data(v.dados.data))}. Tipo: ${escapar(v.dados.tipo)}.</p><p>${escapar(v.dados.assunto)}</p><p>Autoria: ${v.dados.autores.map(id=>escapar(mapaPessoas.get(id)?.nomePublico||`Identificador oficial ${id}`)).join(', ')}.</p></li>`).join('')}</ol></div></details>`;

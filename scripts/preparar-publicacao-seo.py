@@ -26,6 +26,7 @@ def main():
     if relatorio.get('aprovado') is not True:
         raise ValueError('A versão de referência não contém uma coleta aprovada.')
     shutil.copytree(base, destino, dirs_exist_ok=True, ignore=shutil.ignore_patterns('server'))
+    subprocess.run([sys.executable, 'scripts/otimizar-imagens.py', '--dist', str(destino)], cwd=RAIZ, check=True)
     coletor = modulo('coletor_publicacao_seo', 'atualizar-site.py')
     coletor.versionar_dados(destino)
     subprocess.run(['node', 'scripts/gerar-seo.mjs', '--dist', str(destino)], cwd=RAIZ, check=True)

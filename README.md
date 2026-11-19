@@ -1,5 +1,7 @@
 # Radar Araras
 
+`scripts/otimizar-imagens.py` gera versões WebP do logotipo e do retrato para os tamanhos exibidos na tela. Os PNG originais são preservados e seus hashes conferidos. O logotipo usa compressão sem perdas após o redimensionamento. As imagens geradas têm nomes com hash e cache de um ano; o HTML informa `srcset`, `sizes` e prioridade para o logotipo da abertura.
+
 As páginas públicas são geradas por `scripts/gerar-seo.mjs`, com a mesma base de dados aprovada da interface. Incluem perfis, grupos paginados de propostas, sessões, despesas, locais citados, guias, fontes, contato e privacidade. O gerador não faz consultas de rede. `scripts/conferir-seo.mjs` bloqueia páginas sem conteúdo, links internos quebrados, títulos repetidos, divergência no sitemap e perda de perfis. As regras de preservação dos dados continuam em vigor.
 
 O robô diário gera e confere o HTML antes da validação final. O workflow `publicar-seo.yml` permite atualizar a apresentação sobre a coleta já aprovada, preservando `concluidoEm` e o período dos dados. Pushes com `[publicar-seo]` acionam esse fluxo; a rotina diária não faz uma coleta paralela nesse mesmo push. Atualizações de código não podem ser exibidas como uma nova conferência das fontes.
