@@ -1,0 +1,10 @@
+# O HTML aponta para a revisão diária dos dados. Não guardar uma abertura antiga.
+<IfModule LiteSpeed>
+  CacheDisable public /
+</IfModule>
+
+<IfModule mod_headers.c>
+  <FilesMatch "^(index\.html|atualizacao\.json)$">
+    Header always set Cache-Control "no-store, max-age=0, must-revalidate"
+  </FilesMatch>
+</IfModule>

@@ -1,10 +1,11 @@
 {
-  "iniciadoEm": "2026-11-19T10:33:17.545207-03:00",
+  "iniciadoEm": "2026-11-19T11:33:52.908607-03:00",
   "inicio": "2025-01-01",
   "fim": "2026-11-19",
   "aprovado": true,
   "etapa": "coleta e validação",
   "verificacoes": {
+    "revisao": "c869003e7715088f42f1",
     "vereadoresEmExercicio": 11,
     "sessoes": 105,
     "sessoesAnteriores": 105,
@@ -20,6 +21,9 @@
       "demais": 264147026,
       "viagens": 37377208
     },
+    "perfisSemConferenciaDeRelacionados": [
+      "4755"
+    ],
     "presencaConferida": {
       "sem_ata": 5,
       "coincidiu": 88,
@@ -28,7 +32,8 @@
       "data_diferente": 2
     },
     "sha256": {
-      "app.js": "80fcea77ed439b704348632b411e5a43c57141aa5cc8c3786542aac4a053e726",
+      ".htaccess": "112f3acdfd6432fd3162bc3b2f9491f0bb2634a7a369e141af490611c9515379",
+      "app.js": "7ec652f987e5c1c0cf3640bbe682b1bbf69dfbcc60396271bedc1e77c5041c71",
       "auditoria-presencas.js": "df887e8ccafa0b107f9a4b263f6d9fff011c18743498e542a5707ed1a9e661ec",
       "contato-whatsapp.png": "8147877f22432c728c08c948bacc16e57b419bf9c0c10df54a78e7d77d8a6856",
       "estilos.css": "0b5f9f2a7b93e94b5f0755192e4cf65892e291f0700e0001fb47e2e11b10168a",
@@ -36,12 +41,12 @@
       "financas.js": "8a62cf5cc55100756b657693e72d8c32d42d1aab30598b15ff8d1d53aa3e3877",
       "historico-documentos.js": "f0da5373a6e6e82f7ee8f6fe421248b3edbe97b12cf1d5244ed134195a9835e7",
       "historico-documentos.json": "89c2df3f307000d41ff7c75f9c968d7c9ccff74b61ee5be1fa43caeb33e90660",
-      "index.html": "3340969b5604456dd2fd52ab089b136670c88dc1001a69c57c5583e104483408",
+      "index.html": "e06d8a23eb03da5f097a79c9fedbe03a2826f1cf7012996dc187aae6b8a0b6ef",
       "instagram.svg": "9007b995b5d7f7de899ceac41e619e8c0caa1e3faec7eee70fe2b3584bcc4a21",
       "legislativo.js": "a20bb484dfdd4d1477f062b7b37302f81038532e1f2ccf3dca0127bc7605c715",
       "linkedin.svg": "62317079cc9cda65d9ae6633c983ad6cf0ead2a31fddcbdcd74ef85d19f8f048",
       "logo-radar-araras.png": "f072110d38ab90d74c1647e81b0a7cfa44532a965aa5251313ce09b8fa8f4302",
-      "pagamentos.js": "be64d46f10af23f8b49e1222d1a6ad001f8c67a7649c681694f08f18f15d90a4",
+      "pagamentos.js": "ab52b311f51070c10bf41d5d032989bb3bc41c974b254de7c91a43412d509d81",
       "propostas/191-homenagens.json": "d7c9116041c6817650380d390042c7ceac2474df8682a964753a2232a8f5dfc4",
       "propostas/191-leis.json": "c9abc16f1d1b72528322e99e3f83c7233408ccb1877f2c03bd1485321665eced",
       "propostas/191-melhorias.json": "30b825e61214bc219122a8152cd1bd0516d131f09e21ae691b30e416bb62557d",
@@ -112,14 +117,14 @@
       "propostas/4755-melhorias.json": "39c958b3b9c8ef9a8650cfb737ec4652247ab108049ddce64eda46c8e5affb65",
       "propostas/4755-outros.json": "9472ff700cae540e33c462b65062ddc4edff0ffd7e926601284775bddf67d0e2",
       "propostas/4755-perguntas.json": "93841bc1f05f5a371f011653bce85b933ddfc78e99d3b90642a43960e8863c93",
-      "propostas.js": "4a89c3ab2c12630a55b9b6ecffdf47c2d0c070814d0a5c10dea06f9889094f92",
-      "radar.css": "8bb15498ab30d6fd054c8e3071906f6e6d5594b818eb4880e5e841814ebd01d6",
-      "radar.js": "3c9dae040e96cc9367fe224a5af756b370435744ca74d2a17957fa8cf4a799a9",
+      "propostas.js": "86ff28e80c04341b8dc589ac926b8b49d7f840acbe662ff1456ec8dc179dc491",
+      "radar.css": "165fbdde37eaf48243274457415b7f0fe1a296ef09be36c549d86faa4ac4fc69",
+      "radar.js": "262b7ec27af10c44b14b9b6cc7e47ab1a7bf9924755717b78ea310eddf089e2b",
       "rafael-zaniboni.png": "728d12f2868991489317f100fba447c830d35c45bfaaafce8411b3cd5ae3ccea",
       "territorio-resumo.js": "7dfff2734140cddeab1b0acbac3ca5877c7f1ba546df97d490af8bd0ec522d3e",
-      "territorio.json": "76911f684a89f01adc396585566e4d25c8bdf701329263c32cf51f9b5c992c5b",
+      "territorio.json": "b651468309c9ee62e5b0c24cdf337ffdc41c6f8736d2330b7c672fb657b448d4",
       "whatsapp.svg": "3e197e0e1f3e679ee09823c75e1c7bad3a19da9bd1ba01df395268b9ae91816f"
     }
   },
-  "concluidoEm": "2026-11-19T10:36:43.055463-03:00"
+  "concluidoEm": "2026-11-19T11:39:39.819644-03:00"
 }

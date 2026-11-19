@@ -9,7 +9,51 @@ const marcasGrupos = { melhorias: '⌖', perguntas: '?', homenagens: '✦', leis
 const dataCurta = new Intl.DateTimeFormat('pt-BR', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
 let dadosTerritorio;
 let relogioSalarios;
+let relogioConferencia;
 const formatoTaxaSalarios = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', minimumFractionDigits: 4, maximumFractionDigits: 4 });
+
+function tempoDesdeConferencia(data, agora = Date.now()) {
+  const instante = Date.parse(data);
+  if (!Number.isFinite(instante) || !Number.isFinite(agora) || instante - agora > 60000) return null;
+  const minutos = Math.floor(Math.max(0, agora - instante) / 60000);
+  if (minutos < 1) return 'agora';
+  if (minutos < 60) return `há ${minutos} minuto${minutos === 1 ? '' : 's'}`;
+  const horas = Math.floor(minutos / 60);
+  if (horas < 24) return `há ${horas} hora${horas === 1 ? '' : 's'}`;
+  const dias = Math.floor(horas / 24);
+  return `há ${dias} dia${dias === 1 ? '' : 's'}`;
+}
+
+function iniciarIndicadorConferencia(raiz) {
+  clearInterval(relogioConferencia);
+  const selo = raiz.querySelector('[data-status-coleta]');
+  const texto = selo?.querySelector('[data-status-texto]');
+  if (!texto) return;
+  fetch(versaoDeDados('atualizacao.json'), { cache: 'no-store' }).then(resposta => {
+    if (!resposta.ok) throw new Error('Relatório de conferência indisponível.');
+    return resposta.json();
+  }).then(relatorio => {
+    if (!raiz.isConnected) return;
+    if (relatorio.aprovado !== true || relatorio.fim !== legislative?.fim
+        || relatorio.verificacoes?.revisao !== document.documentElement.dataset.coleta) {
+      texto.textContent = 'nova conferência disponível · atualize a página';
+      return;
+    }
+    const atualizar = () => {
+      if (!raiz.isConnected) { clearInterval(relogioConferencia); return; }
+      const tempo = tempoDesdeConferencia(relatorio.concluidoEm);
+      texto.textContent = tempo ? `dados conferidos ${tempo}` : 'confira a última atualização em Fontes';
+      if (tempo) {
+        texto.dateTime = relatorio.concluidoEm;
+        selo.title = `Conferência concluída em ${new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long', timeStyle: 'short', timeZone: 'America/Sao_Paulo' }).format(new Date(relatorio.concluidoEm))}. A coleta é diária; consulte as fontes e os limites.`;
+      }
+    };
+    atualizar();
+    relogioConferencia = setInterval(atualizar, 60000);
+  }).catch(() => {
+    if (raiz.isConnected) texto.textContent = 'confira a última atualização em Fontes';
+  });
+}
 
 function estimarSalarios(dados, agora = Date.now()) {
   const pago = dados?.totais?.vereadores;
@@ -120,7 +164,7 @@ function dashboard() {
   return `<div id="radar">
     <section id="inicio" class="radar-hero" tabindex="-1">
       <div class="radar-abertura">
-        <p class="radar-period"><span aria-hidden="true"></span> ${periodLabel(proposalsSource)}</p>
+        <a class="radar-period" href="#fontes" data-status-coleta title="Consulte a última coleta aprovada e as fontes oficiais."><span class="radar-ponto" aria-hidden="true"></span><span>Ao vivo · <time data-status-texto>dados conferidos</time></span></a>
         <h1 class="radar-logo"><img src="logo-radar-araras.png" alt="Radar Araras" width="2137" height="736" decoding="async"></h1>
         <p class="radar-subtitle"><strong>Raio-X da Câmara Municipal de Araras/SP.</strong> Acompanhe, fiscalize e cobre. Saiba o que seus vereadores fazem — e o que deixam de fazer. Informação pública, transparência e cobrança em nome do cidadão.</p>
       </div>
@@ -272,6 +316,7 @@ function paginarPedidos(lista, botao, pedidos, passo) {
 }
 
 async function instalarRadar(raiz, consultaInicial = '') {
+  iniciarIndicadorConferencia(raiz);
   carregarQuadroPagamentos(raiz);
   const busca = raiz.querySelector('#termo-local');
   const formulario = raiz.querySelector('#busca-local');
