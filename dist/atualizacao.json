@@ -1,5 +1,5 @@
 {
-  "iniciadoEm": "2026-11-19T09:32:26.484017-03:00",
+  "iniciadoEm": "2026-11-19T10:33:17.545207-03:00",
   "inicio": "2025-01-01",
   "fim": "2026-11-19",
   "aprovado": true,
@@ -7,9 +7,9 @@
   "verificacoes": {
     "vereadoresEmExercicio": 11,
     "sessoes": 105,
-    "sessoesAnteriores": 104,
+    "sessoesAnteriores": 105,
     "propostas": 9031,
-    "propostasAnteriores": 8983,
+    "propostasAnteriores": 9031,
     "contratos": 44,
     "mesesDespesas": 23,
     "pagamentosCentavos": {
@@ -36,12 +36,12 @@
       "financas.js": "8a62cf5cc55100756b657693e72d8c32d42d1aab30598b15ff8d1d53aa3e3877",
       "historico-documentos.js": "f0da5373a6e6e82f7ee8f6fe421248b3edbe97b12cf1d5244ed134195a9835e7",
       "historico-documentos.json": "89c2df3f307000d41ff7c75f9c968d7c9ccff74b61ee5be1fa43caeb33e90660",
-      "index.html": "0ddfe53b84fa2203c22477ce400268e6ad23bdb2348004e53a6a4a2dc8a670f6",
+      "index.html": "3340969b5604456dd2fd52ab089b136670c88dc1001a69c57c5583e104483408",
       "instagram.svg": "9007b995b5d7f7de899ceac41e619e8c0caa1e3faec7eee70fe2b3584bcc4a21",
       "legislativo.js": "a20bb484dfdd4d1477f062b7b37302f81038532e1f2ccf3dca0127bc7605c715",
       "linkedin.svg": "62317079cc9cda65d9ae6633c983ad6cf0ead2a31fddcbdcd74ef85d19f8f048",
       "logo-radar-araras.png": "f072110d38ab90d74c1647e81b0a7cfa44532a965aa5251313ce09b8fa8f4302",
-      "pagamentos.js": "f5b3b28e77b5d81ba8746d418bcfe05af790eab00e495d48603f4600fbbae000",
+      "pagamentos.js": "be64d46f10af23f8b49e1222d1a6ad001f8c67a7649c681694f08f18f15d90a4",
       "propostas/191-homenagens.json": "d7c9116041c6817650380d390042c7ceac2474df8682a964753a2232a8f5dfc4",
       "propostas/191-leis.json": "c9abc16f1d1b72528322e99e3f83c7233408ccb1877f2c03bd1485321665eced",
       "propostas/191-melhorias.json": "30b825e61214bc219122a8152cd1bd0516d131f09e21ae691b30e416bb62557d",
@@ -117,9 +117,9 @@
       "radar.js": "3c9dae040e96cc9367fe224a5af756b370435744ca74d2a17957fa8cf4a799a9",
       "rafael-zaniboni.png": "728d12f2868991489317f100fba447c830d35c45bfaaafce8411b3cd5ae3ccea",
       "territorio-resumo.js": "7dfff2734140cddeab1b0acbac3ca5877c7f1ba546df97d490af8bd0ec522d3e",
-      "territorio.json": "292d10034b43ccb812be1be0cb4c3ea8edd2a9807ce851eca09eaee1a52f653f",
+      "territorio.json": "76911f684a89f01adc396585566e4d25c8bdf701329263c32cf51f9b5c992c5b",
       "whatsapp.svg": "3e197e0e1f3e679ee09823c75e1c7bad3a19da9bd1ba01df395268b9ae91816f"
     }
   },
-  "concluidoEm": "2026-11-19T09:35:18.672439-03:00"
+  "concluidoEm": "2026-11-19T10:36:43.055463-03:00"
 }
