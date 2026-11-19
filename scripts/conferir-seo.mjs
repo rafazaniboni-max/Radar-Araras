@@ -19,9 +19,16 @@ for (const p of manifesto.paginas) {
   assert.equal((html.match(/<h1\b/g)||[]).length,1,'Uma página precisa ter um título principal: '+p.url);
   assert(html.includes(`rel="canonical" href="${manifesto.origem+p.url}"`),'Canonical incorreto: '+p.url);
   assert(html.includes('property="og:url"'),'Metadados sociais ausentes');
+  assert(html.includes('rel="icon" href="/favicon.ico?v='),'Favicon ausente: '+p.url);
+  assert(html.includes('rel="apple-touch-icon"'),'Ícone para celular ausente');
   const dados=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1]||'null');
   assert.equal(dados?.['@context'],'https://schema.org');
   assert(!html.includes('<div id="painel"></div>'),'Conteúdo vazio');
+  if (p.url==='/') {
+    assert(!/<script src="\/legislativo\.js/.test(html),'A abertura carrega dados pesados antes do uso');
+    assert(html.includes('data-contador-salarios'),'Contador ausente na abertura');
+    assert(html.includes('/abertura.js?v='),'Contador independente ausente');
+  }
   assert(!html.includes('http://127.0.0.1'),'Endereço local publicado');
   assert(!/<a[^>]*href="#(?:vereador|sessao|contas|fontes|idealizador)(?:\/|")/.test(html),'Link de conteúdo ainda depende de hash: '+p.url);
   for (const [,url] of html.matchAll(/href="(\/[^"?#]*)(?:[?#][^"]*)?"/g)) {

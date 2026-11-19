@@ -29,7 +29,25 @@
   if (antiga()) return;
   window.addEventListener('hashchange', antiga);
   converterLinks();
-  new MutationObserver(converterLinks).observe(document.querySelector('#painel'), { childList: true, subtree: true });
+  const observadas = new WeakSet();
+  const fotos = new IntersectionObserver(entradas => {
+    for (const entrada of entradas) if (entrada.isIntersecting) {
+      const foto = entrada.target;
+      foto.addEventListener('error',()=>{foto.hidden=true;},{once:true});
+      foto.src = foto.dataset.src;
+      delete foto.dataset.src;
+      fotos.unobserve(foto);
+    }
+  }, { rootMargin: '160px' });
+  function observarFotos() {
+    document.querySelectorAll('.avatar img[data-src]').forEach(foto => {
+      if (observadas.has(foto)) return;
+      observadas.add(foto);
+      fotos.observe(foto);
+    });
+  }
+  observarFotos();
+  new MutationObserver(() => { converterLinks(); observarFotos(); }).observe(document.querySelector('#painel'), { childList: true, subtree: true });
   if (raiz.dataset.interativo !== '1') {
     document.querySelector('#painel')?.addEventListener('click', event => {
       const button = event.target.closest('[data-more]');

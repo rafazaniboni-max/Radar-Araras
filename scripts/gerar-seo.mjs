@@ -26,6 +26,8 @@ if (!revisao) throw Error('A base não tem revisão.');
 const territorio = JSON.parse(ler('territorio.json'));
 const historicoCompleto = JSON.parse(ler('historico-documentos.json'));
 const imagens = fs.existsSync(path.join(dist,'imagens.json')) ? JSON.parse(ler('imagens.json')) : null;
+const favicon = JSON.parse(ler('favicon.json'));
+const revisaoFavicon = favicon.mestreSha256.slice(0,12);
 const fakePanel = { addEventListener() {}, querySelector() {return null;} };
 const contexto = vm.createContext({console,Intl,URL,URLSearchParams,document:{
   addEventListener() {},
@@ -147,6 +149,45 @@ adicionar('/404.html','Página não encontrada | Radar Araras','O endereço soli
 
 // Reaproveita o mesmo conteúdo HTML para moradores e buscadores, sem renderização por user-agent.
 const template = fs.readFileSync(path.join(raiz,'templates/base.html'),'utf8');
+// Reutiliza as funções puras já testadas; a abertura não precisa carregar a base legislativa inteira.
+const funcoesAbertura = executar('[tempoDesdeConferencia,estimarSalarios].map(fn=>fn.toString()).join("\\n")');
+gravar('abertura.js',`'use strict';\n(() => {\n${funcoesAbertura}\n
+  const dados = JSON.parse(document.querySelector('#dados-abertura').textContent);
+  const formato = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+  let relogio;
+  function contador() {
+    if (document.documentElement.dataset.interativosProntos === '1') { clearInterval(relogio); return; }
+    const alvo = document.querySelector('[data-contador-salarios]');
+    const estimativa = estimarSalarios(dados);
+    if (alvo && estimativa) {
+      const valor = formato.format(estimativa.valor / 100);
+      alvo.textContent = valor;
+      alvo.setAttribute('aria-label','Salários desde a posse, estimativa em tempo real '+valor);
+    }
+  }
+  contador();
+  relogio = setInterval(contador,1000);
+  const selo = document.querySelector('[data-status-coleta]');
+  const texto = selo?.querySelector('[data-status-texto]');
+  fetch('/atualizacao.json?v='+document.documentElement.dataset.coleta,{cache:'no-store'})
+    .then(r=>{if(!r.ok)throw Error();return r.json();}).then(r=>{
+      if (!texto) return;
+      if (r.aprovado!==true || r.fim!==dados.fim || r.verificacoes?.revisao!==document.documentElement.dataset.coleta) {
+        texto.textContent='nova conferência disponível · atualize a página'; return;
+      }
+      let intervalo;
+      function atualizar() {
+        if (document.documentElement.dataset.interativosProntos==='1') {clearInterval(intervalo);return;}
+        const tempo=tempoDesdeConferencia(r.concluidoEm);
+        texto.textContent=tempo?'dados conferidos '+tempo:'confira a última atualização em Fontes';
+        if(tempo) {
+          texto.dateTime=r.concluidoEm;
+          selo.title='Conferência concluída em '+new Intl.DateTimeFormat('pt-BR',{dateStyle:'long',timeStyle:'short',timeZone:'America/Sao_Paulo'}).format(new Date(r.concluidoEm))+'. A coleta é diária; consulte as fontes e os limites.';
+        }
+      }
+      atualizar(); intervalo=setInterval(atualizar,60000);
+    }).catch(()=>{if(texto)texto.textContent='confira a última atualização em Fontes';});
+})();\n`);
 const marca = { '@type':'Organization','@id':origem+'/#organizacao',name:config.nome,url:origem+'/',description:'Iniciativa independente de transparência e fiscalização cidadã em Araras/SP.',logo:origem+'/logo-radar-araras.png',founder:{'@type':'Person',name:config.editor}};
 function converter(html) {
   return html.replace(/<img\b[^>]*src="\/?(logo-radar-araras|rafael-zaniboni)\.png"[^>]*>/g,(tag,nome)=>{
@@ -190,7 +231,13 @@ for (const pagina of paginas) {
     .replace('<script async src="https://pagead2.', '<script type="text/plain" data-publicidade async src="https://pagead2.')
     .replace('</head>',`${metadata}<link rel="stylesheet" href="/seo.css?v=${revisao}"><script src="/rotas.js?v=${revisao}" defer></script><script src="/navegacao.js?v=${revisao}" defer></script><script src="/privacidade.js?v=${revisao}" defer></script></head>`)
     .replace('<div class="footer-creditos">','<div class="footer-privacidade"><a href="/entenda/">Entenda a Câmara</a><a href="/contato/">Contato</a><a href="/privacidade/">Privacidade</a><button type="button" data-preferencias>Preferências de privacidade</button></div><div class="footer-creditos">');
-  if (!pagina.interativo) html=html.replace(/\s*<script src="(?:legislativo|auditoria-presencas|financas|pagamentos|propostas|historico-documentos|territorio-resumo|radar|app)\.js[^>]*><\/script>/g,'');
+  html=html.replace('</head>',`<link rel="icon" href="/favicon.ico?v=${revisaoFavicon}" sizes="16x16 32x32 48x48 64x64"><link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=${revisaoFavicon}"><link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png?v=${revisaoFavicon}"><link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png?v=${revisaoFavicon}"><link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=${revisaoFavicon}"></head>`);
+  if (!pagina.interativo || pagina.url==='/') html=html.replace(/\s*<script src="(?:legislativo|auditoria-presencas|financas|pagamentos|propostas|historico-documentos|territorio-resumo|radar|app)\.js[^>]*><\/script>/g,'');
+  if (pagina.url==='/') {
+    const dadosAbertura = {inicio:pagamentos.inicio,fim:pagamentos.fim,consultadoEm:pagamentos.consultadoEm,totais:{vereadores:pagamentos.totais.vereadores}};
+    const scriptsInterativos = ['legislativo','auditoria-presencas','financas','pagamentos','propostas','historico-documentos','territorio-resumo','radar','app'].map(nome=>'/'+nome+'.js?v='+revisao);
+    html=html.replace('</head>',`<script id="dados-abertura" type="application/json">${jsonSeguro(dadosAbertura)}</script><script id="scripts-interativos" type="application/json">${jsonSeguro(scriptsInterativos)}</script><script src="/abertura.js?v=${revisao}" defer></script><script src="/iniciar-interativos.js?v=${revisao}" defer></script></head>`);
+  }
   html=converter(html).replace(/(src="\/(?:app|radar|legislativo|auditoria-presencas|financas|pagamentos|propostas|historico-documentos|territorio-resumo)\.js)(?:\?[^"\s]*)?"/g,`$1?v=${revisao}"`).replace(/(href="\/(?:estilos|radar)\.css)(?:\?[^"\s]*)?"/g,`$1?v=${revisao}"`);
   if (pagina.ativo) html=html.replace(new RegExp(`data-page="${pagina.ativo}"`),'$& aria-current="page"');
   gravar(caminho,html.replace(/[\t ]+$/gm,''));

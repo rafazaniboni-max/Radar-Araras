@@ -172,7 +172,7 @@ function avatar(person) {
   const initials = words[0].charAt(0) + (words.length > 1 ? words.at(-1).charAt(0) : '');
   const photo = publicProfiles[person.id]?.[1];
   const image = officialUrl(photo ? `${council}Arquivos/Vereadores/${encodeURIComponent(photo)}` : person.foto);
-  return `<span class="avatar" aria-hidden="true"><span>${escapeHtml(initials.toUpperCase())}</span>${image ? `<img src="${escapeHtml(image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">` : ''}</span>`;
+  return `<span class="avatar" aria-hidden="true"><span>${escapeHtml(initials.toUpperCase())}</span>${image ? `<img data-src="${escapeHtml(image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer">` : ''}</span>`;
 }
 
 function profilePath(person, view = '') {
@@ -653,6 +653,7 @@ function installSearch() {
   search.addEventListener('input', filtrar);
   partido.addEventListener('change', filtrar);
   ordem.addEventListener('change', filtrar);
+  filtrar();
 }
 
 function showPage() {
@@ -732,7 +733,8 @@ window.addEventListener('hashchange', () => {
 if (document.documentElement.dataset.seo === '1') {
   installSearch();
   const radarEstatico = panel.querySelector('#radar');
-  if (radarEstatico) instalarRadar(radarEstatico, new URLSearchParams(location.search).get('busca') || '');
+  if (radarEstatico) instalarRadar(radarEstatico, radarEstatico.querySelector('#termo-local')?.value || new URLSearchParams(location.search).get('busca') || '');
+  document.documentElement.dataset.interativosProntos = '1';
   globalThis.ARARAS_NAVEGACAO?.converterLinks();
 } else {
   showPage();

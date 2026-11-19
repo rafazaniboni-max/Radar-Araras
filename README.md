@@ -1,5 +1,9 @@
 # Radar Araras
 
+O favicon usa o desenho fornecido pelo idealizador, com mestre de 512 pixels em `assets/favicon-radar-araras.png`. A exportação automática produz ICO com quatro tamanhos internos, PNGs de 16 a 512 pixels e ícone de atalho Apple. Os links de todas as páginas levam a uma revisão do mestre para evitar o ícone antigo no cache.
+
+A abertura entrega o conteúdo no HTML, calcula o contador com as mesmas funções puras testadas da interface e busca o relatório real da coleta. A base das consultas interativas é carregada quando a pessoa se aproxima da busca ou dos filtros. Retratos oficiais só começam a carregar perto da tela. Isso evita baixar as fotos de vereadores que ainda não aparecem para o leitor.
+
 `scripts/otimizar-imagens.py` gera versões WebP do logotipo e do retrato para os tamanhos exibidos na tela. Os PNG originais são preservados e seus hashes conferidos. O logotipo usa compressão sem perdas após o redimensionamento. As imagens geradas têm nomes com hash e cache de um ano; o HTML informa `srcset`, `sizes` e prioridade para o logotipo da abertura.
 
 As páginas públicas são geradas por `scripts/gerar-seo.mjs`, com a mesma base de dados aprovada da interface. Incluem perfis, grupos paginados de propostas, sessões, despesas, locais citados, guias, fontes, contato e privacidade. O gerador não faz consultas de rede. `scripts/conferir-seo.mjs` bloqueia páginas sem conteúdo, links internos quebrados, títulos repetidos, divergência no sitemap e perda de perfis. As regras de preservação dos dados continuam em vigor.

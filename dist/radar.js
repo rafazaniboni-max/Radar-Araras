@@ -107,9 +107,9 @@ function fontePedido(pedido) {
   return `https://araras.siscam.com.br/Documentos/Documento/${pedido.id}`;
 }
 
-function quadroPagamentos(dados = radarPagamentos, projetar = true) {
+function quadroPagamentos(dados = radarPagamentos, projetar = true, agora = Date.now()) {
   const totais = dados?.totais;
-  const estimativa = projetar ? estimarSalarios(dados) : null;
+  const estimativa = projetar ? estimarSalarios(dados, agora) : null;
   const outrasDespesas = totais && totais.contratos + totais.pessoal + totais.encargos + totais.demais;
   const quadros = [
     ['salarios', 'Salários dos 11 vereadores e suplentes desde a posse', totais?.vereadores,
@@ -168,7 +168,7 @@ function dashboard() {
         <h1 class="radar-logo"><img src="logo-radar-araras.png" alt="Radar Araras" width="2137" height="736" decoding="async"></h1>
         <p class="radar-subtitle"><strong>Raio-X da Câmara Municipal de Araras/SP.</strong> Acompanhe, fiscalize e cobre. Saiba o que seus vereadores fazem — e o que deixam de fazer. Informação pública, transparência e cobrança em nome do cidadão.</p>
       </div>
-      ${quadroPagamentos(radarPagamentos, false)}
+      ${quadroPagamentos(radarPagamentos, true, Date.parse(radarPagamentos?.consultadoEm))}
       <section class="radar-resumo" aria-labelledby="radar-titulo-numeros">
         <header class="radar-bloco-titulo">
           <p class="radar-chamada">O que estão fazendo.</p>
