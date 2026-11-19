@@ -125,6 +125,8 @@ def publicar(origem, destino, inicio, fim):
         indice["perfis"][identificador] = {
             "fonte": perfil["fonte"], "completo": perfil["completo"], "total": sum(contagens.values()), "grupos": contagens,
         }
+        if perfil.get('relacionadosNaoConferidos'):
+            indice['perfis'][identificador]['relacionadosNaoConferidos'] = True
     if not indice["perfis"]:
         raise ValueError("A coleta de propostas está vazia")
     (destino / "propostas.js").write_text(

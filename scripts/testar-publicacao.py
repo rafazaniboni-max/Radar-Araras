@@ -36,7 +36,7 @@ class ConferenciaDaEntrega(unittest.TestCase):
     def test_arquivos_da_coleta_aprovada_confirmam_a_entrega(self):
         resultado = entrega.conferir(self.pasta, self.ler)
         self.assertTrue(resultado['aprovado'])
-        self.assertEqual(resultado['arquivosConferidos'], 9)
+        self.assertEqual(resultado['arquivosConferidos'], 13)
 
     def test_relatorio_da_coleta_anterior_nao_confirma_entrega(self):
         self.publicado['concluidoEm'] = '2026-11-16T09:35:00-03:00'

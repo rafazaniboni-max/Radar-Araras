@@ -168,6 +168,8 @@ class HistoricoDocumentos(unittest.TestCase):
         cache.mkdir()
         def buscar(url, cache, **kwargs):
             conteudo = b'<html><title>Camara</title><p>10 registro(s) encontrado(s)</p></html>'
+            if '/Contagem/' in url:
+                conteudo = b'<table><thead><tr><th>Tipo</th><th>2026</th></tr></thead></table>'
             (cache / f'{sha256(url.encode()).hexdigest()}.html').write_bytes(conteudo)
             return atualizador.html.fromstring(conteudo)
         with patch.object(atualizador.historico, 'registros_anteriores', return_value=({}, {'1':self.perfil['registros']})), \
@@ -179,7 +181,7 @@ class HistoricoDocumentos(unittest.TestCase):
         pesquisa.assert_called_once()
         self.assertEqual(len(json.loads((pasta/'1.json').read_text(encoding='utf-8'))['registros']),10)
 
-    def test_pesquisa_sem_emendas_exige_nova_leitura_integral(self):
+    def test_pesquisa_sem_emendas_exige_leitura_da_lista_filtrada(self):
         integral = deepcopy(self.perfil)
         integral['registros'][-1]['tipo'] = 'Emendas'
         integral['registros'][-1]['titulo'] = 'Emenda Nº 1 ao Projeto de Lei Nº 1/2026'
@@ -189,11 +191,13 @@ class HistoricoDocumentos(unittest.TestCase):
         cache.mkdir()
         def buscar(url, cache, **kwargs):
             conteudo = b'<html><title>Camara</title><p>9 registro(s) encontrado(s)</p></html>'
+            if '/Contagem/' in url:
+                conteudo = b'<table><thead><tr><th>Tipo</th><th>2026</th></tr></thead><tbody><tr><td><a href="/Vereadores/Proposituras/1?documento=112">Emendas</a></td><td>1</td></tr></tbody></table>'
             (cache / f'{sha256(url.encode()).hexdigest()}.html').write_bytes(conteudo)
             return atualizador.html.fromstring(conteudo)
         with patch.object(atualizador.historico, 'registros_anteriores', return_value=({}, {'1':integral['registros']})), \
              patch.object(atualizador.coletor, 'buscar', side_effect=buscar), \
-             patch.object(atualizador.propostas, 'ler_perfil', side_effect=[RuntimeError('tempo esgotado'), integral]), \
+             patch.object(atualizador.propostas, 'ler_perfil', side_effect=[RuntimeError('tempo esgotado'), dict(integral, registros=[integral['registros'][-1]])]), \
              patch.object(atualizador.propostas, 'ler_pesquisa', return_value=pesquisa):
             with redirect_stdout(StringIO()):
                 pasta = atualizador.coletar_propostas([{'id':'1'}], {'1':{}}, cache, self.raiz/'raw', '2026-11-19')
@@ -216,9 +220,29 @@ class HistoricoDocumentos(unittest.TestCase):
         self.assertEqual((cache/f'{sha256(url.encode()).hexdigest()}.html').read_bytes(), conteudo)
         self.assertEqual(rede.call_args.args[0].get_header('Accept-encoding'), 'gzip')
 
+    def test_inativo_sem_perfil_preserva_pesquisa_e_publica_limite_da_cobertura(self):
+        cache = self.raiz/'cache'
+        cache.mkdir()
+        def buscar(url, cache, **kwargs):
+            if '/Vereadores/Proposituras/' in url:
+                raise RuntimeError('Perfil oficial retorna 404')
+            conteudo = b'<html><title>Camara</title><p>10 registro(s) encontrado(s)</p></html>'
+            (cache/f'{sha256(url.encode()).hexdigest()}.html').write_bytes(conteudo)
+            return atualizador.html.fromstring(conteudo)
+        with patch.object(atualizador.historico, 'registros_anteriores', return_value=({}, {'1':self.perfil['registros']})), \
+             patch.object(atualizador.coletor, 'buscar', side_effect=buscar), \
+             patch.object(atualizador.propostas, 'ler_pesquisa', return_value=deepcopy(self.perfil)):
+            with redirect_stdout(StringIO()):
+                pasta = atualizador.coletar_propostas([{'id':'1','emExercicio':False}], {'1':{}}, cache, self.raiz/'raw', '2026-11-19')
+                classificacao.publicar(pasta, self.destino, '2025-01-01', '2026-11-19')
+        indice = historico.validacao.ler_dados(self.destino, 'propostas.js', 'ARARAS_PROPOSTAS')
+        self.assertEqual(indice['perfis']['1']['total'], 10)
+        self.assertTrue(indice['perfis']['1']['relacionadosNaoConferidos'])
+
     def test_nova_base_muda_os_enderecos_dos_arquivos_para_evitar_cache_antigo(self):
-        nomes=('legislativo','auditoria-presencas','financas','pagamentos','propostas','territorio-resumo','historico-documentos')
+        nomes=('legislativo','auditoria-presencas','financas','pagamentos','propostas','territorio-resumo','historico-documentos','app','radar')
         for nome in nomes:(self.destino/f'{nome}.js').write_text('{}',encoding='utf-8')
+        for nome in ('estilos','radar'):(self.destino/f'{nome}.css').write_text('body{}',encoding='utf-8')
         (self.destino/'territorio.json').write_text('{}',encoding='utf-8')
         (self.destino/'index.html').write_text('<html lang="pt-BR"><script src="legislativo.js?v=antiga" defer></script></html>',encoding='utf-8')
         primeira=atualizador.versionar_dados(self.destino)

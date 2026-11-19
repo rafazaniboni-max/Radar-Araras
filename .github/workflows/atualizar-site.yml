@@ -43,6 +43,7 @@ jobs:
           python scripts/testar-validacao.py
           python scripts/testar-historico.py
           node --test scripts/testar-financas.mjs
+          node --test scripts/testar-status.mjs
           python scripts/testar-conferencia-financeira.py
           python scripts/testar-publicacao.py
       - name: Coletar novamente e validar contra a última versão boa

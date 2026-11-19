@@ -35,8 +35,11 @@ img { max-width: 100%; }
 #radar section:focus { outline: none; }
 .radar-hero { padding-top: 28px; }
 .radar-abertura { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: center; gap: 0 40px; margin-bottom: 26px; }
-.radar-period { display: inline-flex; max-width: 100%; flex-wrap: wrap; align-items: center; gap: .3em; margin: 0 0 12px; padding: 6px 11px; border-radius: 99px; background: var(--wash); color: var(--ink); font-size: .75rem; font-weight: 700; }
-.radar-period span { width: 8px; height: 8px; margin-right: 4px; border-radius: 100%; background: var(--radar-red); }
+.radar-period { display: inline-flex; max-width: 100%; align-items: center; gap: .3em; margin: 0 0 12px; padding: 9px 15px; border-radius: 99px; background: #f5f6f8; color: var(--ink); font-size: .875rem; font-weight: 700; text-decoration: none; line-height: 1.4; }
+.radar-period > span:last-child { min-width: 0; }
+.radar-period > .radar-ponto { width: 11px; height: 11px; flex: 0 0 11px; margin-right: 5px; border-radius: 100%; background: #ff353b; }
+.radar-period:hover { color: var(--ink); text-decoration: underline; }
+.radar-period:focus-visible { outline: 2px solid var(--radar-blue); outline-offset: 4px; }
 .radar-period a { color: inherit; text-decoration-thickness: 1px; }
 .radar-abertura .radar-period { grid-column: 1; grid-row: 1; justify-self: start; }
 .radar-logo { grid-column: 2; grid-row: 1 / span 2; margin: 0; }

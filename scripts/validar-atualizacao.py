@@ -165,7 +165,9 @@ def validar(base, candidata, fim):
         exigir(identificador in auditoria["sessoes"], f"Ata anteriormente disponível desapareceu da sessão {identificador}.")
     hashes = {str(p.relative_to(candidata)).replace('\\', '/'): hashlib.sha256(p.read_bytes()).hexdigest()
               for p in sorted(Path(candidata).rglob('*')) if p.is_file() and p.name != 'atualizacao.json'}
-    return {"vereadoresEmExercicio": 11, "sessoes": len(sessoes), "sessoesAnteriores": len(antigas),
+    revisao = re.search(r'data-coleta="([a-f0-9]{20})"', (Path(candidata)/'index.html').read_text(encoding='utf-8'))
+    return {"revisao": revisao[1] if revisao else None, "vereadoresEmExercicio": 11, "sessoes": len(sessoes), "sessoesAnteriores": len(antigas),
             "propostas": len(docs), "propostasAnteriores": len(docs_anteriores), "contratos": len(contratos),
             "mesesDespesas": len(meses), "pagamentosCentavos": pagamentos["totais"],
+            "perfisSemConferenciaDeRelacionados": [id for id, p in atual['propostas']['perfis'].items() if p.get('relacionadosNaoConferidos')],
             "presencaConferida": auditoria["totais"], "sha256": hashes}

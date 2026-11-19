@@ -58,11 +58,44 @@ def baixar_bytes(url):
             time.sleep(2 * (tentativa + 1))
 
 
+def coletar_relacionados(identificador, cache, pasta, fim):
+    """Segue as listas oficiais menores de emendas e substitutivos, descobertas na contagem."""
+    contagem_url = f'{coletor.BASE}/Vereadores/Contagem/{identificador}'
+    pagina = coletor.buscar(contagem_url, cache)
+    if not any(coletor.chave(coletor.texto(c)) == 'tipo' for c in pagina.xpath('//table//tr/th|//table//thead/tr/td')):
+        raise ValueError(f'Contagem oficial sem tabela de tipos para o autor {identificador}.')
+    tipos = {'emendas', 'substitutivos'}
+    links = [a for a in pagina.xpath('//table//a[@href]') if propostas.chave(coletor.texto(a)) in tipos]
+    registros, fontes = {}, [contagem_url]
+    for link in links:
+        endereco = urljoin(coletor.BASE, link.get('href'))
+        if not endereco.startswith(f'{coletor.BASE}/Vereadores/Proposituras/{identificador}?documento='):
+            raise ValueError('Endereço inesperado na lista oficial de documentos relacionados.')
+        documento = re.search(r'[?&]documento=(\d+)(?:&|$)', endereco)
+        if not documento:
+            raise ValueError('A lista oficial não identificou o tipo de documento relacionado.')
+        coletor.buscar(endereco, cache, timeout=45)
+        destino = pasta / 'relacionados' / documento[1]
+        destino.mkdir(parents=True, exist_ok=True)
+        arquivo = destino / f'{identificador}.html'
+        arquivo.write_bytes((cache/f'{sha256(endereco.encode()).hexdigest()}.html').read_bytes())
+        lista = propostas.ler_perfil(arquivo, '2025-01-01', fim)
+        if any(propostas.chave(r['tipo']) not in tipos for r in lista['registros']):
+            raise ValueError('A lista filtrada retornou outro tipo de documento.')
+        for registro in lista['registros']:
+            if str(registro['id']) in registros:
+                raise ValueError('Documento relacionado duplicado entre listas oficiais.')
+            registros[str(registro['id'])] = registro
+        fontes.append(endereco)
+    return list(registros.values()), fontes
+
+
 def coletar_propostas(pessoas, anteriores, cache, raw, fim):
     ids = sorted(set(anteriores) | {str(p['id']) for p in pessoas if p.get('id')})
     pasta = raw / 'propostas'
     pasta.mkdir(parents=True, exist_ok=True)
     _, registros_anteriores = historico.registros_anteriores(RAIZ / 'dist')
+    fora_exercicio = {str(p['id']) for p in pessoas if p.get('id') and p.get('emExercicio') is False}
 
     def por_autor(identificador):
         url = f'{coletor.BASE}/Vereadores/Proposituras/{identificador}'
@@ -84,25 +117,26 @@ def coletar_propostas(pessoas, anteriores, cache, raw, fim):
             with ThreadPoolExecutor(max_workers=3) as paginas:
                 caminhos = [caminho] + list(paginas.map(lambda pagina: pesquisa(pagina)[1], range(2, ceil(int(total[1]) / 15) + 1)))
             pesquisa_completa = propostas.ler_pesquisa(identificador, caminhos, '2025-01-01', fim)
-            # A pesquisa geral conta somente matérias principais. Emendas e
-            # substitutivos ficam nos documentos relacionados e exigem o perfil integral.
-            print(f'Autor {identificador}: pesquisa conferida; relendo o perfil integral para incluir emendas e substitutivos.', flush=True)
-            cache_reconsulta = cache / 'reconsulta' / identificador
-            cache_reconsulta.mkdir(parents=True, exist_ok=True)
-            coletor.buscar(url, cache_reconsulta, timeout=120)
-            pasta_reconsulta = pasta / 'reconsulta'
-            pasta_reconsulta.mkdir(exist_ok=True)
-            arquivo_reconsulta = pasta_reconsulta / f'{identificador}.html'
-            arquivo_reconsulta.write_bytes((cache_reconsulta / f'{sha256(url.encode()).hexdigest()}.html').read_bytes())
-            integral = propostas.ler_perfil(arquivo_reconsulta, '2025-01-01', fim)
+            relacionados_anteriores = [r for r in registros_anteriores.get(identificador, [])
+                                      if propostas.chave(r['tipo']) in ('emenda', 'emendas', 'substitutivo', 'substitutivos')]
+            print(f'Autor {identificador}: pesquisa conferida; consultando as listas oficiais menores de emendas e substitutivos.', flush=True)
+            try:
+                relacionados, fontes_relacionados = coletar_relacionados(identificador, cache, pasta, fim)
+            except (RuntimeError, ValueError):
+                if identificador not in fora_exercicio or relacionados_anteriores:
+                    raise
+                pesquisa_completa['relacionadosNaoConferidos'] = True
+                print(f'Autor {identificador}: fora de exercício, sem perfil integral; documentos relacionados sem confirmação nesta consulta.', flush=True)
+                return pesquisa_completa
             registros = {str(r['id']): r for r in pesquisa_completa['registros']}
-            registros.update({str(r['id']): r for r in integral['registros']})
-            integral['registros'] = list(registros.values())
-            integral['fontesComplementares'] = [pesquisa_completa['fonte']]
-            return integral
+            registros.update({str(r['id']): r for r in relacionados})
+            pesquisa_completa['registros'] = list(registros.values())
+            pesquisa_completa['fontesComplementares'] = [pesquisa_completa['fonte'], *fontes_relacionados]
+            pesquisa_completa['fonte'] = fontes_relacionados[0]
+            return pesquisa_completa
 
         try:
-            coletor.buscar(url, cache, timeout=120)
+            coletor.buscar(url, cache, timeout=45)
             arquivo.write_bytes((cache / f'{sha256(url.encode()).hexdigest()}.html').read_bytes())
             perfil = propostas.ler_perfil(arquivo, '2025-01-01', fim)
         except (RuntimeError, ValueError) as erro:
@@ -202,11 +236,13 @@ def coletar_tce(raw, fim):
 
 def versionar_dados(destino):
     """Cada base aprovada tem URLs próprias para evitar dados antigos no cache do navegador."""
-    nomes = ('legislativo', 'auditoria-presencas', 'financas', 'pagamentos', 'propostas', 'territorio-resumo', 'historico-documentos')
+    nomes = ('legislativo', 'auditoria-presencas', 'financas', 'pagamentos', 'propostas', 'territorio-resumo', 'historico-documentos', 'app', 'radar')
     assinatura = sha256()
     for nome in nomes:
         assinatura.update((destino / f'{nome}.js').read_bytes())
     assinatura.update((destino / 'territorio.json').read_bytes())
+    for nome in ('estilos', 'radar'):
+        assinatura.update((destino/f'{nome}.css').read_bytes())
     versao = assinatura.hexdigest()[:20]
     arquivo = destino / 'index.html'
     texto = arquivo.read_text(encoding='utf-8')
@@ -214,6 +250,7 @@ def versionar_dados(destino):
     texto = texto.replace('<html ', f'<html data-coleta="{versao}" ', 1)
     for nome in nomes:
         texto = re.sub(r'(<script src="' + re.escape(nome) + r'\.js)(?:\?[^"\s]*)?(" defer)', rf'\1?v={versao}\2', texto)
+    texto = re.sub(r'(href="(?:estilos|radar)\.css)(?:\?[^"\s]*)?(")', rf'\1?v={versao}\2', texto)
     arquivo.write_text(texto, encoding='utf-8')
     return versao
 

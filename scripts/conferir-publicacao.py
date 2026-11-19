@@ -14,7 +14,7 @@ RAIZ = Path(__file__).resolve().parents[1]
 DOMINIO = 'https://www.radarararas.com.br/'
 ARQUIVOS = ('index.html', 'legislativo.js', 'auditoria-presencas.js', 'financas.js',
             'pagamentos.js', 'propostas.js', 'territorio-resumo.js',
-            'historico-documentos.js', 'territorio.json')
+            'historico-documentos.js', 'territorio.json', 'app.js', 'radar.js', 'estilos.css', 'radar.css')
 
 
 def baixar(url):
