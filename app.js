@@ -150,6 +150,11 @@ function periodLabel(source, start = legislative?.inicio || proposals?.inicio, e
   return start && end ? `${official(dateLabel(start), source)} a ${official(dateLabel(end), source)}` : '';
 }
 
+function versaoDeDados(caminho) {
+  const versao = document.documentElement.dataset.coleta || proposals?.fim || legislative?.fim || 'referencia';
+  return `${caminho}${caminho.includes('?') ? '&' : '?'}v=${encodeURIComponent(versao)}`;
+}
+
 function displayName(name = '') {
   if (name !== name.toLocaleUpperCase('pt-BR')) return name;
   return name.toLocaleLowerCase('pt-BR').split(' ').map((word, index) => {
@@ -378,7 +383,7 @@ async function loadProposals(person, group) {
   const container = panel.querySelector('[data-proposal-list]');
   if (!container || !Object.hasOwn(proposalGroups, group) || !/^\d+$/.test(person?.id)) return;
   try {
-    const response = await fetch(`propostas/${person.id}-${group}.json`);
+    const response = await fetch(versaoDeDados(`propostas/${person.id}-${group}.json`));
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     const rows = await response.json();
     if (!container.isConnected) return;
