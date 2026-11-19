@@ -1,0 +1,38 @@
+{
+  "logo-radar-araras": {
+    "original": "logo-radar-araras.png",
+    "sha256Original": "f072110d38ab90d74c1647e81b0a7cfa44532a965aa5251313ce09b8fa8f4302",
+    "variantes": [
+      {
+        "arquivo": "logo-radar-araras-360-036c3d99e3c6.webp",
+        "largura": 360,
+        "altura": 124,
+        "bytes": 35204
+      },
+      {
+        "arquivo": "logo-radar-araras-720-f08d39eec0b3.webp",
+        "largura": 720,
+        "altura": 248,
+        "bytes": 98452
+      },
+      {
+        "arquivo": "logo-radar-araras-1068-22f7c504cb60.webp",
+        "largura": 1068,
+        "altura": 368,
+        "bytes": 185034
+      }
+    ]
+  },
+  "rafael-zaniboni": {
+    "original": "rafael-zaniboni.png",
+    "sha256Original": "728d12f2868991489317f100fba447c830d35c45bfaaafce8411b3cd5ae3ccea",
+    "variantes": [
+      {
+        "arquivo": "rafael-zaniboni-640-054ba33f62a1.webp",
+        "largura": 640,
+        "altura": 853,
+        "bytes": 52330
+      }
+    ]
+  }
+}
