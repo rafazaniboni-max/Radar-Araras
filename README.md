@@ -10,7 +10,11 @@ O workflow manual Publicar a última versão boa permite a primeira publicação
 
 Uma falha de rede, página incompleta, perda de documentos anteriores, aumento inesperado ou divergência entre os arquivos interrompe a execução antes do envio ao Pages. O site publicado continua com a versão anterior. O relatório de cada tentativa fica nos artefatos da execução por 30 dias. A versão publicada também inclui `atualizacao.json`, com datas, totais e hashes dos arquivos conferidos.
 
-As regras de bloqueio estão em `scripts/validar-atualizacao.py`. A conferência compara a coleta com a versão de referência em `dist`. Recuos de valores e documentos removidos exigem investigação porque também podem resultar de retificações oficiais. A rotina só substitui a referência depois que a publicação termina com sucesso.
+As regras de bloqueio estão em `scripts/validar-atualizacao.py`. A conferência compara a coleta com a versão de referência em `dist`. Recuos de valores exigem investigação porque também podem resultar de retificações oficiais. Documentos isolados não localizados ficam preservados no histórico; quedas grandes e fontes incompletas continuam bloqueadas. Quando a lista de um autor perde muitos registros, o coletor confere a pesquisa oficial paginada antes da validação. A rotina só substitui a referência depois que a publicação termina com sucesso.
+
+A exportação Betha repete falhas temporárias de rede, espera a geração do arquivo e identifica conjunto e exercício em cada falha. `raw/diagnostico-financeiro.json` e `raw/atas/diagnostico.json` acompanham o relatório nos artefatos do GitHub. Não são registrados tokens ou URLs de download assinadas. A conferência financeira passa a guardar os pagamentos por empenho: campos sem valor e sem parcelas ficam identificados, sem serem convertidos em zero. Perda de pagamentos anteriores, soma divergente ou parcela sem valor consolidado continuam impedindo a publicação. O primeiro ciclo com essa conferência também preserva as verificações dos totais da referência anterior.
+
+Uma base aprovada recebe URLs de dados versionadas para evitar que o navegador exiba arquivos de uma coleta anterior. A data da consulta é separada da data do último pagamento ou documento efetivamente publicado pela fonte.
 
 Para executar a mesma coleta localmente, instale Python 3.12, Node.js 24 e as bibliotecas de `requirements.txt`. Execute `python scripts/testar-validacao.py` e `python scripts/atualizar-site.py`. A coleta candidata e o relatório ficam em `.build/atualizacao`. Esses comandos preservam os arquivos de referência.
 

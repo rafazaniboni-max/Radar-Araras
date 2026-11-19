@@ -37,6 +37,7 @@ propostas = modulo('ler-propostas-por-autor')
 classificacao = modulo('classificar-propostas')
 validacao = modulo('validar-atualizacao')
 historico = modulo('historico-documentos')
+ETAPA_ATUAL = 'preparação'
 
 
 def executar(*comando):
@@ -61,15 +62,13 @@ def coletar_propostas(pessoas, anteriores, cache, raw, fim):
     ids = sorted(set(anteriores) | {str(p['id']) for p in pessoas if p.get('id')})
     pasta = raw / 'propostas'
     pasta.mkdir(parents=True, exist_ok=True)
+    _, registros_anteriores = historico.registros_anteriores(RAIZ / 'dist')
 
     def por_autor(identificador):
         url = f'{coletor.BASE}/Vereadores/Proposituras/{identificador}'
         arquivo = pasta / f'{identificador}.html'
-        try:
-            coletor.buscar(url, cache, timeout=120)
-            arquivo.write_bytes((cache / f'{sha256(url.encode()).hexdigest()}.html').read_bytes())
-            perfil = propostas.ler_perfil(arquivo, '2025-01-01', fim)
-        except (RuntimeError, ValueError):
+
+        def pela_pesquisa():
             def pesquisa(pagina):
                 parametros = {'AutoriaId': identificador, 'Modulo': 8, 'Pesquisa': 'Avancada',
                               'AnoInicial': 2025, 'AnoFinal': fim[:4], 'Pagina': pagina}
@@ -82,10 +81,23 @@ def coletar_propostas(pessoas, anteriores, cache, raw, fim):
             total = re.search(r'(\d+)\s+registro\(s\) encontrado\(s\)', primeira.text_content())
             if not total:
                 raise ValueError(f'Pesquisa oficial sem total para o autor {identificador}.')
-            caminhos = [caminho]
-            for pagina in range(2, ceil(int(total[1]) / 15) + 1):
-                caminhos.append(pesquisa(pagina)[1])
-            perfil = propostas.ler_pesquisa(identificador, caminhos, '2025-01-01', fim)
+            with ThreadPoolExecutor(max_workers=3) as paginas:
+                caminhos = [caminho] + list(paginas.map(lambda pagina: pesquisa(pagina)[1], range(2, ceil(int(total[1]) / 15) + 1)))
+            return propostas.ler_pesquisa(identificador, caminhos, '2025-01-01', fim)
+
+        try:
+            coletor.buscar(url, cache, timeout=120)
+            arquivo.write_bytes((cache / f'{sha256(url.encode()).hexdigest()}.html').read_bytes())
+            perfil = propostas.ler_perfil(arquivo, '2025-01-01', fim)
+        except (RuntimeError, ValueError):
+            perfil = pela_pesquisa()
+        else:
+            esperados = {str(r['id']) for r in registros_anteriores.get(identificador, [])
+                         if r.get('acompanhamento', {}).get('estado') != 'nao_localizado'}
+            faltantes = esperados - {str(r['id']) for r in perfil['registros']}
+            if len(faltantes) > max(2, ceil(len(esperados) * .005)):
+                print(f'Autor {identificador}: lista do perfil sem {len(faltantes)} registros anteriores; conferindo pela pesquisa oficial paginada.', flush=True)
+                perfil = pela_pesquisa()
         (pasta / f'{identificador}.json').write_text(json.dumps(perfil, ensure_ascii=False), encoding='utf-8')
         print(f'Autor {identificador}: {len(perfil["registros"])} propostas lidas.', flush=True)
         return len(perfil['registros'])
@@ -171,7 +183,26 @@ def coletar_tce(raw, fim):
     print(f'TCE-SP consultado em {len(periodos)} meses.', flush=True)
 
 
+def versionar_dados(destino):
+    """Cada base aprovada tem URLs próprias para evitar dados antigos no cache do navegador."""
+    nomes = ('legislativo', 'auditoria-presencas', 'financas', 'pagamentos', 'propostas', 'territorio-resumo', 'historico-documentos')
+    assinatura = sha256()
+    for nome in nomes:
+        assinatura.update((destino / f'{nome}.js').read_bytes())
+    assinatura.update((destino / 'territorio.json').read_bytes())
+    versao = assinatura.hexdigest()[:20]
+    arquivo = destino / 'index.html'
+    texto = arquivo.read_text(encoding='utf-8')
+    texto = re.sub(r'\sdata-coleta="[^"]*"', '', texto, count=1)
+    texto = texto.replace('<html ', f'<html data-coleta="{versao}" ', 1)
+    for nome in nomes:
+        texto = re.sub(r'(<script src="' + re.escape(nome) + r'\.js)(?:\?[^"\s]*)?(" defer)', rf'\1?v={versao}\2', texto)
+    arquivo.write_text(texto, encoding='utf-8')
+    return versao
+
+
 def atualizar(trabalho, fim):
+    global ETAPA_ATUAL
     destino = trabalho / 'dist'
     raw = trabalho / 'raw'
     cache = trabalho / 'cache' / 'siscam'
@@ -181,21 +212,28 @@ def atualizar(trabalho, fim):
         for arquivo in (destino / 'propostas').glob('*.json'):
             arquivo.unlink()
     shutil.copytree(RAIZ / 'dist', destino, dirs_exist_ok=True, ignore=shutil.ignore_patterns('server', 'propostas'))
+    ETAPA_ATUAL = 'sessões, presença e votos'
     executar(sys.executable, '-u', 'scripts/coletar-legislativo.py', '--inicio', '2025-01-01', '--ate', fim,
              '--cache', cache, '--saida', destino / 'legislativo.js')
     legislativo = validacao.ler_dados(destino, 'legislativo.js', 'ARARAS_LEGISLATIVO')
     anteriores = validacao.ler_dados(RAIZ / 'dist', 'propostas.js', 'ARARAS_PROPOSTAS')['perfis']
+    ETAPA_ATUAL = 'propostas e histórico'
     origem_propostas = coletar_propostas(legislativo['vereadores'], anteriores, cache, raw, fim)
     acompanhamento = historico.reconciliar(RAIZ / 'dist', origem_propostas, destino, fim)
     print(f'Histórico das propostas: {acompanhamento}', flush=True)
     classificacao.publicar(origem_propostas, destino, '2025-01-01', fim)
     executar(sys.executable, 'scripts/gerar-territorio.py', '--destino', destino)
+    ETAPA_ATUAL = 'atas e conferência de presença'
     pasta_atas = coletar_atas(legislativo['sessoes'], cache, raw)
     executar('node', 'scripts/auditar-presencas.js', '--site', '--dist', destino, '--atas', pasta_atas)
+    ETAPA_ATUAL = 'exportação financeira da Câmara (Betha)'
     executar('node', 'scripts/coletar-financas.mjs', raw, destino, fim)
+    ETAPA_ATUAL = 'despesas do TCE-SP'
     coletar_tce(raw, fim)
     executar(sys.executable, 'scripts/preparar-financas.py', '--inicio', '2025-01-01', '--fim', fim,
              '--origem', raw, '--destino', destino)
+    ETAPA_ATUAL = 'validação final'
+    versionar_dados(destino)
     return destino, validacao.validar(RAIZ / 'dist', destino, fim)
 
 
@@ -220,6 +258,7 @@ def main():
         print(f'COLETA APROVADA. {verificacoes["sessoes"]} sessões e {verificacoes["propostas"]} propostas. Pasta candidata {destino}', flush=True)
         return 0
     except Exception as erro:
+        relatorio['etapa'] = ETAPA_ATUAL
         relatorio['erro'] = str(erro)
         print(f'PUBLICAÇÃO BLOQUEADA. {erro}', file=sys.stderr, flush=True)
         return 1

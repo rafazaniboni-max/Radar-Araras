@@ -42,6 +42,8 @@ jobs:
         run: |
           python scripts/testar-validacao.py
           python scripts/testar-historico.py
+          node --test scripts/testar-financas.mjs
+          python scripts/testar-conferencia-financeira.py
       - name: Coletar novamente e validar contra a última versão boa
         run: python -u scripts/atualizar-site.py
       - name: Guardar o relatório da execução
@@ -52,6 +54,7 @@ jobs:
           path: |
             .build/atualizacao/relatorio.json
             .build/atualizacao/raw/atas/diagnostico.json
+            .build/atualizacao/raw/diagnostico-financeiro.json
           if-no-files-found: ignore
           retention-days: 30
       - name: Configurar a publicação

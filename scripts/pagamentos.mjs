@@ -8,6 +8,32 @@ const autorizacao = 'https://plataforma-oauth.betha.cloud/auth/oauth2/authorize?
   + `&redirect_uri=${portal}/auth-callback.html&scope=transparencia.public&access_mode=anonymous`;
 const rubricasComplementares = new Set(['31901142000000', '31901143000000', '31901145000000']);
 
+// Consome também o corpo dentro do prazo. Um download interrompido é repetido por inteiro.
+async function lerRespostaOficial(url, options = {}, contexto = 'Consulta oficial', config = {}) {
+  const { timeout = 60000, tentativas = 3, pausaMs = 2000,
+    fetchImpl = fetch, esperar = ms => new Promise(resolve => setTimeout(resolve, ms)) } = config;
+  for (let tentativa = 1; tentativa <= tentativas; tentativa++) {
+    try {
+      const resposta = await fetchImpl(url, { ...options, signal: AbortSignal.timeout(timeout) });
+      if ([408, 429, 500, 502, 503, 504].includes(resposta.status)) {
+        await resposta.body?.cancel();
+        const erro = new Error(`HTTP ${resposta.status}`);
+        erro.transitorio = true;
+        throw erro;
+      }
+      return { status: resposta.status, headers: resposta.headers, texto: await resposta.text() };
+    } catch (erro) {
+      const transitorio = erro.transitorio || erro instanceof TypeError || ['TimeoutError', 'AbortError'].includes(erro.name);
+      if (!transitorio || tentativa === tentativas) {
+        // Não inclui URLs assinadas, cabeçalhos ou tokens no relatório público.
+        throw new Error(`${contexto}: falha ${transitorio ? 'temporária de rede ou da fonte' : 'na leitura da resposta'} após ${tentativa} tentativa(s).`);
+      }
+      console.warn(`${contexto}: resposta temporariamente indisponível; tentativa ${tentativa + 1}/${tentativas}.`);
+      await esperar(pausaMs * tentativa);
+    }
+  }
+}
+
 function diaEmAraras(agora) {
   return new Intl.DateTimeFormat('sv-SE', { timeZone: 'America/Sao_Paulo', dateStyle: 'short' }).format(agora);
 }
@@ -58,6 +84,8 @@ function calcular(arquivos, fim, consultadoEm) {
   const porAno = {};
   let ultimaData = null;
   let semValor = 0;
+  const empenhosConferidos = {};
+  const semValorDetalhes = [];
   for (let ano = 2025; ano <= Number(fim.slice(0, 4)); ano++) {
     porAno[ano] = Object.fromEntries(grupos.map(grupo => [grupo, 0]));
   }
@@ -82,15 +110,27 @@ function calcular(arquivos, fim, consultadoEm) {
       for (const { dataPagamento } of pagamentos) {
         if (dataPagamento && (!ultimaData || dataPagamento > ultimaData)) ultimaData = dataPagamento;
       }
+      const identificador = `${numero}/${ano}`;
+      const grupo = categoria(registro);
+      empenhosConferidos[identificador] = { ano, dataEmpenho: registro.dataEmpenho,
+        grupo, valorPagoCentavos: null, pagoNoRecorteCentavos: null, parcelasDivulgadas: pagamentos.length };
       if (registro.valorPagoEmpenho == null) {
+        if (pagamentos.length || centavos(registro.valorPagoRestosEmpenho ?? 0) > 0) {
+          throw new Error(`Há pagamento informado, mas falta o valor pago consolidado no empenho ${identificador}.`);
+        }
         semValor++;
+        semValorDetalhes.push({ empenho: identificador, dataEmpenho: registro.dataEmpenho, parcelasDivulgadas: 0 });
         continue;
       }
-      const grupo = categoria(registro);
       const pago = centavos(registro.valorPagoEmpenho);
+      empenhosConferidos[identificador].valorPagoCentavos = pago;
+      empenhosConferidos[identificador].pagoNoRecorteCentavos = 0;
       const restos = centavos(registro.valorPagoRestosEmpenho ?? 0);
       if (restos > pago) throw new Error(`Restos acima do total no empenho ${numero}/${ano}.`);
-      if (porAno[ano]) porAno[ano][grupo] += pago - restos;
+      if (porAno[ano]) {
+        porAno[ano][grupo] += pago - restos;
+        empenhosConferidos[identificador].pagoNoRecorteCentavos += pago - restos;
+      }
       if (!restos) continue;
       const porAnoDosRestos = new Map();
       for (const parcela of pagamentos) {
@@ -102,23 +142,30 @@ function calcular(arquivos, fim, consultadoEm) {
       const totalParcelas = [...porAnoDosRestos.values()].reduce((soma, valor) => soma + valor, 0);
       if (totalParcelas === restos) {
         for (const [anoPago, valor] of porAnoDosRestos) {
-          if (porAno[anoPago]) porAno[anoPago][grupo] += valor;
+          if (porAno[anoPago]) {
+            porAno[anoPago][grupo] += valor;
+            empenhosConferidos[identificador].pagoNoRecorteCentavos += valor;
+          }
         }
       } else if (porAnoDosRestos.size === 1 && totalParcelas > restos) {
         // Todas as parcelas apontam para o mesmo ano. O consolidado evita repetir lançamentos retificados.
         const anoPago = porAnoDosRestos.keys().next().value;
-        if (porAno[anoPago]) porAno[anoPago][grupo] += restos;
+        if (porAno[anoPago]) {
+          porAno[anoPago][grupo] += restos;
+          empenhosConferidos[identificador].pagoNoRecorteCentavos += restos;
+        }
       } else {
         throw new Error(`Datas dos restos pagos sem confirmação para ${numero}/${ano}.`);
       }
     }
   }
   const totais = Object.fromEntries(grupos.map(grupo => [grupo, Object.values(porAno).reduce((soma, ano) => soma + ano[grupo], 0)]));
-  return { inicio, fim, ultimaData, consultadoEm, totais, porAno, semValor };
+  return { inicio, fim, ultimaData, consultadoEm, totais, porAno, semValor,
+    conferenciaVersao: 1, empenhosConferidos, semValorDetalhes };
 }
 
 async function sessaoPublicaBetha() {
-  const resposta = await fetch(autorizacao, { redirect: 'manual', signal: AbortSignal.timeout(12000) });
+  const resposta = await lerRespostaOficial(autorizacao, { redirect: 'manual' }, 'Acesso público da Betha', {timeout:30000});
   const destino = new URL(resposta.headers.get('location') || portal);
   const token = new URLSearchParams(destino.hash.slice(1)).get('access_token');
   if (resposta.status !== 303 || destino.origin !== portal || destino.pathname !== '/auth-callback.html' || !token) {
@@ -131,40 +178,41 @@ async function sessaoPublicaBetha() {
 async function baixarExercicio(ano, headers, consultaId = '392446', parametroAno = 'anoExercicio') {
   const endereco = consulta.replace(/\d+$/, String(consultaId));
   const post = { method: 'POST', headers, body: JSON.stringify({ [parametroAno]: [String(ano)] }), redirect: 'manual' };
-  let resposta = await fetch(`${endereco}?formato=JSON`, { ...post, signal: AbortSignal.timeout(45000) });
-  for (let tentativa = 0; tentativa < 8 && [202, 204, 409].includes(resposta.status); tentativa++) {
-    await new Promise(resolve => setTimeout(resolve, 5000));
-    resposta = await fetch(`${endereco}/status?formato=JSON`, { ...post, signal: AbortSignal.timeout(12000) });
+  const contexto = `Exportação Betha ${consultaId}, exercício ${ano}`;
+  let resposta = await lerRespostaOficial(`${endereco}?formato=JSON`, post, contexto);
+  for (let tentativa = 0; tentativa < 24 && [202, 204, 409].includes(resposta.status); tentativa++) {
+    await new Promise(resolve => setTimeout(resolve, 3000));
+    resposta = await lerRespostaOficial(`${endereco}/status?formato=JSON`, post, contexto, {timeout:30000});
   }
   if (resposta.status !== 200) throw new Error(`A Betha não liberou a exportação de ${ano} (HTTP ${resposta.status}).`);
-  const link = (await resposta.text()).trim();
+  const link = resposta.texto.trim();
   const url = new URL((link.startsWith('"') ? JSON.parse(link) : link).replace(/^http:/, 'https:'));
   if (url.origin !== 'https://s3.sa-east-1.amazonaws.com' || url.username || url.password) {
     throw new Error('A Betha retornou um endereço de arquivo inesperado.');
   }
-  const arquivo = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(20000) });
-  if (!arquivo.ok) throw new Error(`Falha ao baixar o arquivo de ${ano} (HTTP ${arquivo.status}).`);
-  return arquivo.json();
+  const arquivo = await lerRespostaOficial(url, { redirect: 'manual' }, `Download Betha ${consultaId}, exercício ${ano}`, {timeout:90000});
+  if (arquivo.status !== 200) throw new Error(`Falha ao baixar o arquivo de ${ano} (HTTP ${arquivo.status}).`);
+  return JSON.parse(arquivo.texto);
 }
 
 async function consultarPagamentos(agora = new Date()) {
   const dia = diaEmAraras(agora);
   const fim = dia <= fimLegislatura ? dia : fimLegislatura;
   const headers = await sessaoPublicaBetha();
-  const filtro = await fetch('https://api.transparencia.betha.cloud/transparencia/api/busca-textual/392446/filtro/anoExercicio/MAX?allConfigs=true&limit=25',
-    { headers, signal: AbortSignal.timeout(15000) });
-  if (!filtro.ok) throw new Error('A lista oficial de exercícios está indisponível.');
-  const tabela = await filtro.json();
+  const filtro = await lerRespostaOficial('https://api.transparencia.betha.cloud/transparencia/api/busca-textual/392446/filtro/anoExercicio/MAX?allConfigs=true&limit=25',
+    { headers }, 'Lista oficial de exercícios');
+  if (filtro.status !== 200) throw new Error('A lista oficial de exercícios está indisponível.');
+  const tabela = JSON.parse(filtro.texto);
   const anoFinal = Number(fim.slice(0, 4));
   const anos = [...new Set(tabela.buckets.map(item => Number(item.description)))]
     .filter(ano => Number.isInteger(ano) && ano <= anoFinal).sort((a, b) => a - b);
   if (![2024, 2025, 2026].every(ano => anos.includes(ano))) throw new Error('A lista oficial está incompleta.');
   const arquivos = new Map();
-  for (let i = 0; i < anos.length; i += 3) {
-    const lote = await Promise.all(anos.slice(i, i + 3).map(async ano => [ano, await baixarExercicio(ano, headers)]));
+  for (let i = 0; i < anos.length; i += 2) {
+    const lote = await Promise.all(anos.slice(i, i + 2).map(async ano => [ano, await baixarExercicio(ano, headers)]));
     for (const [ano, dados] of lote) arquivos.set(ano, dados);
   }
   return calcular(arquivos, fim, agora.toISOString());
 }
 
-export { calcular, consultarPagamentos, diaEmAraras, sessaoPublicaBetha, baixarExercicio };
+export { calcular, consultarPagamentos, diaEmAraras, sessaoPublicaBetha, baixarExercicio, lerRespostaOficial };

@@ -248,7 +248,7 @@ function cartaoRepetido(rep, mapa) {
 
 function carregarTerritorio() {
   if (dadosTerritorio) return dadosTerritorio;
-  dadosTerritorio = fetch('territorio.json').then(response => {
+  dadosTerritorio = fetch(versaoDeDados('territorio.json')).then(response => {
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
     return response.json();
   }).then(indice => ({...indice, mapa:new Map(indice.pedidos.map(p => [p.id,p])),

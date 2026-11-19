@@ -56,6 +56,49 @@ def documentos(pasta, perfis):
     return unicos
 
 
+def conferir_empenhos(anterior, atual):
+    """Campos vazios sem parcelas não são tratados como pagamento zero nem como perda automática."""
+    if atual.get('conferenciaVersao') != 1:
+        exigir(anterior.get('conferenciaVersao') != 1, 'A conferência individual dos empenhos desapareceu.')
+        exigir(atual['semValor'] <= anterior['semValor'], 'Aumentou a quantidade de pagamentos sem valor e sem identificação.')
+        return
+    registros = atual.get('empenhosConferidos')
+    detalhes = atual.get('semValorDetalhes')
+    exigir(isinstance(registros, dict) and bool(registros), 'Conferência de empenhos vazia.')
+    exigir(isinstance(detalhes, list), 'Empenhos sem valor não foram identificados.')
+    ausentes = {r['empenho']: r for r in detalhes}
+    exigir(len(ausentes) == len(detalhes) == atual['semValor'], 'Contagem de empenhos sem valor divergente.')
+    nulos = set()
+    somas = {grupo: 0 for grupo in atual['totais']}
+    for id, registro in registros.items():
+        exigir(re.fullmatch(r'\d+/\d{4}', id) is not None, 'Identificador de empenho inválido.')
+        exigir(str(registro.get('ano')) == id.split('/')[1], f'Exercício divergente no empenho {id}.')
+        exigir(registro.get('grupo') in atual['totais'], f'Grupo inválido no empenho {id}.')
+        data = registro.get('dataEmpenho', '')
+        exigir(isinstance(data, str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}', data) is not None and data <= atual['fim'], f'Data inválida no empenho {id}.')
+        parcelas = registro.get('parcelasDivulgadas')
+        exigir(type(parcelas) is int and parcelas >= 0, f'Parcelas inválidas no empenho {id}.')
+        valor = registro.get('valorPagoCentavos')
+        if valor is None:
+            nulos.add(id)
+            detalhe = ausentes.get(id, {})
+            exigir(parcelas == 0 and detalhe.get('parcelasDivulgadas') == 0 and detalhe.get('dataEmpenho') == data,
+                   f'Valor pago ausente sem explicação no empenho {id}.')
+            exigir(registro.get('pagoNoRecorteCentavos') is None, f'Valor desconhecido convertido em zero no empenho {id}.')
+        else:
+            exigir(type(valor) is int and valor >= 0, f'Valor pago inválido no empenho {id}.')
+            periodo = registro.get('pagoNoRecorteCentavos')
+            exigir(type(periodo) is int and 0 <= periodo <= valor, f'Valor do recorte inválido no empenho {id}.')
+            somas[registro['grupo']] += periodo
+    exigir(nulos == ausentes.keys(), 'Lista de empenhos sem valor divergente da conferência individual.')
+    exigir(somas == atual['totais'], 'A soma da conferência dos empenhos diverge dos totais publicados.')
+    for id, registro in anterior.get('empenhosConferidos', {}).items():
+        pago = registro.get('valorPagoCentavos')
+        if pago is not None and pago > 0:
+            novo = registros.get(id, {}).get('valorPagoCentavos')
+            exigir(type(novo) is int and novo >= pago, f'Pagamento anteriormente informado desapareceu ou diminuiu no empenho {id}.')
+
+
 def validar(base, candidata, fim):
     anterior = carregar(base)
     atual = carregar(candidata)
@@ -106,7 +149,7 @@ def validar(base, candidata, fim):
         exigir(type(valor) is int and valor >= antigo, f"Pagamento de {grupo} diminuiu ou ficou inválido.")
         exigir(valor - antigo <= max(100_000_000, antigo // 4) * dias, f"Aumento financeiro inesperado em {grupo}.")
         exigir(sum(ano[grupo] for ano in pagamentos["porAno"].values()) == valor, f"Totais anuais divergentes em {grupo}.")
-    exigir(pagamentos["semValor"] <= anterior["pagamentos"]["semValor"], "Aumentou a quantidade de pagamentos sem valor.")
+    conferir_empenhos(anterior['pagamentos'], pagamentos)
     contratos = atual["financas"]["contratos"]["lista"]
     exigir({r["numero"] for r in anterior["financas"]["contratos"]["lista"]} <= {r["numero"] for r in contratos}, "Contratos anteriores desapareceram.")
     meses = {m["periodo"]: m for m in atual["financas"]["despesas"]}

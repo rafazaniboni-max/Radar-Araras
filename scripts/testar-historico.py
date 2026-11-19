@@ -4,6 +4,7 @@ from contextlib import redirect_stdout
 from copy import deepcopy
 from importlib.util import module_from_spec, spec_from_file_location
 from io import StringIO
+from hashlib import sha256
 import json
 from pathlib import Path
 import tempfile
@@ -158,6 +159,37 @@ class HistoricoDocumentos(unittest.TestCase):
         dados = json.loads((self.raiz / 'raw/atas/diagnostico.json').read_text(encoding='utf-8'))
         self.assertEqual(dados[0]['situacao'], 'falha')
         self.assertEqual(dados[0]['pdf'], 'https://araras.siscam.com.br/arquivo?Id=123')
+
+    def test_perfil_com_queda_e_reconferido_na_pesquisa_oficial(self):
+        perfil = deepcopy(self.perfil)
+        perfil['registros'] = perfil['registros'][:4]
+        cache = self.raiz / 'cache'
+        cache.mkdir()
+        def buscar(url, cache, **kwargs):
+            conteudo = b'<html><title>Camara</title><p>10 registro(s) encontrado(s)</p></html>'
+            (cache / f'{sha256(url.encode()).hexdigest()}.html').write_bytes(conteudo)
+            return atualizador.html.fromstring(conteudo)
+        with patch.object(atualizador.historico, 'registros_anteriores', return_value=({}, {'1':self.perfil['registros']})), \
+             patch.object(atualizador.coletor, 'buscar', side_effect=buscar), \
+             patch.object(atualizador.propostas, 'ler_perfil', return_value=perfil), \
+             patch.object(atualizador.propostas, 'ler_pesquisa', return_value=self.perfil) as pesquisa:
+            with redirect_stdout(StringIO()):
+                pasta = atualizador.coletar_propostas([{'id':'1'}], {'1':{}}, cache, self.raiz/'raw', '2026-11-19')
+        pesquisa.assert_called_once()
+        self.assertEqual(len(json.loads((pasta/'1.json').read_text(encoding='utf-8'))['registros']),10)
+
+    def test_nova_base_muda_os_enderecos_dos_arquivos_para_evitar_cache_antigo(self):
+        nomes=('legislativo','auditoria-presencas','financas','pagamentos','propostas','territorio-resumo','historico-documentos')
+        for nome in nomes:(self.destino/f'{nome}.js').write_text('{}',encoding='utf-8')
+        (self.destino/'territorio.json').write_text('{}',encoding='utf-8')
+        (self.destino/'index.html').write_text('<html lang="pt-BR"><script src="legislativo.js?v=antiga" defer></script></html>',encoding='utf-8')
+        primeira=atualizador.versionar_dados(self.destino)
+        (self.destino/'territorio.json').write_text('{"assunto":"texto corrigido"}',encoding='utf-8')
+        segunda=atualizador.versionar_dados(self.destino)
+        texto=(self.destino/'index.html').read_text(encoding='utf-8')
+        self.assertNotEqual(primeira,segunda)
+        self.assertIn(f'legislativo.js?v={segunda}',texto)
+        self.assertEqual(texto.count('data-coleta='),1)
 
 
 if __name__ == '__main__':
