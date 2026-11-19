@@ -164,6 +164,9 @@ class HistoricoDocumentos(unittest.TestCase):
     def test_perfil_com_queda_e_reconferido_na_pesquisa_oficial(self):
         perfil = deepcopy(self.perfil)
         perfil['registros'] = perfil['registros'][:4]
+        pesquisa_singular = deepcopy(self.perfil)
+        for registro in pesquisa_singular['registros']:
+            registro['tipo'] = 'Indicação'
         cache = self.raiz / 'cache'
         cache.mkdir()
         def buscar(url, cache, **kwargs):
@@ -175,11 +178,14 @@ class HistoricoDocumentos(unittest.TestCase):
         with patch.object(atualizador.historico, 'registros_anteriores', return_value=({}, {'1':self.perfil['registros']})), \
              patch.object(atualizador.coletor, 'buscar', side_effect=buscar), \
              patch.object(atualizador.propostas, 'ler_perfil', side_effect=[perfil, self.perfil]), \
-             patch.object(atualizador.propostas, 'ler_pesquisa', return_value=self.perfil) as pesquisa:
+             patch.object(atualizador.propostas, 'ler_pesquisa', return_value=pesquisa_singular) as pesquisa:
             with redirect_stdout(StringIO()):
                 pasta = atualizador.coletar_propostas([{'id':'1'}], {'1':{}}, cache, self.raiz/'raw', '2026-11-19')
         pesquisa.assert_called_once()
         self.assertEqual(len(json.loads((pasta/'1.json').read_text(encoding='utf-8'))['registros']),10)
+        resultado = historico.reconciliar(self.base, pasta, self.destino, '2026-11-19')
+        self.assertEqual(resultado['comHistorico'], 0, 'Singular/plural não pode inventar uma alteração de documento.')
+        self.assertNotEqual(atualizador.propostas.tipo_canonico('Indicação'), atualizador.propostas.tipo_canonico('Moções'))
 
     def test_pesquisa_sem_emendas_exige_leitura_da_lista_filtrada(self):
         integral = deepcopy(self.perfil)

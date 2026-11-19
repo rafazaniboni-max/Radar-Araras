@@ -149,6 +149,12 @@ def coletar_propostas(pessoas, anteriores, cache, raw, fim):
             if len(faltantes) > max(2, ceil(len(esperados) * .005)):
                 print(f'Autor {identificador}: lista do perfil sem {len(faltantes)} registros anteriores; conferindo pela pesquisa oficial paginada.', flush=True)
                 perfil = pela_pesquisa()
+        tipos_anteriores = {str(r['id']): r['tipo'] for r in registros_anteriores.get(identificador, [])}
+        for registro in perfil['registros']:
+            anterior = tipos_anteriores.get(str(registro['id']))
+            if anterior and propostas.tipo_canonico(anterior) == propostas.tipo_canonico(registro['tipo']):
+                # Uma variação de singular/plural entre fontes não é alteração da matéria.
+                registro['tipo'] = anterior
         (pasta / f'{identificador}.json').write_text(json.dumps(perfil, ensure_ascii=False), encoding='utf-8')
         print(f'Autor {identificador}: {len(perfil["registros"])} propostas lidas.', flush=True)
         return len(perfil['registros'])

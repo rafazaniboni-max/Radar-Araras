@@ -27,6 +27,17 @@ def chave(valor):
     return normalize("NFKD", valor).encode("ascii", "ignore").decode().lower()
 
 
+def tipo_canonico(valor):
+    """O perfil usa plural e a pesquisa usa singular para os mesmos tipos oficiais."""
+    nomes = {'indicacao':'indicacoes', 'mocao':'mocoes', 'requerimento':'requerimentos',
+             'projeto de lei':'projetos de lei', 'projeto de lei complementar':'projetos de lei complementar',
+             'projeto de decreto legislativo':'projetos de decreto legislativo',
+             'projeto de resolucao':'projetos de resolucao',
+             'projeto de emenda a lei organica':'projetos de emenda a lei organica',
+             'emenda':'emendas', 'substitutivo':'substitutivos'}
+    return nomes.get(chave(valor), chave(valor))
+
+
 def ler_perfil(arquivo, inicio, fim):
     identificador = arquivo.stem
     pagina = html.fromstring(arquivo.read_bytes(), parser=html.HTMLParser(encoding="utf-8"))

@@ -16,6 +16,8 @@ A exportação Betha repete falhas temporárias de rede, espera a geração do a
 
 As páginas Siscam são solicitadas com compressão gzip para reduzir a transferência dos perfis integrais. A pesquisa geral por autor não conta emendas e substitutivos como resultados principais. Por isso, quando usada como alternativa, ela é complementada pelas listas menores de emendas e substitutivos, seguindo os links publicados na página oficial de contagem do autor. Cada lista é conferida contra o total do próprio cabeçalho. A indisponibilidade dessas fontes mantém o bloqueio para autores em exercício ou com documentos relacionados anteriores conhecidos, sem presumir retirada.
 
+O tipo já registrado é mantido quando a única diferença é singular ou plural entre fontes oficiais, como “Indicação” e “Indicações”. Isso evita criar eventos falsos de alteração ao trocar o caminho de consulta. O HTML original de cada fonte continua arquivado na coleta.
+
 Para parlamentares fora de exercício cuja página integral não está publicada e sem emendas ou substitutivos na referência anterior, a pesquisa oficial de matérias principais pode ser usada. O índice marca `relacionadosNaoConferidos` e a página Fontes mostra o nome e o limite: novos documentos relacionados desse perfil não foram confirmados. Isso não é uma contagem zero de emendas. Documentos relacionados anteriores conhecidos continuam impedindo que uma lista parcial seja aceita. A mesma regra vale para todos os autores.
 
 Uma base aprovada recebe URLs de dados versionadas para evitar que o navegador exiba arquivos de uma coleta anterior. A data da consulta é separada da data do último pagamento ou documento efetivamente publicado pela fonte.
