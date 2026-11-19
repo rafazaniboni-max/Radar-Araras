@@ -147,12 +147,12 @@ function dateLabel(value, format = dateFormat) {
 }
 
 function periodLabel(source, start = legislative?.inicio || proposals?.inicio, end = legislative?.fim || proposals?.fim) {
-  return start && end ? `${official(dateLabel(start), source)} a ${official(dateLabel(end), source)}` : '';
+  return start && end ? `<span data-periodo-coleta>${official(dateLabel(start), source)} a ${official(dateLabel(end), source)}</span>` : '';
 }
 
 function versaoDeDados(caminho) {
   const versao = document.documentElement.dataset.coleta || proposals?.fim || legislative?.fim || 'referencia';
-  return `${caminho}${caminho.includes('?') ? '&' : '?'}v=${encodeURIComponent(versao)}`;
+  return `/${caminho.replace(/^\//, '')}${caminho.includes('?') ? '&' : '?'}v=${encodeURIComponent(versao)}`;
 }
 
 function displayName(name = '') {
@@ -365,7 +365,7 @@ document.addEventListener('toggle', async evento => {
   if (!(detalhe instanceof HTMLDetailsElement) || !detalhe.open || !detalhe.dataset.historicoId || detalhe.dataset.carregado) return;
   const destino = detalhe.querySelector('[data-versoes]');
   try {
-    historicoDocumentosConsulta ??= fetch('historico-documentos.json', {cache:'no-store'}).then(resposta => {
+    historicoDocumentosConsulta ??= fetch('/historico-documentos.json', {cache:'no-store'}).then(resposta => {
       if (!resposta.ok) throw new Error('Histórico indisponível');
       return resposta.json();
     }).catch(erro => { historicoDocumentosConsulta = null; throw erro; });
@@ -729,4 +729,11 @@ window.addEventListener('hashchange', () => {
   }
 });
 
-showPage();
+if (document.documentElement.dataset.seo === '1') {
+  installSearch();
+  const radarEstatico = panel.querySelector('#radar');
+  if (radarEstatico) instalarRadar(radarEstatico, new URLSearchParams(location.search).get('busca') || '');
+  globalThis.ARARAS_NAVEGACAO?.converterLinks();
+} else {
+  showPage();
+}
