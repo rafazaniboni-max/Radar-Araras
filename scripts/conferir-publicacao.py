@@ -52,7 +52,7 @@ def conferir(pasta, ler=baixar):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--pasta', type=Path, default=RAIZ / 'dist')
-    parser.add_argument('--tentativas', type=int, default=20)
+    parser.add_argument('--tentativas', type=int, default=80)
     parser.add_argument('--intervalo', type=float, default=15)
     parser.add_argument('--relatorio', type=Path, default=RAIZ / '.build/hostinger/entrega.json')
     args = parser.parse_args()

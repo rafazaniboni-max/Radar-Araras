@@ -16,6 +16,8 @@ A exportação Betha repete falhas temporárias de rede, espera a geração do a
 
 Uma base aprovada recebe URLs de dados versionadas para evitar que o navegador exiba arquivos de uma coleta anterior. A data da consulta é separada da data do último pagamento ou documento efetivamente publicado pela fonte.
 
+Na Hostinger, `dist/.htaccess` impede que a página de abertura e o relatório de atualização sejam guardados como uma versão antiga. Os dados recebem uma revisão nova a cada coleta; imagens e fontes podem continuar aceleradas pelo CDN. A conferência da entrega aguarda até 20 minutos, com novas tentativas, para acomodar a fila de implantação e a propagação da hospedagem.
+
 Para executar a mesma coleta localmente, instale Python 3.12, Node.js 24 e as bibliotecas de `requirements.txt`. Execute `python scripts/testar-validacao.py` e `python scripts/atualizar-site.py`. A coleta candidata e o relatório ficam em `.build/atualizacao`. Esses comandos preservam os arquivos de referência.
 
 O projeto também mantém o servidor utilizado na hospedagem Sites. Para montar esse servidor, execute `node scripts/montar-servidor.mjs`. O GitHub Pages utiliza os arquivos estáticos da coleta validada.

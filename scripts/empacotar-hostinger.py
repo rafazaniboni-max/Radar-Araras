@@ -21,7 +21,7 @@ permitidas = {".html", ".css", ".js", ".json", ".png", ".svg", ".jpg", ".webp", 
 arquivos = sorted(p for p in dist.rglob("*") if p.is_file()
                   and p.relative_to(dist).parts[0] not in {"server", ".openai"})
 for arquivo in arquivos:
-    if arquivo.suffix not in permitidas or arquivo.is_symlink():
+    if (arquivo.suffix not in permitidas and arquivo.relative_to(dist).as_posix() != '.htaccess') or arquivo.is_symlink():
         raise ValueError(f"Arquivo inesperado na publicação: {arquivo.relative_to(dist)}")
 
 destino = raiz / ".build" / "hostinger" / "radar-araras.zip"
