@@ -32,7 +32,13 @@
       carregar(`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(configuracao.analytics)}`);
     }
     const anuncio = document.querySelector('script[data-publicidade]');
-    if (anuncio) carregar(anuncio.getAttribute('src'), { crossOrigin: 'anonymous' });
+    if (anuncio) {
+      const origem = anuncio.getAttribute('src');
+      // Remover o marcador inerte antes de carregar a tag oficial do AdSense.
+      // A biblioteca também inspeciona tags inertes com o mesmo endereço.
+      anuncio.remove();
+      carregar(origem, { crossOrigin: 'anonymous' });
+    }
   }
   function escolher(opcionais) {
     const anterior = preferencia?.opcionais;
