@@ -9,6 +9,7 @@ on:
       - 'templates/**'
       - 'scripts/gerar-seo.mjs'
       - 'scripts/conferir-seo.mjs'
+      - 'scripts/testar-privacidade.mjs'
       - 'scripts/preparar-publicacao-seo.py'
       - 'scripts/otimizar-imagens.py'
       - 'scripts/gerar-favicons.py'
@@ -56,6 +57,7 @@ jobs:
           python scripts/testar-historico.py
           node --test scripts/testar-financas.mjs
           node --test scripts/testar-status.mjs
+          node --test scripts/testar-privacidade.mjs
           python scripts/testar-conferencia-financeira.py
           python scripts/testar-publicacao.py
       - uses: actions/configure-pages@v5
