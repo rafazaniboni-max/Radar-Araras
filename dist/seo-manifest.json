@@ -1,14 +1,14 @@
 {
   "versao": 1,
   "origem": "https://radarararas.com.br",
-  "revisao": "2f8b68610e9407fbeb20",
+  "revisao": "ee0edb9bf8426dbe3ede",
   "fim": "2026-11-25",
   "paginas": [
     {
       "url": "/",
       "titulo": "Radar Araras: vereadores, propostas e gastos da Câmara",
       "arquivo": "index.html",
-      "assinatura": "9eb3dad73148b18e7323e6758a3f4ecd3f9e9dce888069001be52ad5debab5e4",
+      "assinatura": "66c92e0de39301f5b81365939747007d19ce13ec9669314814f7e733feb64c25",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -16,7 +16,7 @@
       "url": "/vereadores/",
       "titulo": "Vereadores de Araras: propostas, presença e votos | Radar Araras",
       "arquivo": "vereadores/index.html",
-      "assinatura": "575f3764e58a626081983adcea58ab61171bd674e52cd520c029e8f078cc9bf1",
+      "assinatura": "dbb86b312ed852d79580f5713f40c96c65cd3c54545c6d16388772a418dcfd8f",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1848,7 +1848,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/",
       "titulo": "Propostas de Mirian Vanessa em Araras | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/index.html",
-      "assinatura": "4553e7680ddb7ff57d9ffddd2cfb6e4f9bd18656ef49bc287b3690b9c8a610ed",
+      "assinatura": "2a38bc6c4c5dcc1d3c8207d4f9377de7a7f19a65ff62230a11ce3357ca02e71e",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1856,7 +1856,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/index.html",
-      "assinatura": "dbd4ab3c1b0c35c6eb62f5ec75d25b74cd6182fc69120b24525c8ec0d46618b3",
+      "assinatura": "f3ad11149c89c9a645d6c7c99b04743b023df8129aaaaf6c090d6895f9f2be51",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1864,7 +1864,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/2/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 2 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/2/index.html",
-      "assinatura": "822330767165021ed89cd87582a3155ed806329c3b0cbc49cc3d227355d925ac",
+      "assinatura": "258f9f5d24ff2891648112e55a52b1dead6633213a5c5e4add67736f465d4287",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1872,7 +1872,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/3/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 3 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/3/index.html",
-      "assinatura": "86fe95ffc320793fa9479997772920af5558990970769678dea2c01d603937b5",
+      "assinatura": "52b33d3e94ca3e375e7543bc4ee045cb1c8f839ae620efaa0c00021301beec1b",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1880,7 +1880,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/4/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 4 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/4/index.html",
-      "assinatura": "3d514750f9b2dc7103c3db62c36b98f2cc21ea8c6fc19215f4b7f1e3eefcb566",
+      "assinatura": "55595daced1c0df63bd111440451addc17d51d18eb6af2715c83c827fad29afa",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1888,7 +1888,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/5/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 5 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/5/index.html",
-      "assinatura": "216f902825abfddfb4d16b1f42cd6749ca7e77047cd2ec9a470f5a8ba326f841",
+      "assinatura": "7d65eb9657d99797340c9e02a779aee9fc2db7f10f048d43c3128eb639ce6938",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1896,7 +1896,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/6/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 6 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/6/index.html",
-      "assinatura": "36415dbad8d423560deceb2edfa73fd6f72473d1e922bc04023d45a156d4a37c",
+      "assinatura": "7882226ff46bb56a936208a30805a1c2d569e69eac67512ef63b419e4b379312",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1904,7 +1904,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/7/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 7 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/7/index.html",
-      "assinatura": "7dc17776436eb00214dad4c23c88295c91cb67fee14a2e84c3d1cc1a80a30d18",
+      "assinatura": "e8535def4e4082776ba35a3a13db6a148a1a2c70c9c16244a2de1591988f4094",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1912,7 +1912,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/8/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 8 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/8/index.html",
-      "assinatura": "9df40ec4c842419f813f36a81ab614970e9a66d7aac103645f84e6f80b0edd2d",
+      "assinatura": "b6f070906aafc59066d6242abbb8cb578b7534faac2b4c0dfb3ca62d94826630",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1920,7 +1920,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/9/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 9 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/9/index.html",
-      "assinatura": "6bc84cf91732b400c0d151d52737ccb28c071bfd77cff9df0aa8caa8aed3bf51",
+      "assinatura": "42d964ae3deb7ef3ac58a2079355bf701f58e49a41daa65c97ace8078ad1a793",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1928,7 +1928,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/10/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 10 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/10/index.html",
-      "assinatura": "ffbf2b6227a93a9e16c53283f56c70157506e1da4c3ba65a01b2858d2fdb0491",
+      "assinatura": "fdfab51b62fe5575cd079c4bc96bfa23ba600cbada47c2e1b4f0d93031526656",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1936,7 +1936,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/11/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 11 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/11/index.html",
-      "assinatura": "951350b3ba29630d79b4595d3481c74ba9dbf2fdd7e2d9d698e3e788982d00bf",
+      "assinatura": "79f7854f3e44a4110d768a0a1b775f3dc13ed32c15183abf2b1d8bdbc0887248",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1944,7 +1944,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/12/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 12 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/12/index.html",
-      "assinatura": "8a107743fce7bcc1b960b242f9d0a60c467d715cc7294e547f49f11c70799ffd",
+      "assinatura": "b3554c0f1a467d5453a5254503dcf99bd12ee25955ec694e38f65b499413724d",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1952,7 +1952,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/13/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 13 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/13/index.html",
-      "assinatura": "a0cef44c254197f5c15f1cf6bdd4aac6fcf7a9b8b3d522e6028889e072f58afe",
+      "assinatura": "5b5048addb1bece640aed1c8091dddc0ba2913cd97e6fb397ced92665e84075f",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1960,7 +1960,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/14/",
       "titulo": "Pedidos de melhoria nos bairros de Mirian Vanessa — página 14 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/melhorias/pagina/14/index.html",
-      "assinatura": "fcf8972c7dd6f5e2a4b57d809a560b2bad8aee0f70c268d9d9940fd3c8480001",
+      "assinatura": "3bd8790a99f35fa368a3421e03900ed1171c124e3b3b5cd5ba95a4fcca6080c6",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1968,7 +1968,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/perguntas/",
       "titulo": "Perguntas e cobranças de Mirian Vanessa | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/perguntas/index.html",
-      "assinatura": "8e58f25060b1fcc5d7947795dd87b2b30e07be49038bd715c9b2847995dab9ee",
+      "assinatura": "494fa4c0cefb74cffb7a935a9da322624b708ecbb1ea75c908f0023a3de84d01",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1976,7 +1976,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/",
       "titulo": "Homenagens de Mirian Vanessa | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/index.html",
-      "assinatura": "dbc55a000227e49fbe15a7d9adcdde8184aef8b682208c51b01d51a2aac23053",
+      "assinatura": "e8773ba5cb86a798b3a68dc1b834be0fab3a243a6d681914de2f4d55556b88f0",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1984,7 +1984,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/2/",
       "titulo": "Homenagens de Mirian Vanessa — página 2 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/2/index.html",
-      "assinatura": "89b1a999c8d9580434572540a8d21bd7da09c258f62c9f84c85c50cf6b0682be",
+      "assinatura": "dc4f5e310a82894caf0597855ac7aa92e68617998a9fa547aa65b618891f351d",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -1992,7 +1992,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/3/",
       "titulo": "Homenagens de Mirian Vanessa — página 3 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/3/index.html",
-      "assinatura": "cfec0296541c86ec28f8f7b1f25718a4d9c359490a86cf62bffa3086ca19806e",
+      "assinatura": "0138f0b28ebdc5e49575141031a0484cb4e5c76ef04150f5c4241a958e03ccd9",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2000,7 +2000,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/4/",
       "titulo": "Homenagens de Mirian Vanessa — página 4 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/4/index.html",
-      "assinatura": "7c0d6d8ada48d02a501a346d4be4e652f9b9687aa3c861f600eb0825fb89aa15",
+      "assinatura": "4acedcfbc72e19aa4a04547b0a007903d9c545047cbb16e0baf5cebb1b0f79b3",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2008,7 +2008,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/5/",
       "titulo": "Homenagens de Mirian Vanessa — página 5 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/5/index.html",
-      "assinatura": "cdc9ac4a1e3b751362be71b9eea558350a10742fe2ccdd0515edf364e96c7db2",
+      "assinatura": "13f5d77d95052f49cf425780577947b77d5ba8f425c7b1f48af14634ac303a9b",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2016,7 +2016,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/6/",
       "titulo": "Homenagens de Mirian Vanessa — página 6 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/6/index.html",
-      "assinatura": "be83c7e70a20817dc6e9347eda8089dafd2510513bd772a2d91a147c942f34e4",
+      "assinatura": "fbb060ffcee1cacb5d00678de5a50559f087a0196e465e426f128938167e120e",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2024,7 +2024,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/7/",
       "titulo": "Homenagens de Mirian Vanessa — página 7 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/7/index.html",
-      "assinatura": "4e0fb6863c1dc31d0c7dad166c6cc5dd8e33085ddd38e93b431b3b3ca2d359cc",
+      "assinatura": "e272920798b57cbc0065145e5e306fcbf96c186ee845fe842a3ccdcc1b90de34",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2032,7 +2032,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/8/",
       "titulo": "Homenagens de Mirian Vanessa — página 8 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/8/index.html",
-      "assinatura": "73e47c7cde01a0882db000945e27ef1746051ab599434eee40347ec1999dc479",
+      "assinatura": "ca12b2072deac0083b9df9bbc85c343f194a32300bebc2bd9350cdab1ec00566",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2040,7 +2040,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/9/",
       "titulo": "Homenagens de Mirian Vanessa — página 9 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/9/index.html",
-      "assinatura": "30ffbe85ff7640d8717cc59c774f58778cdf6436fca696d284c1b7bc68e9f9c9",
+      "assinatura": "3f7284f4679ef247f2617584e9153b713c60e0a40bad7221c12a5ec7ac57ac05",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2048,7 +2048,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/10/",
       "titulo": "Homenagens de Mirian Vanessa — página 10 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/10/index.html",
-      "assinatura": "c621bc1f5570b604966b936bf7b7c1d9301acb20aa2a004681f06bffd75ea4f3",
+      "assinatura": "5e2f554c7632fb9c5d58eae312a7965d2a39851defad5c306ae5aa408a0010c0",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2056,7 +2056,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/11/",
       "titulo": "Homenagens de Mirian Vanessa — página 11 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/11/index.html",
-      "assinatura": "d75e3f7779f9fab35a9ed1d9a923fbe84b9613679e09235a0c8d861c82cd0d79",
+      "assinatura": "763263c8e23d3ad999c316343a4e4576963b23da221019ecee7bf0f4e956579e",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2064,7 +2064,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/12/",
       "titulo": "Homenagens de Mirian Vanessa — página 12 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/12/index.html",
-      "assinatura": "7f316bee7f95ebf686439d0909e41e674bbeae09445a0c04c7a2380e8f20481b",
+      "assinatura": "eb67270c26e382d1b789e7cdd42f0ed7522fabb8dea997382394685b7c9e1922",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2072,7 +2072,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/13/",
       "titulo": "Homenagens de Mirian Vanessa — página 13 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/13/index.html",
-      "assinatura": "944b03c541ecdf3ea7c1a9e1f0d50d6cfc34e9e2d5374404c4160d2a62fe9b72",
+      "assinatura": "354183b99116f31bb61a649e54fdcf655af29dc11f668cdb7f4dc0061f35a3c4",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2080,7 +2080,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/14/",
       "titulo": "Homenagens de Mirian Vanessa — página 14 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/14/index.html",
-      "assinatura": "62ed7501a8b40b7d665490af6af0135e95986ad69fb945005844db6ac607d940",
+      "assinatura": "9d28d9782fbe8f718cc5bc57d1a33a3720ef36d956dca6a4610bbf9740d5ae0b",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2088,7 +2088,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/15/",
       "titulo": "Homenagens de Mirian Vanessa — página 15 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/15/index.html",
-      "assinatura": "fa41b234dc36c8eee2dc05090ecdfa9fb077644aa3abfd159da995e314abfe82",
+      "assinatura": "952d6158cb9f43729d004ec78ef9fe264b6958fa200fe1eda645352a82c78a42",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2096,7 +2096,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/16/",
       "titulo": "Homenagens de Mirian Vanessa — página 16 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/16/index.html",
-      "assinatura": "05894c76994f0312ca2f5ac75084cff32cec5de8a69cf2811fd6714ae84a060e",
+      "assinatura": "cf5d156173a332cd03f00457d51bda7ea3b4171b4d4f7240869b8b3ba877cc1a",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2104,7 +2104,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/17/",
       "titulo": "Homenagens de Mirian Vanessa — página 17 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/17/index.html",
-      "assinatura": "b46bf6c32ab49b2bf23a7fd5f630c68cd4e6730f4e27764d50e096c46187b670",
+      "assinatura": "38c3241430a5a936683074e131a8b07882a7c698ad81cf0b357ed852b9f266f1",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2112,7 +2112,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/18/",
       "titulo": "Homenagens de Mirian Vanessa — página 18 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/18/index.html",
-      "assinatura": "2c2b58dcc7e5d03a4a704a96836e2524a3822eef323c0c56c8c20a54b98ae736",
+      "assinatura": "1395d1e3c74c4dbd5984beeed30e41e90a961aff9a804545d54cf905b5899d64",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2120,7 +2120,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/19/",
       "titulo": "Homenagens de Mirian Vanessa — página 19 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/19/index.html",
-      "assinatura": "08ef10c993385417b50edb41c89d68aca579f0637fe4252ed40dce2996301227",
+      "assinatura": "755b531b59a88b23cd766cf9f1cc11cea1fd5afbe9e6e975832b7180f1aff253",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2128,7 +2128,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/20/",
       "titulo": "Homenagens de Mirian Vanessa — página 20 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/20/index.html",
-      "assinatura": "aa39eb3249a4cef5c666b969c811d3af380ee90f12c3d55e636bea9430876d5a",
+      "assinatura": "229fdcd861dba4fcd227d98d0f534a860430a717806ccd640c56b3e690a23130",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2136,7 +2136,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/21/",
       "titulo": "Homenagens de Mirian Vanessa — página 21 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/21/index.html",
-      "assinatura": "27b7445469e4fd8e13ff1dbdb350137f6a34eea9a538d0b0c33be4b8ecf6b8b9",
+      "assinatura": "f220287b580d99f645cbce500334f17ce0f40c8fc70ed93eb962bb73271e311b",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2144,7 +2144,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/22/",
       "titulo": "Homenagens de Mirian Vanessa — página 22 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/22/index.html",
-      "assinatura": "aece5aa9555844788228f2dc906711d5b6669f47907bae11a2d5d9f273ccd40f",
+      "assinatura": "7122084d127231517c3d9f568436e3cef0acc72a00638a03f018d81eaae57b60",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2152,7 +2152,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/23/",
       "titulo": "Homenagens de Mirian Vanessa — página 23 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/23/index.html",
-      "assinatura": "ec37fe1b1c9efcaa6096df2ec125d7d54d43b9cdc11f37761d743d4904ed316c",
+      "assinatura": "26676a54bf30d66d2a68128eebbc86051c55fbcb43ab83ad39c0399af362235d",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2160,7 +2160,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/24/",
       "titulo": "Homenagens de Mirian Vanessa — página 24 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/24/index.html",
-      "assinatura": "3b21e225983b67c7502f2bd7a2014cea8e3bb124cc7a9ff7cbddf7e8e90431a3",
+      "assinatura": "de5ca6c5cc49ae948f1981865ba48a592561d6fe8fc3847eb2d24738dffd55c0",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2168,7 +2168,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/25/",
       "titulo": "Homenagens de Mirian Vanessa — página 25 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/25/index.html",
-      "assinatura": "000b085fc2f5a48e88f403b65f5875fe303ce9099a72a7bc848bd29160bdfdd8",
+      "assinatura": "13d7427fb9e6e39f70793b47c38cf4dee965ddb89516e47bf39afcb80ddf8de7",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2176,7 +2176,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/26/",
       "titulo": "Homenagens de Mirian Vanessa — página 26 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/26/index.html",
-      "assinatura": "a0845a52b3d73268eb78397451c857a46b65e2dc39ee9e5979cbab5b0926d990",
+      "assinatura": "ef5da3f862eed73600f7a34120d32b8e229bbf132dd59215f6b1267ce2e4d600",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2184,7 +2184,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/27/",
       "titulo": "Homenagens de Mirian Vanessa — página 27 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/27/index.html",
-      "assinatura": "f8dd00f8daf3393eed6c02fc2092a280f31ddaf27284c42107de18affdb811e4",
+      "assinatura": "19766b2ece27967feabde9c5c911f47860cfa932b1e697fa1cdce9efa56d7314",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2192,7 +2192,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/28/",
       "titulo": "Homenagens de Mirian Vanessa — página 28 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/homenagens/pagina/28/index.html",
-      "assinatura": "f6dd29778de976081f2e145a67b5ff696c069137c852e98db260eaab6e0d5c56",
+      "assinatura": "bb588c03980b296da724a16868831b262e1fed42c8c2dd6337eedf5a098b9a81",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2200,7 +2200,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/leis/",
       "titulo": "Propostas de lei de Mirian Vanessa | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/leis/index.html",
-      "assinatura": "80faf2033986e4cdf36c7c86642bdc33087a7ee91a69cdc20455b34ff32f352f",
+      "assinatura": "e674006e2b37744d1d749a7ab7400f7c0d7e10511bd05c9f29cbb115815995d3",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2208,7 +2208,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/leis/pagina/2/",
       "titulo": "Propostas de lei de Mirian Vanessa — página 2 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/leis/pagina/2/index.html",
-      "assinatura": "2aac3033c1479750da8c38be7102e8b6231ca2615aac6f0d2d40a801b4516824",
+      "assinatura": "3ff318ca991f1739e552c7c4433bdf41d2220964a358e67e46acbce900aa4b8e",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2216,7 +2216,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/leis/pagina/3/",
       "titulo": "Propostas de lei de Mirian Vanessa — página 3 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/leis/pagina/3/index.html",
-      "assinatura": "de7ccabb61363bd578bfeaddc3d5ae8b3b609feca6f4b1c503b455e147d1a3de",
+      "assinatura": "ee82c7a750bd564ee7550eef3b3e4992d5eed6ba8540a9962f6f819548cf41c6",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2224,7 +2224,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/outros/",
       "titulo": "Outros de Mirian Vanessa | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/outros/index.html",
-      "assinatura": "69d8e87b5901fd9dba420f997c1dbede989716b1a18695ce29947aa87c144cc8",
+      "assinatura": "a1d70e7a4b0a6630cfdbf4a4e193d78c2aeb9362e2e7c2ae1dd21150982a8deb",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2232,7 +2232,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/outros/pagina/2/",
       "titulo": "Outros de Mirian Vanessa — página 2 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/outros/pagina/2/index.html",
-      "assinatura": "a41e216f543c323b476d83dc0b748fd4cbc0ab9cfb40a48edfe04757f9b80e56",
+      "assinatura": "28ee85ed47a36e7bac872394adfc4f097e025ce49ad2cc847efeb306a948bfda",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2240,7 +2240,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/outros/pagina/3/",
       "titulo": "Outros de Mirian Vanessa — página 3 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/outros/pagina/3/index.html",
-      "assinatura": "e62272517249994837122da629b8a512826edc13ad61dc5326845c05a60d3f25",
+      "assinatura": "fa63b2ff022eff8a880225b4153c5e33bab375eadaf6261b424fca7ea6302ce7",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2248,7 +2248,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/outros/pagina/4/",
       "titulo": "Outros de Mirian Vanessa — página 4 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/outros/pagina/4/index.html",
-      "assinatura": "e908d2bdeb72ce96b29b787474fb08df1f945e8933ec2db7ce7bf8b6c466b2d9",
+      "assinatura": "a8dacc9b0a1230ae354fcbcddd02dc93f70570819a205fee39842bc416154f60",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2256,7 +2256,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/outros/pagina/5/",
       "titulo": "Outros de Mirian Vanessa — página 5 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/outros/pagina/5/index.html",
-      "assinatura": "1ce68dd28360bf2bba51f7e47551bb64a18fecac90d9e63aaa67f060ad6ad679",
+      "assinatura": "9b9fa8b2f187436f9e16f6fcfa0dc7c03cc0805b800a2ec298af0c2b77e1e130",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2264,7 +2264,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/outros/pagina/6/",
       "titulo": "Outros de Mirian Vanessa — página 6 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/outros/pagina/6/index.html",
-      "assinatura": "aaac0c342dea8d0ce536200b3ceffe9aaae75628644c69b3a9eeca797cc34cff",
+      "assinatura": "99938963c8cd67d7d80d0b68f69871e5ad3d6571d2dcbac7a940996bfb375c70",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
@@ -2272,7 +2272,7 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/outros/pagina/7/",
       "titulo": "Outros de Mirian Vanessa — página 7 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/outros/pagina/7/index.html",
-      "assinatura": "1aea820f2adc752164f4e93c46d7fb5f3f7c33d5e312e498127c96656e392e6c",
+      "assinatura": "33e22c4aac4f5c63636872d57111a2d71f04b307551f68ddf7595ef22e51866a",
       "modificadoEm": "2026-11-25",
       "noindex": false
     },
