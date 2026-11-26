@@ -1,23 +1,23 @@
 {
   "versao": 1,
   "origem": "https://radarararas.com.br",
-  "revisao": "ee0edb9bf8426dbe3ede",
-  "fim": "2026-11-25",
+  "revisao": "268c5c8e74f98e386708",
+  "fim": "2026-11-26",
   "paginas": [
     {
       "url": "/",
       "titulo": "Radar Araras: vereadores, propostas e gastos da Câmara",
       "arquivo": "index.html",
-      "assinatura": "66c92e0de39301f5b81365939747007d19ce13ec9669314814f7e733feb64c25",
-      "modificadoEm": "2026-11-25",
+      "assinatura": "8c6a36b8db1cd4f3beb970c011caadef7d808c6980a7bcee20a051b385eade47",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/vereadores/",
       "titulo": "Vereadores de Araras: propostas, presença e votos | Radar Araras",
       "arquivo": "vereadores/index.html",
-      "assinatura": "dbb86b312ed852d79580f5713f40c96c65cd3c54545c6d16388772a418dcfd8f",
-      "modificadoEm": "2026-11-25",
+      "assinatura": "28983be9c943c2273f070eaffbb8fcd4429fdfa33e1cf086cd029a7520c51d0c",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -816,8 +816,8 @@
       "url": "/vereadores/bonezinho-corrochel-191/propostas/leis/",
       "titulo": "Propostas de lei de Bonezinho Corrochel | Radar Araras",
       "arquivo": "vereadores/bonezinho-corrochel-191/propostas/leis/index.html",
-      "assinatura": "3cebd6d12070b81a44e8147b602ccbe01f11545abf76b8a17960e9a62b34f98f",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "779ea6eaf3997214f923b2268510862c643d956f424aba51647f54bf72341a70",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -1312,8 +1312,8 @@
       "url": "/vereadores/fabio-domingues-4623/propostas/",
       "titulo": "Propostas de Fábio Domingues em Araras | Radar Araras",
       "arquivo": "vereadores/fabio-domingues-4623/propostas/index.html",
-      "assinatura": "f31fb73aea6a7291831ee7c2f420ffe2b0709f116d2e8a5ad2c26787af44b725",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "59dc19bac3bc1de5faf08d1ccd24b685de58ac9e0a8c75dd9e2dbec9f966abcd",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -1384,16 +1384,16 @@
       "url": "/vereadores/fabio-domingues-4623/propostas/leis/",
       "titulo": "Propostas de lei de Fábio Domingues | Radar Araras",
       "arquivo": "vereadores/fabio-domingues-4623/propostas/leis/index.html",
-      "assinatura": "b56fb2ecab856baec461a84c066c81fda97f14bebbb755e9b9a11d9a3c93e492",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "f4d8fe405e8ee87926549f2260756d41bd7010a086f585f20fdc9fd773d2e42b",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/vereadores/fabio-domingues-4623/propostas/leis/pagina/2/",
       "titulo": "Propostas de lei de Fábio Domingues — página 2 | Radar Araras",
       "arquivo": "vereadores/fabio-domingues-4623/propostas/leis/pagina/2/index.html",
-      "assinatura": "b60d64f0b53e1887575eb8fed1562e349f486188457d8e9f4dc772a12ef53ee6",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "4f3644f9d2a39ad0f61ce2b7d0101b354e5c2cc5dc57c9f140e98026315d7cc3",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -1616,8 +1616,8 @@
       "url": "/vereadores/lucio-casa-bela-4625/propostas/",
       "titulo": "Propostas de Lúcio Casa Bela em Araras | Radar Araras",
       "arquivo": "vereadores/lucio-casa-bela-4625/propostas/index.html",
-      "assinatura": "ac00e297e4bb8b618b3dcb2645a053a460d49019fe85b625e70ce4ff5beb02bb",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "43b6e4a22a3405e285741dc3c78bb7c9af3b5b6b754af4cbdcd6b90f89d0eb67",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -1696,16 +1696,16 @@
       "url": "/vereadores/lucio-casa-bela-4625/propostas/leis/",
       "titulo": "Propostas de lei de Lúcio Casa Bela | Radar Araras",
       "arquivo": "vereadores/lucio-casa-bela-4625/propostas/leis/index.html",
-      "assinatura": "e0f5f5d0055fd48068ef6b949a12749f8b143a95d419ef72e293eabfa02ace2f",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "9bcc8e578806926a6122e2e64b645472070c8811d7d6529e2e742a48761045a6",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/vereadores/lucio-casa-bela-4625/propostas/leis/pagina/2/",
       "titulo": "Propostas de lei de Lúcio Casa Bela — página 2 | Radar Araras",
       "arquivo": "vereadores/lucio-casa-bela-4625/propostas/leis/pagina/2/index.html",
-      "assinatura": "90ffb1aebb1b17087766d613c4df2d2955c648822e68a78abae8f67ac92e206c",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "fb7e60adb7309b5d710eb852468a9b4080dc7847afb85af1f76287c89ef3ad97",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -1848,8 +1848,8 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/",
       "titulo": "Propostas de Mirian Vanessa em Araras | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/index.html",
-      "assinatura": "2a38bc6c4c5dcc1d3c8207d4f9377de7a7f19a65ff62230a11ce3357ca02e71e",
-      "modificadoEm": "2026-11-25",
+      "assinatura": "ebf5a22299b318005fd00812c8ce4906a28c85852dd8bf3cc429fd0d4497a1f6",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -2200,24 +2200,24 @@
       "url": "/vereadores/mirian-vanessa-3912/propostas/leis/",
       "titulo": "Propostas de lei de Mirian Vanessa | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/leis/index.html",
-      "assinatura": "e674006e2b37744d1d749a7ab7400f7c0d7e10511bd05c9f29cbb115815995d3",
-      "modificadoEm": "2026-11-25",
+      "assinatura": "c69aa30943e055c9ec9e7b387aba7d59d66f1698d62fd6f7421638a94b808dc7",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/vereadores/mirian-vanessa-3912/propostas/leis/pagina/2/",
       "titulo": "Propostas de lei de Mirian Vanessa — página 2 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/leis/pagina/2/index.html",
-      "assinatura": "3ff318ca991f1739e552c7c4433bdf41d2220964a358e67e46acbce900aa4b8e",
-      "modificadoEm": "2026-11-25",
+      "assinatura": "a3152740471d06fa8ce7d5d533e190aa9e62de03d0712d9955fef7ccd5bff03b",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/vereadores/mirian-vanessa-3912/propostas/leis/pagina/3/",
       "titulo": "Propostas de lei de Mirian Vanessa — página 3 | Radar Araras",
       "arquivo": "vereadores/mirian-vanessa-3912/propostas/leis/pagina/3/index.html",
-      "assinatura": "ee82c7a750bd564ee7550eef3b3e4992d5eed6ba8540a9962f6f819548cf41c6",
-      "modificadoEm": "2026-11-25",
+      "assinatura": "a767b804021e4c3c95f03bbc530d1541fa423738cbf23490b1c30c2d1bc01c8c",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -2376,8 +2376,8 @@
       "url": "/vereadores/rodrigo-soares-3833/propostas/",
       "titulo": "Propostas de Rodrigo Soares em Araras | Radar Araras",
       "arquivo": "vereadores/rodrigo-soares-3833/propostas/index.html",
-      "assinatura": "fc62cedd36b0d8ea15a213e6dfec6fe0060a8965364f1a8afa12d7bdc4643b87",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "da5506ebcf3cbddad34ae95fb1cb44b3d3bd3530584366e4e23a8e96a34f3e5d",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -2688,32 +2688,32 @@
       "url": "/vereadores/rodrigo-soares-3833/propostas/leis/",
       "titulo": "Propostas de lei de Rodrigo Soares | Radar Araras",
       "arquivo": "vereadores/rodrigo-soares-3833/propostas/leis/index.html",
-      "assinatura": "f93dceb408ead645b9be72cdd07c79f448570c48e7d2717e08269d48466e9f91",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "2213fe980f878f23cb113abf76897dd2d390279d62f7b98cb1fef5cec2d36b48",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/vereadores/rodrigo-soares-3833/propostas/leis/pagina/2/",
       "titulo": "Propostas de lei de Rodrigo Soares — página 2 | Radar Araras",
       "arquivo": "vereadores/rodrigo-soares-3833/propostas/leis/pagina/2/index.html",
-      "assinatura": "8d89f0540a8209aba1326b502fe1ce00bd48b0eb763e16c54ede22ded0cbfe93",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "8c3a0f522baa30406de820d1d32cd4f2c6adbfbd398b6eb6c040612637a8969e",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/vereadores/rodrigo-soares-3833/propostas/leis/pagina/3/",
       "titulo": "Propostas de lei de Rodrigo Soares — página 3 | Radar Araras",
       "arquivo": "vereadores/rodrigo-soares-3833/propostas/leis/pagina/3/index.html",
-      "assinatura": "528de133127878567f6c8f7462ee75edff9c2d2140e8c53ca906a1abc48495fb",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "8b13a35f37c92d0b6cd5cdf77dd15f3b164642100fff8db3add0d0f942d18506",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/vereadores/rodrigo-soares-3833/propostas/leis/pagina/4/",
       "titulo": "Propostas de lei de Rodrigo Soares — página 4 | Radar Araras",
       "arquivo": "vereadores/rodrigo-soares-3833/propostas/leis/pagina/4/index.html",
-      "assinatura": "e842a2314522235164fd7adaf093af441b5f6b159d3fdbbb35b16ab7c494e307",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "eb07a607ba6aba83ead8c4acf7ebbf48f4e9c1ede6823a4da5652301eb8713a0",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -3832,8 +3832,8 @@
       "url": "/contas-da-camara/despesas/2026-10/",
       "titulo": "Despesas da Câmara de Araras em 2026-10 | Radar Araras",
       "arquivo": "contas-da-camara/despesas/2026-10/index.html",
-      "assinatura": "99571b26a2cb2402539e678d2c33d3ba0096cecfbd30d5b17ae96fa8fb21a3f2",
-      "modificadoEm": "2026-11-25",
+      "assinatura": "355640697a48259b53ccd6c36ffce48c03943d6b923c7b322957a513d9465ef6",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -7152,112 +7152,112 @@
       "url": "/propostas/propostas-de-lei/",
       "titulo": "Propostas de lei na Câmara de Araras | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/index.html",
-      "assinatura": "8db81c1ddf8623757c2c4c81ddeedacffefdc922f5203f51231c2ee62d24ea77",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "b8b17fc4551210fc85622736ce5c965e4d7ec53db07dfb129aeb36589a6a3531",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/2/",
       "titulo": "Propostas de lei na Câmara de Araras — página 2 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/2/index.html",
-      "assinatura": "eda04548568b0f75d15f59da288d111980e6f6ed4313656afaa664cc55d32c30",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "9d190e14124a887a9e3444d5d49d186a6685ec2153bdb3b7cbce51796a662630",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/3/",
       "titulo": "Propostas de lei na Câmara de Araras — página 3 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/3/index.html",
-      "assinatura": "ad6002cdaa0d9fa388bf50ee9f73efa0dfc84a558ab27c144b18c5ecf633d655",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "f57b5b2ca3c08cb08b4e2819ea5d299dc2c53622580d93bcd719a3da50dc2243",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/4/",
       "titulo": "Propostas de lei na Câmara de Araras — página 4 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/4/index.html",
-      "assinatura": "6d5faf4bbceb38a3bc3014d1a12aa3c4192a4679a1181e31e2a84c2c42bd9392",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "4e46645aa389df1985880a98ba9782dfda3972948def571e9531113a5a856f06",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/5/",
       "titulo": "Propostas de lei na Câmara de Araras — página 5 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/5/index.html",
-      "assinatura": "b905a300d598fbe36576dd853dc3f26037a58ab5afc96cd8d21ff1067ac4733c",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "0ef3b39b147b2bcde0b187c6ef8375659161d1607fdf2846e0202a48512018f6",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/6/",
       "titulo": "Propostas de lei na Câmara de Araras — página 6 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/6/index.html",
-      "assinatura": "5668172a188c9f5be634d2fb0d1c05cd96eb13a912c5c6d0af982d25adf3b1eb",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "ac00f0c7f1f261ae475321afa234c2dc443d2e7138834cf4de686d239893ca88",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/7/",
       "titulo": "Propostas de lei na Câmara de Araras — página 7 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/7/index.html",
-      "assinatura": "846edb3f9fd554086801f0d45a9d46bcf196949570b77575efb1aa081121a426",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "68c4d78952ae27ce3ee7dd0305034767e0797bce34c8d05e234d7d8b3d0e753a",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/8/",
       "titulo": "Propostas de lei na Câmara de Araras — página 8 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/8/index.html",
-      "assinatura": "655adab0b713d944f2faccb0bbd4af9afa64d6e4b4c61d99cf0123ce1ae72778",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "545f717e72113cd21caf803079557a9c37f99d8c3eb954f3bd97d2dd71ec318a",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/9/",
       "titulo": "Propostas de lei na Câmara de Araras — página 9 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/9/index.html",
-      "assinatura": "c4885ec0ad574da25b857ced505a4673362e8708ef3499c5c42ae47707cd86e1",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "03b74eda9d96df5571248cf303d8ec45a36c55a27fe7e2b98e7560a539fd7f9d",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/10/",
       "titulo": "Propostas de lei na Câmara de Araras — página 10 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/10/index.html",
-      "assinatura": "61da171af524ea77f4bb9850679d35946fcf87a41db51e92e20cc8e9497f0c1f",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "70664bf16e78f6e6d355511b8c8afbfcc7d2e15e1937424a6bc8f95bba8f3e85",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/11/",
       "titulo": "Propostas de lei na Câmara de Araras — página 11 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/11/index.html",
-      "assinatura": "9582c03b45b0774be8a49163d2736eeb7c5c652742a73824a7c84e02d6de0d5d",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "2b5dfec305f3284b2715017b70d813ac30baf3e47435b82d17f0da54e317997b",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/12/",
       "titulo": "Propostas de lei na Câmara de Araras — página 12 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/12/index.html",
-      "assinatura": "1e36982fe81b2cce444cba2bba41c00508c553567da31eb85b95d1ed1fa4a70f",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "fa87bc8a25fed8ce0ebf469c5ac93f519ff2f587931419d15f41915c2f430fce",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/13/",
       "titulo": "Propostas de lei na Câmara de Araras — página 13 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/13/index.html",
-      "assinatura": "a71aca9155b7e7a1812d032ff4d65b6d96a4940c2f016fa968aede3d1de8a502",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "a37a0c7f7fd5339b11b34441e67d094b0ec635813530e5a75e3aec0ba15e2a94",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
       "url": "/propostas/propostas-de-lei/pagina/14/",
       "titulo": "Propostas de lei na Câmara de Araras — página 14 | Radar Araras",
       "arquivo": "propostas/propostas-de-lei/pagina/14/index.html",
-      "assinatura": "27f97c5c3d9562a9398f38812cc2e10a983519eb1d2499aa9e60ca51a9e6cf8c",
-      "modificadoEm": "2026-11-24",
+      "assinatura": "090d271e46d9946d6e4c86e204f308be3338f1a7b65c4367ec69350b0a4b020a",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
@@ -7576,8 +7576,8 @@
       "url": "/boletim/",
       "titulo": "Registros recentes da Câmara de Araras | Radar Araras",
       "arquivo": "boletim/index.html",
-      "assinatura": "1a1e119e147bd53671661dac179064d3416f5ae5bcff73e5ad17e138ac465c1e",
-      "modificadoEm": "2026-11-25",
+      "assinatura": "22a68d5ccea7edf2f500ce55ad89c78b940b961f5dea102a6ad19cad96ed3370",
+      "modificadoEm": "2026-11-26",
       "noindex": false
     },
     {
