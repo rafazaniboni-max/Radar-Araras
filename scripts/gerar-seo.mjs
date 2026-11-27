@@ -78,7 +78,10 @@ function listarPropostas(lista,base,titulo,descricao,cabecalho,opcoes={}) {
   }
 }
 const linksGuias = '<nav class="seo-atalhos" aria-label="Entenda a Câmara"><a href="/entenda/">Entenda a Câmara</a><a href="/boletim/">Resumo dos registros recentes</a><a href="/bairros-e-ruas/locais/">Consultar os locais citados</a></nav>';
-adicionar('/','Radar Araras: vereadores, propostas e gastos da Câmara','Acompanhe os vereadores de Araras/SP: propostas, presença, votos e despesas desde 2025, com links para as fontes oficiais.',executar('dashboard()')+linksGuias,{interativo:true,rotas:['inicio']});
+contexto.pedidosSEO = territorio.pedidos;
+contexto.repetidosSEO = territorio.repetidos;
+contexto.cartoesRepetidosSEO = executar('listaDeRepeticoes(repetidosSEO, new Map(pedidosSEO.map(p => [p.id,p])))');
+adicionar('/','Radar Araras | Vereadores e gastos da Câmara Municipal de Araras','Consulte salários, contratos, viagens, propostas, presenças e votos na Câmara Municipal de Araras/SP. Plataforma independente com links para os registros oficiais desde 2025.',executar('dashboard(pedidosSEO, cartoesRepetidosSEO)')+linksGuias,{interativo:true,rotas:['inicio']});
 adicionar('/vereadores/','Vereadores de Araras: propostas, presença e votos | Radar Araras','Consulte a atuação dos vereadores de Araras/SP, com dados oficiais de presença, propostas e votações desde 2025.',executar('home()').replace(/<h2\b([^>]*)>([\s\S]*?)<\/h2>/,'<h1$1>$2</h1>'),{interativo:true,ativo:'vereadores',rotas:['vereadores']});
 for (const p of pessoas) {
   const base = perfilUrl(p);
@@ -86,8 +89,9 @@ for (const p of pessoas) {
   const expr = `peopleByRoute.get(${id})`;
   const rota = `vereador/${p.chave}`;
   const comum = {ativo:'vereadores',pessoa:p};
-  adicionar(base,`${p.nomePublico}: presença, propostas e votos em Araras | Radar Araras`,`Consulte os registros de ${p.nomePublico} na Câmara de Araras: presenças, propostas e votos entre 2025 e ${fim.slice(0,4)}.`,executar(`personPage(${expr},'presenca')`),{...comum,rotas:[rota,rota+'/presenca']});
-  adicionar(base+'votos/',`Como votou ${p.nomePublico}, vereador em Araras | Radar Araras`,`Votos individuais publicados pela Câmara de Araras para ${p.nomePublico}, com sessão e documento oficial.`,executar(`personPage(${expr},'votos')`),{...comum,rotas:[rota+'/votos']});
+  const identificacao = p.nomePublico === p.nome ? p.nomePublico : `${p.nomePublico} (${p.nome})`;
+  adicionar(base,`${p.nomePublico}: presença, propostas e votos em Araras | Radar Araras`,`Acompanhe ${identificacao} na Câmara Municipal de Araras/SP. Consulte presenças, propostas e votos desde 2025 nos registros oficiais.`,executar(`personPage(${expr},'presenca')`),{...comum,rotas:[rota,rota+'/presenca']});
+  adicionar(base+'votos/',`Como votou ${p.nomePublico} na Câmara de Araras | Radar Araras`,`Votos individuais publicados pela Câmara de Araras para ${p.nomePublico}, com sessão e documento oficial.`,executar(`personPage(${expr},'votos')`),{...comum,rotas:[rota+'/votos']});
   adicionar(base+'votos/contrarios-e-abstencoes/',`Votos contrários e abstenções de ${p.nomePublico} | Radar Araras`,`Consulte os votos contrários e as abstenções publicados para ${p.nomePublico}, com links para as sessões da Câmara de Araras.`,executar(`personPage(${expr},'votos','nao-sim')`),{...comum,rotas:[rota+'/votos/nao-sim']});
   adicionar(base+'propostas/',`Propostas de ${p.nomePublico} em Araras | Radar Araras`,`Leia as propostas de ${p.nomePublico}, separadas por assunto e com links oficiais da Câmara de Araras.`,executar(`personPage(${expr},'propostas')`),{...comum,noindex:!contexto.ARARAS_PROPOSTAS.perfis[p.id],rotas:[rota+'/propostas']});
   if (!contexto.ARARAS_PROPOSTAS.perfis[p.id]) continue;
@@ -108,10 +112,8 @@ for (const ano of ['',...(contexto.ARARAS_FINANCAS.contratos.anos || [])]) adici
 adicionar('/fontes/','Fontes oficiais, metodologia e limites dos dados | Radar Araras','Saiba de onde vêm os números do Radar Araras, como as propostas são classificadas e quais dados não puderam ser confirmados.',executar('sources()')+`<section class="seo-texto"><h2>Baixar os dados organizados</h2><p>Base de propostas deduplicadas e lugares identificados automaticamente nos textos oficiais: <a href="/territorio.json">baixar JSON</a>. <a href="/atualizacao.json">Consultar o relatório da coleta aprovada</a>.</p><p>O Radar Araras é uma iniciativa independente. A organização e os cálculos são do projeto; os registros de origem são da Câmara e do TCE-SP.</p></section>`,{ativo:'fontes',rotas:['fontes','transparencia']});
 adicionar('/o-idealizador/','Rafael Zaniboni, idealizador do Radar Araras', 'Conheça Rafael Zaniboni e a proposta do Radar Araras, iniciativa independente de transparência e fiscalização cidadã em Araras/SP.',executar('idealizador()'),{ativo:'idealizador',rotas:['idealizador']});
 const formBusca = '<form class="seo-busca" data-busca-estatica action="/bairros-e-ruas/" method="get" role="search"><label class="sr-only" for="busca-seo">Bairro ou rua</label><input id="busca-seo" type="search" name="busca" placeholder="Digite seu bairro ou sua rua" maxlength="130"><button>Buscar</button></form>';
-const dashboard = executar('dashboard()');
-const trechoBairros = dashboard.slice(dashboard.indexOf('    <section id="bairros"'),dashboard.indexOf('    <section id="propostas"'));
-const dialogo = dashboard.slice(dashboard.indexOf('    <dialog'),dashboard.indexOf('</dialog>')+9);
-adicionar('/bairros-e-ruas/','O que pediram para seu bairro ou rua em Araras? | Radar Araras','Busque pedidos por bairro ou rua em Araras. Veja autores, datas, documentos e solicitações que voltaram a aparecer.',`<header class="page-intro"><h1>Bairros e ruas de Araras</h1><p>Encontre o que os vereadores pediram para cada lugar.</p></header><div id="radar">${trechoBairros}${dialogo}</div><p><a href="/bairros-e-ruas/locais/">Abrir a lista dos locais identificados</a></p>`,{interativo:true,ativo:'bairros',rotas:['bairros','repetidos']});
+const territorioHTML = executar('secaoBairros(pedidosSEO) + secaoRepetidos(cartoesRepetidosSEO) + dialogoRadar()');
+adicionar('/bairros-e-ruas/','O que pediram para seu bairro ou rua em Araras? | Radar Araras','Busque pedidos por bairro ou rua em Araras. Veja autores, datas, documentos e solicitações que voltaram a aparecer.',`<header class="page-intro"><h1>Bairros e ruas de Araras</h1><p>Encontre o que os vereadores pediram para cada lugar.</p></header><div id="radar">${territorioHTML}</div><p><a href="/bairros-e-ruas/locais/">Abrir a lista dos locais identificados</a></p>`,{interativo:true,ativo:'bairros',rotas:['bairros','repetidos']});
 // Publica páginas locais somente com mais evidências; os demais termos continuam pesquisáveis.
 const ruasRecorrentes = new Set(territorio.repetidos.filter(r=>r.pedidos.length>=3).map(r=>r.ruaKey));
 const locais = territorio.lugares.filter(l=>l.total>=3 && l.nome.length<=80 && l.nome.trim().length>=3 &&
@@ -188,14 +190,16 @@ gravar('abertura.js',`'use strict';\n(() => {\n${funcoesAbertura}\n
       atualizar(); intervalo=setInterval(atualizar,60000);
     }).catch(()=>{if(texto)texto.textContent='confira a última atualização em Fontes';});
 })();\n`);
-const marca = { '@type':'Organization','@id':origem+'/#organizacao',name:config.nome,url:origem+'/',description:'Iniciativa independente de transparência e fiscalização cidadã em Araras/SP.',logo:origem+'/logo-radar-araras.png',founder:{'@type':'Person',name:config.editor}};
+const perfilIdealizador = origem + '/o-idealizador/';
+const fundador = {'@type':'Person','@id':perfilIdealizador+'#pessoa',name:config.editor,url:perfilIdealizador};
+const marca = { '@type':'Organization','@id':origem+'/#organizacao',name:config.nome,url:origem+'/',description:'Iniciativa independente de transparência e fiscalização cidadã em Araras/SP.',logo:origem+'/logo-radar-araras.png',founder:fundador};
 function converter(html) {
   return html.replace(/<img\b[^>]*src="\/?(logo-radar-araras|rafael-zaniboni)\.png"[^>]*>/g,(tag,nome)=>{
     const variantes=imagens?.[nome]?.variantes;
     if (!variantes?.length) return tag;
     const principal=variantes.at(-1);
     const hero=tag.includes('alt="Radar Araras"');
-    const tamanhos=nome==='logo-radar-araras'?(hero?'(max-width: 760px) 86vw, 460px':'150px'):'(max-width: 760px) 90vw, 340px';
+    const tamanhos=nome==='logo-radar-araras'?(hero?'(max-width: 510px) 86vw, (max-width: 760px) 440px, (max-width: 1320px) 45vw, 590px':'150px'):'(max-width: 760px) 90vw, 340px';
     return tag.replace(/src="[^"]*"/,`src="/${principal.arquivo}" srcset="${variantes.map(v=>`/${v.arquivo} ${v.largura}w`).join(', ')}" sizes="${tamanhos}"${hero?' fetchpriority="high"':''}`);
   }).replace(/<details data-historico-id="(\d+)"><summary>Ver versões registradas<\/summary><div data-versoes><p>Abra para consultar o histórico\.<\/p><\/div><\/details>/g,(original,id)=>{
     const item = historicoCompleto.documentos[id];
@@ -220,7 +224,22 @@ for (const pagina of paginas) {
   const trilha = pagina.url==='/'?'':`<nav class="seo-caminho" aria-label="Caminho da página"><span><a href="/">Início</a></span>${pagina.ativo&&rotas[pagina.ativo]&&rotas[pagina.ativo]!==pagina.url?`<span><a href="${rotas[pagina.ativo]}">${escapar({vereadores:'Vereadores',bairros:'Bairros e ruas',contas:'Contas da Câmara',sessoes:'Sessões'}[pagina.ativo]||'Consulta')}</a></span>`:''}<span aria-current="page">${escapar(tituloSemMarca)}</span></nav>`;
   const dados = [marca,{'@type':'WebSite','@id':origem+'/#site',url:origem+'/',name:config.nome,inLanguage:'pt-BR',publisher:{'@id':origem+'/#organizacao'}},{'@type':'WebPage',url:origem+pagina.url,name:pagina.titulo,description:pagina.descricao,inLanguage:'pt-BR',isPartOf:{'@id':origem+'/#site'}}];
   if (pagina.url!=='/') dados.push({'@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Início',item:origem+'/'},{'@type':'ListItem',position:2,name:tituloSemMarca,item:origem+pagina.url}]});
-  if (pagina.pessoa) dados[2].about={'@type':'Person',name:pagina.pessoa.nomePublico,...(pagina.pessoa.perfil?{sameAs:pagina.pessoa.perfil}:{})};
+  if (pagina.pessoa) {
+    const p = pagina.pessoa;
+    const url = origem+perfilUrl(p);
+    const pessoa = {'@type':'Person','@id':url+'#pessoa',url,name:p.nomePublico};
+    if (p.nome !== p.nomePublico) pessoa.alternateName = p.nome;
+    if (p.perfil) pessoa.sameAs = p.perfil;
+    if (origem+pagina.url === url) dados[2].mainEntity = pessoa;
+    else dados[2].about = pessoa;
+  }
+  if (origem+pagina.url === perfilIdealizador) {
+    dados[2]['@type'] = 'ProfilePage';
+    dados[2].mainEntity = {
+      ...fundador, description:'Idealizador do Radar Araras.', image:origem+'/rafael-zaniboni.png',
+      sameAs:['https://www.instagram.com/rafazaniboni/','https://www.facebook.com/rafael.zaniboni.1','https://www.linkedin.com/in/rafaelzaniboni/']
+    };
+  }
   if (pagina.url==='/fontes/') dados.push({'@type':'Dataset',name:'Propostas dos vereadores de Araras e locais citados desde 2025',description:'Base organizada pelo Radar Araras a partir das listagens oficiais da Câmara, com identificação automática de lugares, autoria e classificação por assunto. Limites e critérios descritos nesta página.',url:origem+'/fontes/',creator:{'@id':origem+'/#organizacao'},temporalCoverage:'2025-01-01/'+fim,spatialCoverage:{'@type':'Place',name:'Araras, São Paulo, Brasil'},isBasedOn:fontePropostas,distribution:{'@type':'DataDownload',contentUrl:origem+'/territorio.json',encodingFormat:'application/json'}});
   const metadata = `<link rel="canonical" href="${origem+pagina.url}"><meta name="robots" content="${pagina.noindex?'noindex,follow':'index,follow,max-image-preview:large'}"><meta property="og:type" content="website"><meta property="og:locale" content="pt_BR"><meta property="og:site_name" content="Radar Araras"><meta property="og:title" content="${escapar(pagina.titulo)}"><meta property="og:description" content="${escapar(pagina.descricao)}"><meta property="og:url" content="${origem+pagina.url}"><meta property="og:image" content="${origem}/logo-radar-araras.png"><meta property="og:image:alt" content="Radar Araras"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapar(pagina.titulo)}"><meta name="twitter:description" content="${escapar(pagina.descricao)}"><meta name="twitter:image" content="${origem}/logo-radar-araras.png"><meta name="google-adsense-account" content="${config.adsense}"><script type="application/ld+json">${jsonSeguro({'@context':'https://schema.org','@graph':dados})}</script>`;
   let html = template.replace(/<html[^>]*>/,`<html lang="pt-BR" data-coleta="${revisao}" data-seo="1" data-interativo="${pagina.interativo?'1':'0'}" data-analytics="${escapar(config.analytics)}">`)
@@ -236,7 +255,7 @@ for (const pagina of paginas) {
   if (pagina.url==='/') {
     const dadosAbertura = {inicio:pagamentos.inicio,fim:pagamentos.fim,consultadoEm:pagamentos.consultadoEm,totais:{vereadores:pagamentos.totais.vereadores}};
     const scriptsInterativos = ['legislativo','auditoria-presencas','financas','pagamentos','propostas','historico-documentos','territorio-resumo','radar','app'].map(nome=>'/'+nome+'.js?v='+revisao);
-    html=html.replace('</head>',`<script id="dados-abertura" type="application/json">${jsonSeguro(dadosAbertura)}</script><script id="scripts-interativos" type="application/json">${jsonSeguro(scriptsInterativos)}</script><script src="/abertura.js?v=${revisao}" defer></script><script src="/iniciar-interativos.js?v=${revisao}" defer></script></head>`);
+    html=html.replace('</head>',`<script id="dados-abertura" type="application/json">${jsonSeguro(dadosAbertura)}</script><script id="scripts-interativos" type="application/json">${jsonSeguro(scriptsInterativos)}</script><script src="/abertura.js?v=${revisao}" defer></script><script src="/movimento.js?v=${revisao}" defer></script><script src="/iniciar-interativos.js?v=${revisao}" defer></script></head>`);
   }
   html=converter(html).replace(/(src="\/(?:app|radar|legislativo|auditoria-presencas|financas|pagamentos|propostas|historico-documentos|territorio-resumo)\.js)(?:\?[^"\s]*)?"/g,`$1?v=${revisao}"`).replace(/(href="\/(?:estilos|radar)\.css)(?:\?[^"\s]*)?"/g,`$1?v=${revisao}"`);
   if (pagina.ativo) html=html.replace(new RegExp(`data-page="${pagina.ativo}"`),'$& aria-current="page"');

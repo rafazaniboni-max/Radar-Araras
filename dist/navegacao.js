@@ -47,7 +47,13 @@
     });
   }
   observarFotos();
-  new MutationObserver(() => { converterLinks(); observarFotos(); }).observe(document.querySelector('#painel'), { childList: true, subtree: true });
+  // O relógio atualiza apenas texto. Procure links e fotos quando entrarem elementos novos.
+  new MutationObserver(mudancas => {
+    if (mudancas.some(mudanca => Array.from(mudanca.addedNodes).some(no => no.nodeType === 1))) {
+      converterLinks();
+      observarFotos();
+    }
+  }).observe(document.querySelector('#painel'), { childList: true, subtree: true });
   if (raiz.dataset.interativo !== '1') {
     document.querySelector('#painel')?.addEventListener('click', event => {
       const button = event.target.closest('[data-more]');

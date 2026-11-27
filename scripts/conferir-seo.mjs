@@ -23,6 +23,17 @@ for (const p of manifesto.paginas) {
   assert(html.includes('rel="apple-touch-icon"'),'Ícone para celular ausente');
   const dados=JSON.parse(html.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1]||'null');
   assert.equal(dados?.['@context'],'https://schema.org');
+  if (p.url==='/o-idealizador/' || /^\/vereadores\/[^/]+\/$/.test(p.url)) {
+    const pagina=dados['@graph'].find(item=>item.url===manifesto.origem+p.url);
+    assert.equal(pagina?.mainEntity?.['@type'],'Person','Pessoa ausente no perfil '+p.url);
+    assert.equal(pagina.mainEntity.url,manifesto.origem+p.url,'Pessoa aponta para outro perfil');
+    if (p.url==='/o-idealizador/') {
+      assert.equal(pagina['@type'],'ProfilePage');
+      const marca=dados['@graph'].find(item=>item['@type']==='Organization');
+      assert.equal(marca.founder['@id'],pagina.mainEntity['@id'],'Idealizador sem vínculo com o projeto');
+      for (const rede of pagina.mainEntity.sameAs) assert(html.includes(`href="${rede}"`),'Rede social ausente no perfil');
+    }
+  }
   assert(!html.includes('<div id="painel"></div>'),'Conteúdo vazio');
   if (p.url==='/') {
     assert(!/<script src="\/legislativo\.js/.test(html),'A abertura carrega dados pesados antes do uso');

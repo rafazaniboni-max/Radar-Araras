@@ -43,7 +43,7 @@ def conferir(pasta, ler=baixar):
     if manifesto.exists():
         paginas = json.loads(manifesto.read_text(encoding='utf-8'))['paginas']
         arquivos.extend(('sitemap.xml', 'robots.txt', 'ads.txt', 'navegacao.js', 'privacidade.js', 'seo.css', 'rotas.js'))
-        arquivos.extend(nome for nome in ('abertura.js', 'iniciar-interativos.js', 'favicon.ico', 'favicon-48x48.png')
+        arquivos.extend(nome for nome in ('abertura.js', 'iniciar-interativos.js', 'movimento.js', 'praca-de-araras.webp', 'favicon.ico', 'favicon-48x48.png')
                         if nome in esperado['verificacoes']['sha256'])
         imagens = pasta / 'imagens.json'
         if imagens.exists():

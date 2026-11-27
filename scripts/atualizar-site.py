@@ -249,7 +249,7 @@ def versionar_dados(destino):
     assinatura.update((destino / 'territorio.json').read_bytes())
     for nome in ('estilos', 'radar'):
         assinatura.update((destino/f'{nome}.css').read_bytes())
-    for caminho in ('navegacao.js', 'privacidade.js', 'iniciar-interativos.js', 'seo.css', 'imagens.json', 'favicon.json'):
+    for caminho in ('navegacao.js', 'privacidade.js', 'iniciar-interativos.js', 'movimento.js', 'praca-de-araras.webp', 'seo.css', 'imagens.json', 'favicon.json'):
         if (destino / caminho).exists():
             assinatura.update((destino / caminho).read_bytes())
     for caminho in ('templates/base.html', 'config/seo.json', 'scripts/gerar-seo.mjs'):

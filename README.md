@@ -16,7 +16,7 @@ O Analytics e o AdSense só são carregados após a escolha de serviços opciona
 
 Site com dados oficiais da Câmara Municipal de Araras/SP desde 1º de janeiro de 2025.
 
-A rotina em `.github/workflows/atualizar-site.yml` coleta sessões, presença, votos, propostas de cada autor, atas, contratos, execução de despesas e os arquivos mensais do TCE-SP. A publicação diária está programada para 03h17 no horário de São Paulo, com outra tentativa às 05h17, em ambiente novo, para fontes que estejam temporariamente indisponíveis na primeira consulta. Também pode ser iniciada em Actions, pelo botão Run workflow.
+A rotina em `.github/workflows/atualizar-site.yml` coleta sessões, presença, votos, propostas de cada autor, atas, contratos, execução de despesas e os arquivos mensais do TCE-SP. A coleta diária está agendada para as 05h00 no horário de São Paulo. Às 07h17, o robô consulta o relatório no domínio público. Se a entrega da coleta aprovada do dia ainda estiver pendente ou a consulta falhar, ele tenta novamente em ambiente novo. O horário efetivo depende da fila do GitHub Actions e a publicação depende da validação. A coleta também pode ser iniciada em Actions pelo botão Run workflow.
 
 O GitHub Pages precisa estar configurado para publicar por GitHub Actions nas configurações do repositório. A publicação usa a pasta candidata produzida pela coleta. O endereço segue o padrão do GitHub Pages para este repositório.
 

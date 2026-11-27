@@ -3,7 +3,9 @@ name: Coletar, validar e publicar o Radar Araras
 on:
   workflow_dispatch:
   schedule:
-    - cron: '17 3,5 * * *'
+    - cron: '0 5 * * *'
+      timezone: America/Sao_Paulo
+    - cron: '17 7 * * *'
       timezone: America/Sao_Paulo
   push:
     branches: [main]
@@ -21,8 +23,43 @@ permissions:
   id-token: write
 
 jobs:
+  verificar_reserva:
+    if: github.event.schedule == '17 7 * * *'
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      atualizado: ${{ steps.dominio.outputs.atualizado }}
+    steps:
+      - name: Verificar se a coleta aprovada do dia já chegou ao domínio
+        id: dominio
+        shell: python
+        run: |
+          from datetime import datetime
+          import json
+          import os
+          from urllib.request import urlopen
+          from zoneinfo import ZoneInfo
+
+          hoje = datetime.now(ZoneInfo("America/Sao_Paulo")).date().isoformat()
+          url = "https://radarararas.com.br/atualizacao.json?execucao=" + os.environ["GITHUB_RUN_ID"]
+          try:
+              with urlopen(url, timeout=20) as resposta:
+                  relatorio = json.load(resposta)
+              atualizado = (relatorio["aprovado"] is True and relatorio["fim"] == hoje
+                            and str(relatorio["concluidoEm"]).startswith(hoje + "T"))
+          except (OSError, KeyError, TypeError, ValueError):
+              atualizado = False
+          if atualizado:
+              with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as saida:
+                  print("atualizado=sim", file=saida)
+              print(f"A coleta de {hoje} já está publicada.")
+          else:
+              print("A entrega do dia não foi confirmada. Iniciando a coleta de reserva.")
   atualizar:
-    if: github.event_name != 'push' || !contains(github.event.head_commit.message, '[publicar-seo]')
+    needs: verificar_reserva
+    if: >-
+      !cancelled() && needs.verificar_reserva.outputs.atualizado != 'sim' &&
+      (github.event_name != 'push' || !contains(github.event.head_commit.message, '[publicar-seo]'))
     runs-on: ubuntu-latest
     timeout-minutes: 60
     environment:
