@@ -1,22 +1,26 @@
 :root {
-  --ink: #101923;
-  --muted: #52606d;
-  --line: #e3e7ec;
-  --wash: #f3f5f7;
+  --ink: #102840;
+  --muted: #485c70;
+  --line: #dce5ee;
+  --wash: #f2f6fa;
   --green: #1556ce;
   --green-dark: #10203d;
   --mint: #e9f1ff;
   --radar-red: #e72b35;
   --radar-blue: #1658d3;
+  --margem-pagina: max(clamp(16px, 4.5vw, 72px), calc((100vw - 1440px) / 2));
 }
 
-.shell { width: 100%; padding-inline: clamp(16px, 3vw, 48px); }
+.shell { width: 100%; padding-inline: var(--margem-pagina); }
+::selection { background: #c8e1ff; color: #092e58; }
+:focus-visible { outline-color: #1763ab; }
+.skip-link { z-index: 40; }
 html { scroll-padding-top: calc(var(--cabecalho-altura, 64px) + 12px); }
 body { overflow-wrap: anywhere; }
 img { max-width: 100%; }
 .shell, .shell > *, .header-inner > *, .radar-breakdown > *, .radar-rank > span > span { min-width: 0; }
 .site-header { position: sticky; top: 0; z-index: 30; background: #fff; box-shadow: 0 2px 8px #1019230b; }
-.header-inner { min-height: 57px; }
+.header-inner { min-height: 68px; }
 .brand img { display: block; width: 145px; height: auto; }
 .footer-brand { display: flex; align-items: center; gap: 8px; }
 .footer-brand img { width: 118px; }
@@ -30,30 +34,53 @@ img { max-width: 100%; }
 .funding-metrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .source-list, .proposal-groups, .proposal-heading { max-width: none; }
 .main-nav a[aria-current] { color: var(--ink); }
-.main-nav a[aria-current]::after { background: var(--radar-red); }
+.main-nav a[aria-current]::after { background: var(--radar-blue); }
+.main-nav a:hover { color: var(--radar-blue); }
+.header-source { min-height: 40px; border: 1px solid #c4d6e9; border-radius: 8px; padding: 0 14px; color: #164d86; }
 #radar { padding-bottom: 2rem; }
 #radar section:focus { outline: none; }
-.radar-hero { padding-top: 28px; }
-.radar-abertura { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); align-items: center; gap: 0 40px; margin-bottom: 26px; }
+.radar-palco { margin-inline: calc(-1 * var(--margem-pagina)); isolation: isolate; }
+.radar-abertura { position: relative; isolation: isolate; display: flex; align-items: center; padding: clamp(44px, 5.8vh, 78px) var(--margem-pagina); background: #fff; overflow: hidden; }
+.radar-paisagem { position: absolute; inset: 0 0 0 35%; z-index: -1; overflow: hidden; }
+.radar-paisagem img { width: 100%; height: 100%; display: block; object-fit: cover; object-position: 62% 65%; }
+.radar-paisagem::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #fff 0%, rgb(255 255 255 / .98) 8%, rgb(255 255 255 / .80) 20%, rgb(255 255 255 / .22) 41%, transparent 59%); }
+.radar-apresentacao { width: min(49%, 630px); position: relative; }
 .radar-period { display: inline-flex; max-width: 100%; align-items: center; gap: .3em; margin: 0 0 12px; padding: 9px 15px; border-radius: 99px; background: #f5f6f8; color: var(--ink); font-size: .875rem; font-weight: 700; text-decoration: none; line-height: 1.4; }
 .radar-period > span:last-child { min-width: 0; }
 .radar-period > .radar-ponto { width: 11px; height: 11px; flex: 0 0 11px; margin-right: 5px; border-radius: 100%; background: #ff353b; }
 .radar-period:hover { color: var(--ink); text-decoration: underline; }
 .radar-period:focus-visible { outline: 2px solid var(--radar-blue); outline-offset: 4px; }
 .radar-period a { color: inherit; text-decoration-thickness: 1px; }
-.radar-abertura .radar-period { grid-column: 1; grid-row: 1; justify-self: start; }
-.radar-logo { grid-column: 2; grid-row: 1 / span 2; margin: 0; }
-.radar-logo img { display: block; width: min(100%, 590px); height: auto; }
-.radar-subtitle { grid-column: 1; grid-row: 2; max-width: 64ch; font-size: clamp(1rem, 2.7vw, 1.27rem); }
-.radar-finance { display: grid; width: 100%; gap: clamp(11px, 3.5vw, 32px); }
+.radar-abertura .radar-period { background: #edf4fa; color: #244567; margin: 0 0 clamp(14px, 2.4vh, 28px); }
+.radar-logo { width: min(100%, 590px); position: relative; isolation: isolate; margin: 0 0 clamp(16px, 2.2vh, 26px); transform-origin: 15% 70%; }
+.radar-logo img { width: 100%; height: auto; display: block; }
+.radar-subtitle { max-width: 45ch; color: #294662; font-size: clamp(1rem, 1.25vw, 1.19rem); line-height: 1.55; }
+.radar-subtitle strong { display: block; margin-bottom: .42em; color: #102f55; font: 800 clamp(1.65rem, 2.5vw, 2.65rem)/1.11 var(--display); letter-spacing: -.035em; }
+.radar-acessos { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 12px; margin-top: clamp(20px, 3.2vh, 36px); }
+.radar-acessos a, .radar-faixa a { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: .68em 1.15em; border-radius: 8px; font-size: .95rem; font-weight: 650; text-decoration: none; }
+.radar-acao { background: #104f9f; color: #fff; }
+.radar-acao:hover { background: #0c3d7d; color: #fff; }
+.radar-acao-secundaria { background: #fff; color: #143f72; border: 1px solid #b4cce3; }
+.radar-acao-secundaria:hover { background: #edf5fd; }
+.radar-faixa { position: relative; isolation: isolate; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 18px 30px; padding: 21px var(--margem-pagina); color: #fff; background: linear-gradient(110deg, #0a2b54, #104e8a 72%, #1169a0); }
+.radar-faixa::before { content: ''; position: absolute; z-index: -1; width: 32rem; height: 32rem; right: 9%; top: -16rem; border: 1px solid #ffffff20; border-radius: 50%; box-shadow: 0 0 0 32px #ffffff09, 0 0 0 74px #ffffff07, 0 0 0 120px #ffffff07; transform: translateY(var(--faixa-y, 0px)); }
+.radar-faixa p { font: 700 clamp(1.25rem, 2.15vw, 2rem)/1.22 var(--display); letter-spacing: -.03em; }
+.radar-faixa a { flex: none; border: 1px solid #a9cbe8; color: #fff; }
+.radar-faixa a:hover { background: #ffffff20; }
+.radar-faixa a:focus-visible { outline-color: white; }
+.radar-finance { display: grid; width: 100%; gap: 16px; grid-template-columns: repeat(3,minmax(0,1fr)); }
+.radar-palco + .radar-finance { margin-top: clamp(40px,5vw,76px); }
+.radar-finance > header, .radar-finance-rodape { grid-column: 1 / -1; }
+.radar-finance > header { margin-bottom: 6px; }
+.radar-finance > header h2 { max-width: 38ch; text-wrap: balance; }
 .radar-bloco-titulo h2 { font-size: clamp(1.65rem, 3.8vw, 2.4rem); line-height: 1.12; font-weight: 800; }
 .radar-resumo { width: 100%; margin-top: 36px; }
-.radar-finance-quadro { display: grid; gap: 9px; border: 1px solid #232122; border-radius: 12px; padding: clamp(14px, 2.65vw, 23px); color: var(--quadro-texto); background: var(--quadro-fundo); }
-.radar-finance-salarios { --quadro-fundo: #0f1720; --quadro-texto: #fff; --quadro-titulo: #ffb3b3; --quadro-nota: #b9c3cc; border-color: #0f1720; border-radius: 24px; }
-.radar-finance-contratos { --quadro-fundo: #54c7e2; --quadro-texto: #221f20; }
-.radar-finance-viagens { --quadro-fundo: #00a67e; --quadro-texto: #fefefe; }
+.radar-finance-quadro { min-width: 0; container-type: inline-size; display: flex; flex-direction: column; align-items: flex-start; gap: 12px; border-radius: 15px; padding: clamp(18px, 1.65vw, 28px); color: var(--quadro-texto); background: var(--quadro-fundo); }
+.radar-finance-salarios { --quadro-fundo: #102f55; --quadro-texto: #fff; --quadro-titulo: #d9ecff; --quadro-nota: #e4effb; }
+.radar-finance-contratos { --quadro-fundo: #1559a2; --quadro-texto: #fff; --quadro-nota: #edf6ff; }
+.radar-finance-viagens { --quadro-fundo: #d4ebfb; --quadro-texto: #103859; }
 .radar-finance-quadro h3 { color: var(--quadro-titulo, var(--quadro-texto)); font: 750 clamp(.78rem, 1.8vw, 1rem)/1.32 var(--body); letter-spacing: .035em; text-transform: uppercase; }
-.radar-finance-valor { font: 800 clamp(1.8rem, 7.6vw, 4.45rem)/1.04 var(--display); letter-spacing: -.048em; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.radar-finance-valor { font: 800 clamp(1.45rem, 2.4vw, 2.9rem)/1.1 var(--display); font-size: clamp(1.25rem, 9.5cqi, 3.35rem); letter-spacing: -.04em; font-variant-numeric: tabular-nums; }
 .radar-finance-valor a, .radar-finance-valor .muted { color: inherit; }
 .radar-finance-valor a { text-decoration: none; }
 .radar-finance-valor a:is(:hover, :focus-visible) { text-decoration: underline; text-decoration-thickness: .04em; }
@@ -63,7 +90,6 @@ img { max-width: 100%; }
 .radar-contador-base { display: grid; gap: 5px; margin-top: 4px; padding-top: 12px; border-top: 1px solid #ffffff35; }
 .radar-contador-base a { color: inherit; }
 .radar-contador-base p { font-size: .8rem; }
-.radar-finance-viagens :is(h3, p) { text-shadow: 0 1px 2px #004d3b; }
 .radar-finance-rodape { display: grid; gap: 3px; font-size: .81rem; color: var(--muted); }
 .radar-finance-fontes { display: flex; flex-wrap: wrap; gap: 4px 16px; }
 .tom-neutro { --tom: #52606d; --tom-claro: #edf0f3; }
@@ -269,7 +295,6 @@ img { max-width: 100%; }
   .idealizador-perfil { width: min(100%, 360px); }
   .footer-inner { grid-template-columns: minmax(0, 1fr); }
   .footer-inner > a { justify-self: start; }
-  .radar-hero { padding-top: 17px; }
   .radar-totals { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .radar-result { padding: 12px; }
   .radar-breakdown, .radar-breakdown-local { grid-template-columns: 1fr; }
@@ -283,9 +308,35 @@ img { max-width: 100%; }
   .funding-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   #radar-dialog-conteudo { padding: 9px; }
 }
+@media (min-width: 921px) {
+  .radar-palco { display: grid; grid-template-rows: 1fr auto; min-height: calc(100vh - 68px); min-height: calc(100svh - 68px); }
+}
 @media (max-width: 760px) {
-  .radar-abertura { display: block; }
-  .radar-logo { margin-bottom: 14px; }
+  .radar-abertura { display: flex; flex-direction: column; align-items: stretch; padding: 0; }
+  .radar-apresentacao { order: -1; width: 100%; padding: 26px var(--margem-pagina) 0; }
+  .radar-logo { width: min(86vw, 440px); max-width: 100%; margin-bottom: 14px; }
+  .radar-paisagem { position: relative; inset: auto; height: clamp(200px, 57vw, 330px); margin-top: 6px; }
+  .radar-paisagem img { object-position: 50% 65%; }
+  .radar-paisagem::after { background: linear-gradient(180deg, #fff, rgb(255 255 255 / .62) 12%, transparent 36%); }
+  .radar-faixa { align-items: flex-start; flex-direction: column; gap: 12px; padding-block: 19px; }
+  .radar-faixa a { min-height: 44px; }
+  .radar-finance { grid-template-columns: minmax(0,1fr); gap: 12px; }
+  .radar-finance > header h2 { text-wrap: pretty; }
+}
+@media (hover:hover) and (pointer:fine) and (prefers-reduced-motion:no-preference) {
+  .radar-finance-quadro, .radar-totals > div { transition: transform 260ms cubic-bezier(.16,1,.3,1); }
+  .radar-finance-quadro:is(:hover,:focus-within), .radar-totals > div:is(:hover,:focus-within) { transform: translateY(-2px) scale(1.012); }
+}
+@media (prefers-reduced-motion:no-preference) {
+  .radar-palco[data-movimento] .radar-faixa > p { transform: translateY(calc(var(--faixa-y,0px) * -.4)); }
+  .radar-palco[data-movimento] .radar-logo { transform: translate3d(var(--logo-x,0px),var(--logo-y,0px),0) scale(var(--logo-escala,1)); transition: transform 420ms cubic-bezier(.18,.75,.23,1); }
+  .radar-palco[data-movimento] .radar-paisagem img { transform: translate3d(var(--foto-x,0px),var(--foto-y,0px),0) scale(1.017); transition: transform 650ms ease-out; }
+  .radar-palco[data-movimento] .radar-logo::before { content:''; position:absolute; inset:12% 0; z-index:-1; background: radial-gradient(ellipse, #78bbef66, transparent 70%); animation: radar-halo 6s ease-in-out infinite alternate; }
+  @supports ((mask-image:url("")) or (-webkit-mask-image:url(""))) {
+    .radar-palco[data-movimento] .radar-logo::after { content:''; position:absolute; inset:0; pointer-events:none; -webkit-mask: var(--mascara-logo) center/contain no-repeat; mask: var(--mascara-logo) center/contain no-repeat; background:linear-gradient(108deg, transparent 41%, #f3fdff80 49%, transparent 56%) 150% 0 / 230% 100% no-repeat; animation: radar-reflexo 9s ease-in-out infinite; }
+  }
+  @keyframes radar-halo { from { opacity:.22; } to { opacity:.8; } }
+  @keyframes radar-reflexo { 0%,55% { background-position:150% 0; } 90%,100% { background-position:-50% 0; } }
 }
 @media (max-width: 350px) {
   .radar-period { font-size: .66rem; padding-inline: 6px; }

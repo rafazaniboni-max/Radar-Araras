@@ -111,6 +111,8 @@ function quadroPagamentos(dados = radarPagamentos, projetar = true, agora = Date
   const totais = dados?.totais;
   const estimativa = projetar ? estimarSalarios(dados, agora) : null;
   const outrasDespesas = totais && totais.contratos + totais.pessoal + totais.encargos + totais.demais;
+  const devolucoes = Object.entries(dados?.empenhosConferidos || {}).flatMap(([empenho, registro]) =>
+    (registro.anulacoesPagamento || []).map(item => ({empenho, ...item})));
   const quadros = [
     ['salarios', 'Salários dos 11 vereadores e suplentes desde a posse', totais?.vereadores,
       'E subindo... Subsídios e vencimentos pagos na legislatura 2025–2028.'],
@@ -133,6 +135,8 @@ function quadroPagamentos(dados = radarPagamentos, projetar = true, agora = Date
       ${classe === 'salarios' && estimativa ? `<div class="radar-contador-base"><p id="salarios-metodo">Até o momento o valor efetivo pago é de ${money(valor, bethaSource, 'Salários pagos registrados')}. O contador acima é somente um cálculo estimado em tempo real.</p></div>` : ''}
     </article>`).join('')}
     <div class="radar-finance-rodape">
+      <p>Os valores pagos consideram devoluções e anulações publicadas pela Câmara.</p>
+      ${devolucoes.length ? `<details class="details-row"><summary>Consultar devoluções e anulações de pagamentos</summary><ul>${devolucoes.map(item => `<li>Empenho ${escapeHtml(item.empenho)} · ${official(dateLabel(item.data), bethaSource)} · ${money(item.valorCentavos, bethaSource, 'Valor anulado')} · ${escapeHtml(item.motivo)}</li>`).join('')}</ul></details>` : ''}
       ${dados?.ultimaData ? `<p>Último pagamento nos dados em ${official(dateLabel(dados.ultimaData), bethaSource)}.</p>` : ''}
       ${dados?.fim ? `<p data-periodo-coleta>Fonte consultada em ${official(dateLabel(dados.fim), bethaSource)}.</p>` : ''}
       <p class="radar-finance-fontes">${official('Dados abertos da Câmara', bethaSource)} <a href="#contas/despesas">Despesas por mês <span aria-hidden="true">→</span></a></p>
@@ -155,7 +159,7 @@ async function carregarQuadroPagamentos(raiz) {
   }
 }
 
-function dashboard() {
+function dashboard(pedidos = null, cartoesRepetidos = '') {
   const totals = radarResumo?.porGrupo || {};
   const summary = [
     ['Propostas no período', radarResumo?.total, 'neutro'], ['Pedidos de melhoria', totals.melhorias, 'azul'],
@@ -163,10 +167,17 @@ function dashboard() {
   ];
   return `<div id="radar">
     <section id="inicio" class="radar-hero" tabindex="-1">
-      <div class="radar-abertura">
-        <a class="radar-period" href="#fontes" data-status-coleta title="Consulte a última coleta aprovada e as fontes oficiais."><span class="radar-ponto" aria-hidden="true"></span><span>Ao vivo · <time data-status-texto>dados conferidos</time></span></a>
-        <h1 class="radar-logo"><img src="logo-radar-araras.png" alt="Radar Araras" width="2137" height="736" decoding="async"></h1>
-        <p class="radar-subtitle"><strong>Raio-X da Câmara Municipal de Araras/SP.</strong> Acompanhe, fiscalize e cobre. Saiba o que seus vereadores fazem — e o que deixam de fazer. Informação pública, transparência e cobrança em nome do cidadão.</p>
+      <div class="radar-palco">
+        <div class="radar-abertura">
+          <div class="radar-paisagem"><img src="/praca-de-araras.webp" alt="Fonte e letreiro colorido Eu amo e cuido de Araras na praça" width="638" height="451" fetchpriority="high"></div>
+          <div class="radar-apresentacao">
+            <a class="radar-period" href="/fontes/" data-status-coleta title="Consulte a última coleta aprovada e as fontes oficiais."><span class="radar-ponto" aria-hidden="true"></span><span>Ao vivo · <time data-status-texto>dados conferidos</time></span></a>
+            <h1 class="radar-logo"><img src="logo-radar-araras.png" alt="Radar Araras" width="2137" height="736" decoding="async"><span class="sr-only"> — Transparência da Câmara Municipal de Araras/SP</span></h1>
+            <p class="radar-subtitle"><strong>Acompanhe, fiscalize e cobre.</strong> Saiba o que seus vereadores fazem — e o que deixam de fazer. Informação pública, transparência e cobrança em nome do cidadão.</p>
+            <div class="radar-acessos"><a class="radar-acao" href="/vereadores/">Consultar vereadores</a><a class="radar-acao-secundaria" href="/bairros-e-ruas/">Buscar meu bairro</a></div>
+          </div>
+        </div>
+        <div class="radar-faixa"><p>Vamos juntos fiscalizar a nossa Câmara Municipal.</p><a href="/contas-da-camara/">Ver contas da Câmara</a></div>
       </div>
       ${quadroPagamentos(radarPagamentos, true, Date.parse(radarPagamentos?.consultadoEm))}
       <section class="radar-resumo" aria-labelledby="radar-titulo-numeros">
@@ -177,26 +188,15 @@ function dashboard() {
         <div class="radar-totals">${summary.map(([label, total, color]) => `<div class="tom-${color}"><strong>${numeric(total, proposalsSource, label)}</strong><span>${label}</span></div>`).join('')}</div>
       </section>
     </section>
-    <section id="bairros" class="radar-section" tabindex="-1" aria-labelledby="titulo-bairros">
+    <section id="ranking-cidade" class="radar-section" aria-labelledby="titulo-ranking">
       <p class="radar-chamada">Comece por aqui</p>
-      <h2 id="titulo-bairros">O que pediram pelo seu bairro?</h2>
-      <p class="radar-intro">Digite o bairro ou a rua. Sem nada digitado, você vê a cidade inteira.</p>
-      <form id="busca-local" class="radar-search" role="search">
-        <label class="sr-only" for="termo-local">Bairro ou rua</label><span class="radar-lupa" aria-hidden="true"></span>
-        <input type="search" id="termo-local" placeholder="Digite seu bairro ou sua rua" autocomplete="off" maxlength="130">
-        <button type="submit">Buscar</button>
-      </form>
-      <div id="sugestoes-locais" class="radar-sugestoes" aria-label="Sugestões de busca" hidden></div>
-      <div class="radar-chips" aria-label="Bairros mais citados">${(radarResumo?.bairros || []).map(lugar => chipLugar(lugar)).join('')}</div>
-      <div id="resultado-local" class="radar-result"><p class="notice" role="status">Carregando os pedidos oficiais…</p></div>
+      <h2 id="titulo-ranking">Propostas por vereador</h2>
+      <div class="radar-result">
+        ${contagemPropostas(radarResumo?.total)}
+        <div id="ranking-geral">${pedidos ? quadroRankings(pedidos) : ''}</div>
+      </div>
     </section>
-    <section id="repetidos" class="radar-section" tabindex="-1" aria-labelledby="titulo-repetidos">
-      <p class="radar-chamada">Só aqui</p>
-      <h2 id="titulo-repetidos">O problema que não some</h2>
-      <p class="radar-intro">Veja quando o mesmo tipo de pedido voltou para a mesma rua. Abra o cartão para consultar os autores, as datas e os documentos.</p>
-      <div id="lista-repetidos"></div>
-      <p class="radar-nota">${avisoRepeticao}</p>
-    </section>
+    ${secaoBairros(pedidos)}
     <section id="propostas" class="radar-section" tabindex="-1" aria-labelledby="titulo-propostas">
       <p class="radar-chamada">O trabalho da Câmara</p>
       <h2 id="titulo-propostas">Homenagem ou trabalho?</h2>
@@ -207,10 +207,40 @@ function dashboard() {
           <strong>${numeric(totals[id], proposalsSource, label)}</strong><h3>${escapeHtml(label)}</h3></div></div><p>${escapeHtml(desc)}</p>
         <button class="radar-link" data-abrir-grupo="${id}" aria-label="Ver todas as propostas do grupo ${escapeHtml(label)}" type="button">Ver todas <span aria-hidden="true">→</span></button></article>`).join('')}</div>
     </section>
+    ${secaoRepetidos(cartoesRepetidos)}
     ${home()}
     ${quadroTransparencia()}
-    <dialog id="radar-dialog" aria-labelledby="radar-dialog-titulo"><header><div><h2 id="radar-dialog-titulo"></h2><p id="radar-dialog-meta"></p></div><form method="dialog"><button type="submit" aria-label="Fechar">×</button></form></header><div id="radar-dialog-conteudo"></div></dialog>
+    ${dialogoRadar()}
   </div>`;
+}
+
+function secaoBairros(pedidos = null) {
+  return `<section id="bairros" class="radar-section" tabindex="-1" aria-labelledby="titulo-bairros">
+    <h2 id="titulo-bairros">O que pediram pelo seu bairro?</h2>
+    <p class="radar-intro">Digite o bairro ou a rua. Sem nada digitado, você vê a cidade inteira.</p>
+    <form id="busca-local" class="radar-search" role="search" action="/bairros-e-ruas/" method="get">
+      <label class="sr-only" for="termo-local">Bairro ou rua</label><span class="radar-lupa" aria-hidden="true"></span>
+      <input type="search" id="termo-local" name="busca" placeholder="Digite seu bairro ou sua rua" autocomplete="off" maxlength="130">
+      <button type="submit">Buscar</button>
+    </form>
+    <div id="sugestoes-locais" class="radar-sugestoes" aria-label="Sugestões de busca" hidden></div>
+    <div class="radar-chips" aria-label="Bairros mais citados">${(radarResumo?.bairros || []).map(lugar => chipLugar(lugar)).join('')}</div>
+    <div id="resultado-local" class="radar-result">${pedidos ? `<h3 class="radar-list-titulo">As propostas mais recentes da cidade</h3><ul class="radar-pedidos">${pedidos.slice(0,4).map(pedidoNoRadar).join('')}</ul><p><a href="/propostas/">Consultar todas as propostas</a></p>` : '<p class="notice" role="status">Carregando os pedidos oficiais…</p>'}</div>
+  </section>`;
+}
+
+function secaoRepetidos(cartoes = '') {
+  return `<section id="repetidos" class="radar-section" tabindex="-1" aria-labelledby="titulo-repetidos">
+    <p class="radar-chamada">Só aqui</p>
+    <h2 id="titulo-repetidos">O problema que não some</h2>
+    <p class="radar-intro">Veja quando o mesmo tipo de pedido voltou para a mesma rua. Abra o cartão para consultar os autores, as datas e os documentos.</p>
+    <div id="lista-repetidos">${cartoes}</div>
+    <p class="radar-nota">${avisoRepeticao}</p>
+  </section>`;
+}
+
+function dialogoRadar() {
+  return '<dialog id="radar-dialog" aria-labelledby="radar-dialog-titulo"><header><div><h2 id="radar-dialog-titulo"></h2><p id="radar-dialog-meta"></p></div><form method="dialog"><button type="submit" aria-label="Fechar">×</button></form></header><div id="radar-dialog-conteudo"></div></dialog>';
 }
 
 function barraDePropostas(totais, rotulo = '') {
@@ -253,6 +283,25 @@ function rankingDeAutores(pedidos, grupo) {
     .sort((a,b) => b[1] - a[1] || nameOrder.compare(publicName(peopleById.get(a[0]) || {nome:a[0]}), publicName(peopleById.get(b[0]) || {nome:b[0]})));
 }
 
+function contagemPropostas(total, consulta = '') {
+  return `<div class="radar-contagem" role="status"><strong>${numeric(total, fonteLocal(consulta), 'Propostas encontradas')}</strong><p>${consulta ? `${total === 1 ? 'proposta cita' : 'propostas citam'} <b>${escapeHtml(consulta)}</b> até agora` : 'propostas para <b>a cidade inteira</b> até agora'}</p></div>`;
+}
+
+function quadroRankings(pedidos, consulta = '', completo = false) {
+  const rankings = Object.keys(rankingsPropostas).map(grupo => [grupo, rankingDeAutores(pedidos, grupo)]);
+  const siteFonte = fonteLocal(consulta);
+  return `<div class="radar-breakdown">
+    ${rankings.map(([grupo, autores]) => `<section class="radar-ranking" aria-label="${rankingsPropostas[grupo]}"><h3>${rankingsPropostas[grupo]}</h3>
+      ${autores.length ? `<ol>${autores.filter(([,total], pos) => completo || pos < 5 || total === autores[4]?.[1]).map(([id,total]) => {
+        const autor = peopleById.get(id);
+        return autor ? `<li><div class="radar-rank"><span>${avatar(autor)}<span><button type="button" class="radar-ranking-nome" data-ranking-grupo="${grupo}" data-ranking-autor="${id}" aria-label="Ver propostas de ${escapeHtml(publicName(autor))}: ${rankingsPropostas[grupo]}">${escapeHtml(publicName(autor))}</button>${autor.partido ? `<small> · ${escapeHtml(autor.partido)}</small>` : ''}</span></span><strong>${numeric(total,proposalIndex(autor)?.fonte || siteFonte,`${rankingsPropostas[grupo]} · ${publicName(autor)}`)}</strong></div><i aria-hidden="true" style="--barra:${Math.round(total/autores[0][1]*100)}%"></i></li>` : '';
+      }).join('')}</ol><button type="button" class="radar-link" data-ranking-grupo="${grupo}">Ver todas as propostas <span aria-hidden="true">→</span></button>` : '<p class="radar-nota">Nenhuma proposta deste grupo no recorte da busca.</p>'}
+    </section>`).join('')}
+  </div>
+  <p class="radar-nota">Toque no nome para ler as propostas. ${consulta ? 'Os rankings seguem o bairro ou a rua pesquisados. ' : ''}Cada proposta conta uma vez por autor. Coautores recebem a mesma contagem. ${completo ? '' : 'Mostramos os cinco primeiros e os empatados na última posição. '}<a href="/fontes/">Entenda os critérios</a>.</p>
+  ${!completo && rankings.some(([,autores]) => autores.length > 5 && autores.at(-1)[1] !== autores[4][1]) ? '<button type="button" class="radar-link radar-ranking-completo" data-ranking-completo>Ver ranking completo</button>' : ''}`;
+}
+
 function registrosDoLocal(indice, consulta, selecionado) {
   const termo = textoLocal(consulta);
   if (!termo) return indice.pedidos;
@@ -290,6 +339,11 @@ function cartaoRepetido(rep, mapa) {
     <button type="button" class="radar-link" data-abrir-repetido="${rep.id}${rep.local ? '-local' : ''}">Ver pedidos e cobrar <span aria-hidden="true">→</span></button></article>`;
 }
 
+function listaDeRepeticoes(repetidos, mapa, limite = 9) {
+  return `<div class="radar-repeat-grid">${repetidos.slice(0,limite).map(r=>cartaoRepetido(r,mapa)).join('')}</div>
+    ${limite < repetidos.length ? `<button type="button" class="more radar-more" data-mais-repetidos>Mostrar mais ruas (${numberFormat.format(repetidos.length - limite)} na fila)</button>` : ''}`;
+}
+
 function carregarTerritorio() {
   if (dadosTerritorio) return dadosTerritorio;
   dadosTerritorio = fetch(versaoDeDados('territorio.json')).then(response => {
@@ -322,6 +376,7 @@ async function instalarRadar(raiz, consultaInicial = '') {
   const formulario = raiz.querySelector('#busca-local');
   const sugestoes = raiz.querySelector('#sugestoes-locais');
   const resultado = raiz.querySelector('#resultado-local');
+  const rankingGeral = raiz.querySelector('#ranking-geral');
   const listaRepeticoes = raiz.querySelector('#lista-repetidos');
   const modal = raiz.querySelector('#radar-dialog');
   busca.value = consultaInicial;
@@ -341,8 +396,6 @@ async function instalarRadar(raiz, consultaInicial = '') {
   const recarregarBusca = () => {
     const consulta = busca.value.trim();
     const encontrados = registrosDoLocal(indice, consulta, selecionado);
-    const rankings = Object.keys(rankingsPropostas).map(grupo => [grupo, rankingDeAutores(encontrados, grupo)]);
-    const siteFonte = fonteLocal(consulta);
     const ids = new Set(encontrados.map(p => p.id));
     boletimLocal = new Map();
     if (consulta) {
@@ -350,25 +403,16 @@ async function instalarRadar(raiz, consultaInicial = '') {
       for (const rep of repetidos.filter(r => r.pedidos.length >= 2).sort((a,b) => b.pedidos.length - a.pedidos.length)) boletimLocal.set(rep.id, rep);
     }
     raiz.querySelectorAll('.radar-chips button').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.radarLugar === selecionado?.key)));
-    resultado.innerHTML = `<div class="radar-contagem" role="status"><strong>${numeric(encontrados.length, siteFonte, 'Propostas encontradas')}</strong><p>${consulta ? `${encontrados.length === 1 ? 'proposta cita' : 'propostas citam'} <b>${escapeHtml(consulta)}</b> até agora` : 'propostas para <b>a cidade inteira</b> até agora'}</p></div>
-      ${encontrados.length ? `<div class="radar-breakdown">
-        ${rankings.map(([grupo, autores]) => `<section class="radar-ranking" aria-label="${rankingsPropostas[grupo]}"><h3>${rankingsPropostas[grupo]}</h3>
-          ${autores.length ? `<ol>${autores.filter(([,total], pos) => rankingCompleto || pos < 5 || total === autores[4]?.[1]).map(([id,total]) => {
-            const autor = peopleById.get(id);
-            return autor ? `<li><div class="radar-rank"><span>${avatar(autor)}<span><button type="button" class="radar-ranking-nome" data-ranking-grupo="${grupo}" data-ranking-autor="${id}" aria-label="Ver propostas de ${escapeHtml(publicName(autor))}: ${rankingsPropostas[grupo]}">${escapeHtml(publicName(autor))}</button>${autor.partido ? `<small> · ${escapeHtml(autor.partido)}</small>` : ''}</span></span><strong>${numeric(total,proposalIndex(autor)?.fonte || siteFonte,`${rankingsPropostas[grupo]} · ${publicName(autor)}`)}</strong></div><i aria-hidden="true" style="--barra:${Math.round(total/autores[0][1]*100)}%"></i></li>` : '';
-          }).join('')}</ol><button type="button" class="radar-link" data-ranking-grupo="${grupo}">Ver todas as propostas <span aria-hidden="true">→</span></button>` : '<p class="radar-nota">Nenhuma proposta deste grupo no recorte da busca.</p>'}
-        </section>`).join('')}
-      </div>
-      <p class="radar-nota">Toque no nome para ler as propostas. ${consulta ? 'Os rankings seguem o bairro ou a rua pesquisados. ' : ''}Cada proposta conta uma vez por autor; coautores recebem a mesma contagem. Mostramos os cinco primeiros e os empatados na última posição. <a href="#fontes">Entenda os critérios</a>.</p>
-      ${!rankingCompleto && rankings.some(([,autores])=>autores.length > 5) ? '<button type="button" class="radar-link radar-ranking-completo" data-ranking-completo>Ver ranking completo</button>' : ''}
+    const mostrarRankingLocal = consulta || !rankingGeral;
+    resultado.innerHTML = `${mostrarRankingLocal ? contagemPropostas(encontrados.length, consulta) : ''}
+      ${encontrados.length ? `${mostrarRankingLocal ? quadroRankings(encontrados, consulta, rankingCompleto) : ''}
       ${boletimLocal.size ? `<h3 class="radar-list-titulo">Problemas que voltam aqui</h3><div class="radar-repeat-grid">${[...boletimLocal.values()].slice(0,3).map(r=>cartaoRepetido(r,indice.mapa)).join('')}</div>` : ''}
       <h3 class="radar-list-titulo">${consulta ? 'Os pedidos mais recentes' : 'As propostas mais recentes da cidade'}</h3><ul class="radar-pedidos"></ul><button type="button" class="more radar-more" hidden></button>` : '<p class="notice">Nenhum registro encontrado. Tente outro nome ou uma parte dele.</p>'}`;
     if (encontrados.length) paginarPedidos(resultado.querySelector('.radar-pedidos'), resultado.querySelector('.radar-more'), encontrados, 4);
   };
 
   const mostrarRepeticoes = () => {
-    listaRepeticoes.innerHTML = `<div class="radar-repeat-grid">${indice.repetidos.slice(0,limiteRepeticoes).map(r=>cartaoRepetido(r,indice.mapa)).join('')}</div>
-      ${limiteRepeticoes < indice.repetidos.length ? `<button type="button" class="more radar-more" data-mais-repetidos>Mostrar mais ruas (${numberFormat.format(indice.repetidos.length - limiteRepeticoes)} na fila)</button>` : ''}`;
+    listaRepeticoes.innerHTML = listaDeRepeticoes(indice.repetidos, indice.mapa, limiteRepeticoes);
   };
 
   const mostrarModal = (titulo, fonte, pedidos, subtitulo, recorrencia = false) => {
@@ -385,20 +429,23 @@ async function instalarRadar(raiz, consultaInicial = '') {
     conteudo.scrollTop = 0;
   };
 
-  try {
-    indice = await carregarTerritorio();
+  const pronto = carregarTerritorio().then(dados => {
     if (!raiz.isConnected) return;
-  } catch {
+    indice = dados;
+    if (rankingGeral && !rankingGeral.firstElementChild) rankingGeral.innerHTML = quadroRankings(indice.pedidos);
+    recarregarBusca();
+    if (!listaRepeticoes.firstElementChild) mostrarRepeticoes();
+  }).catch(() => {
     resultado.innerHTML = `<p class="notice" role="status">A busca não carregou. Recarregue a página ou ${official('pesquise no Siscam',proposalsSource)}.</p>`;
-    return;
-  }
-  recarregarBusca();
-  mostrarRepeticoes();
+    if (rankingGeral) rankingGeral.insertAdjacentHTML('beforeend','<p class="notice" role="status">Os detalhes não carregaram. <a href="/propostas/">Consulte as páginas de propostas</a>.</p>');
+  });
 
   busca.addEventListener('input', () => {
     selecionado = null;
+    rankingCompleto = false;
     clearTimeout(digitacao);
     digitacao = setTimeout(() => {
+      if (!indice) return;
       const termo = textoLocal(busca.value);
       const matches = termo.length >= 3 ? indice.lugares.filter(l => textoLocal(l.nome).includes(termo)).slice(0,6) : [];
       sugestoes.innerHTML = matches.map(lugar => chipLugar(lugar)).join('');
@@ -406,11 +453,14 @@ async function instalarRadar(raiz, consultaInicial = '') {
       recarregarBusca();
     }, 160);
   });
-  raiz.addEventListener('click', event => {
+  raiz.addEventListener('click', async event => {
     const button = event.target.closest('button');
     if (!button) return;
+    if (!indice) await pronto;
+    if (!indice || !raiz.isConnected) return;
     if (button.dataset.radarLugar) {
       clearTimeout(digitacao);
+      rankingCompleto = false;
       selecionado = indice.locais.get(button.dataset.radarLugar);
       busca.value = selecionado.nome;
       sugestoes.hidden = true;
@@ -420,11 +470,20 @@ async function instalarRadar(raiz, consultaInicial = '') {
       const grupo = button.dataset.rankingGrupo;
       const autorId = button.dataset.rankingAutor;
       const autor = autorId && peopleById.get(autorId);
-      const pedidos = registrosDoLocal(indice, busca.value.trim(), selecionado).filter(p => propostaNoRanking(p, grupo) && (!autorId || p.autores.includes(autorId)));
-      mostrarModal(`${rankingsPropostas[grupo]}${autor ? ` · ${publicName(autor)}` : ''}`, autor ? proposalIndex(autor)?.fonte || proposalsSource : fonteLocal(busca.value.trim()), pedidos, 'propostas no recorte da busca');
+      const cidade = Boolean(button.closest('#ranking-geral'));
+      const consulta = cidade ? '' : busca.value.trim();
+      const propostas = cidade ? indice.pedidos : registrosDoLocal(indice, consulta, selecionado);
+      const pedidos = propostas.filter(p => propostaNoRanking(p, grupo) && (!autorId || p.autores.includes(autorId)));
+      mostrarModal(`${rankingsPropostas[grupo]}${autor ? ` · ${publicName(autor)}` : ''}`, autor ? proposalIndex(autor)?.fonte || proposalsSource : fonteLocal(consulta), pedidos, cidade ? 'propostas na cidade' : 'propostas no recorte da busca');
     } else if (button.hasAttribute('data-ranking-completo')) {
-      rankingCompleto = true;
-      recarregarBusca();
+      if (button.closest('#ranking-geral')) {
+        rankingGeral.innerHTML = quadroRankings(indice.pedidos, '', true);
+        rankingGeral.querySelector('button')?.focus();
+      } else {
+        rankingCompleto = true;
+        recarregarBusca();
+        resultado.querySelector('button')?.focus();
+      }
     } else if (button.dataset.abrirRepetido) {
       const chave = button.dataset.abrirRepetido;
       const rep = chave.endsWith('-local') ? boletimLocal.get(chave.replace('-local','')) : indice.cruzamentos.get(chave);

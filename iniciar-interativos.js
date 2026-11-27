@@ -37,7 +37,7 @@
   const observer = new IntersectionObserver(entradas => {
     if (entradas.some(e=>e.isIntersecting)) { observer.disconnect(); carregar(); }
   }, {rootMargin:'200px'});
-  for (const seletor of ['#bairros','#vereadores','#propostas','#repetidos']) {
+  for (const seletor of ['#ranking-cidade','#bairros','#vereadores','#propostas','#repetidos']) {
     const alvo = document.querySelector(seletor);
     if (alvo) observer.observe(alvo);
   }
@@ -52,7 +52,7 @@
   },true);
   document.addEventListener('click', event => {
     if (document.documentElement.dataset.interativosProntos === '1') return;
-    const botao=event.target.closest('button[data-abrir-grupo],button[data-radar-lugar],button[data-abrir-repetido]');
+    const botao=event.target.closest('button[data-abrir-grupo],button[data-radar-lugar],button[data-abrir-repetido],button[data-mais-repetidos],button[data-ranking-grupo],button[data-ranking-completo]');
     if (!botao) return;
     event.preventDefault();
     event.stopImmediatePropagation();
