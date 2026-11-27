@@ -111,6 +111,8 @@ function quadroPagamentos(dados = radarPagamentos, projetar = true, agora = Date
   const totais = dados?.totais;
   const estimativa = projetar ? estimarSalarios(dados, agora) : null;
   const outrasDespesas = totais && totais.contratos + totais.pessoal + totais.encargos + totais.demais;
+  const devolucoes = Object.entries(dados?.empenhosConferidos || {}).flatMap(([empenho, registro]) =>
+    (registro.anulacoesPagamento || []).map(item => ({empenho, ...item})));
   const quadros = [
     ['salarios', 'Salários dos 11 vereadores e suplentes desde a posse', totais?.vereadores,
       'E subindo... Subsídios e vencimentos pagos na legislatura 2025–2028.'],
@@ -133,6 +135,8 @@ function quadroPagamentos(dados = radarPagamentos, projetar = true, agora = Date
       ${classe === 'salarios' && estimativa ? `<div class="radar-contador-base"><p id="salarios-metodo">Até o momento o valor efetivo pago é de ${money(valor, bethaSource, 'Salários pagos registrados')}. O contador acima é somente um cálculo estimado em tempo real.</p></div>` : ''}
     </article>`).join('')}
     <div class="radar-finance-rodape">
+      <p>Os valores pagos consideram devoluções e anulações publicadas pela Câmara.</p>
+      ${devolucoes.length ? `<details class="details-row"><summary>Consultar devoluções e anulações de pagamentos</summary><ul>${devolucoes.map(item => `<li>Empenho ${escapeHtml(item.empenho)} · ${official(dateLabel(item.data), bethaSource)} · ${money(item.valorCentavos, bethaSource, 'Valor anulado')} · ${escapeHtml(item.motivo)}</li>`).join('')}</ul></details>` : ''}
       ${dados?.ultimaData ? `<p>Último pagamento nos dados em ${official(dateLabel(dados.ultimaData), bethaSource)}.</p>` : ''}
       ${dados?.fim ? `<p data-periodo-coleta>Fonte consultada em ${official(dateLabel(dados.fim), bethaSource)}.</p>` : ''}
       <p class="radar-finance-fontes">${official('Dados abertos da Câmara', bethaSource)} <a href="#contas/despesas">Despesas por mês <span aria-hidden="true">→</span></a></p>

@@ -56,6 +56,26 @@ def documentos(pasta, perfis):
     return unicos
 
 
+def reducao_comprovada(anterior, atual, fim):
+    antigas = anterior.get('anulacoesPagamento', [])
+    novas = atual.get('anulacoesPagamento', [])
+    exigir(isinstance(novas, list), 'Lista de anulações inválida.')
+    for item in novas:
+        exigir(type(item.get('valorCentavos')) is int and item['valorCentavos'] > 0
+               and isinstance(item.get('motivo'), str) and bool(item['motivo'].strip())
+               and isinstance(item.get('data'), str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}', item['data'])
+               and item['data'] <= fim, 'Anulação sem valor, data ou motivo oficial.')
+    restantes = list(novas)
+    for item in antigas:
+        exigir(item in restantes, 'Anulação anteriormente publicada desapareceu.')
+        restantes.remove(item)
+    if type(atual.get('valorPagoCentavos')) is int and type(anterior.get('valorPagoCentavos')) is int and atual['valorPagoCentavos'] < anterior['valorPagoCentavos']:
+        exigir(type(atual.get('parcelasBrutasCentavos')) is int
+               and atual['parcelasBrutasCentavos'] - sum(item['valorCentavos'] for item in novas)
+               == atual['valorPagoCentavos'], 'As parcelas e anulações não conferem com o valor pago.')
+    return sum(item['valorCentavos'] for item in restantes)
+
+
 def conferir_empenhos(anterior, atual):
     """Campos vazios sem parcelas não são tratados como pagamento zero nem como perda automática."""
     if atual.get('conferenciaVersao') != 1:
@@ -96,7 +116,8 @@ def conferir_empenhos(anterior, atual):
         pago = registro.get('valorPagoCentavos')
         if pago is not None and pago > 0:
             novo = registros.get(id, {}).get('valorPagoCentavos')
-            exigir(type(novo) is int and novo >= pago, f'Pagamento anteriormente informado desapareceu ou diminuiu no empenho {id}.')
+            comprovado = reducao_comprovada(registro, registros.get(id, {}), atual['fim'])
+            exigir(type(novo) is int and novo >= pago - comprovado, f'Pagamento anteriormente informado desapareceu ou diminuiu sem anulação oficial no empenho {id}.')
 
 
 def validar(base, candidata, fim):
@@ -146,7 +167,10 @@ def validar(base, candidata, fim):
     pagamentos = atual["pagamentos"]
     for grupo, valor in pagamentos["totais"].items():
         antigo = anterior["pagamentos"]["totais"][grupo]
-        exigir(type(valor) is int and valor >= antigo, f"Pagamento de {grupo} diminuiu ou ficou inválido.")
+        devolucoes = sum(reducao_comprovada(registro, atual['pagamentos'].get('empenhosConferidos', {}).get(id, {}), fim)
+                        for id, registro in anterior['pagamentos'].get('empenhosConferidos', {}).items()
+                        if registro.get('grupo') == grupo)
+        exigir(type(valor) is int and valor >= antigo - devolucoes, f"Pagamento de {grupo} diminuiu sem anulação oficial ou ficou inválido.")
         exigir(valor - antigo <= max(100_000_000, antigo // 4) * dias, f"Aumento financeiro inesperado em {grupo}.")
         exigir(sum(ano[grupo] for ano in pagamentos["porAno"].values()) == valor, f"Totais anuais divergentes em {grupo}.")
     conferir_empenhos(anterior['pagamentos'], pagamentos)

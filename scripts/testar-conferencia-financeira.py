@@ -45,4 +45,23 @@ class ConferenciaFinanceira(unittest.TestCase):
         base=self.dados();nova={'semValor':0}
         with self.assertRaisesRegex(ValueError,'desapareceu'):m.conferir_empenhos(base,nova)
 
+    def test_devolucao_publicada_justifica_reducao(self):
+        base=self.dados();nova=deepcopy(base)
+        nova['totais']['vereadores']=8000
+        novo=nova['empenhosConferidos']['1/2026']
+        novo.update(valorPagoCentavos=8000,pagoNoRecorteCentavos=8000,parcelasBrutasCentavos=10000,
+                    anulacoesPagamento=[{'data':'2026-11-18','motivo':'Devolução do pagamento','valorCentavos':2000}])
+        m.conferir_empenhos(base,nova)
+        nova['totais']['vereadores']=7000
+        novo.update(valorPagoCentavos=7000,pagoNoRecorteCentavos=7000)
+        with self.assertRaises(ValueError):m.conferir_empenhos(base,nova)
+
+    def test_devolucao_antiga_nao_justifica_nova_reducao(self):
+        base=self.dados()
+        base['empenhosConferidos']['1/2026']['anulacoesPagamento']=[
+            {'data':'2026-11-18','motivo':'Devolução do pagamento','valorCentavos':2000}]
+        nova=deepcopy(base);nova['totais']['vereadores']=8000
+        nova['empenhosConferidos']['1/2026'].update(valorPagoCentavos=8000,pagoNoRecorteCentavos=8000)
+        with self.assertRaises(ValueError):m.conferir_empenhos(base,nova)
+
 if __name__=='__main__':unittest.main(verbosity=2)

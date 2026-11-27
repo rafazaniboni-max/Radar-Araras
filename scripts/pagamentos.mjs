@@ -124,6 +124,17 @@ function calcular(arquivos, fim, consultadoEm) {
       }
       const pago = centavos(registro.valorPagoEmpenho);
       empenhosConferidos[identificador].valorPagoCentavos = pago;
+      const anulacoes = pagamentos.flatMap(parcela => (parcela.anulacoesPagamento || []).map(anulacao => ({
+        data: anulacao.dataAnulacao, motivo: anulacao.motivoAnulacao,
+        valorCentavos: centavos(anulacao.valorAnulacao)
+      })));
+      if (anulacoes.some(a => !/^\d{4}-\d{2}-\d{2}$/.test(a.data) || a.data > fim
+          || typeof a.motivo !== 'string' || !a.motivo.trim() || a.valorCentavos <= 0)) {
+        throw new Error(`Anulação de pagamento sem comprovação no empenho ${identificador}.`);
+      }
+      empenhosConferidos[identificador].anulacoesPagamento = anulacoes;
+      empenhosConferidos[identificador].parcelasBrutasCentavos = pagamentos.reduce((soma, parcela) =>
+        soma + centavos(parcela.valorPagamento), 0);
       empenhosConferidos[identificador].pagoNoRecorteCentavos = 0;
       const restos = centavos(registro.valorPagoRestosEmpenho ?? 0);
       if (restos > pago) throw new Error(`Restos acima do total no empenho ${numero}/${ano}.`);
