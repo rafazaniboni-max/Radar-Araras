@@ -13,10 +13,6 @@ on:
       - 'dist/**'
       - 'auditoria-*.md'
 
-concurrency:
-  group: radar-araras-producao
-  cancel-in-progress: false
-
 permissions:
   contents: write
   pages: write
@@ -56,6 +52,9 @@ jobs:
           else:
               print("A entrega do dia não foi confirmada. Iniciando a coleta de reserva.")
   atualizar:
+    concurrency:
+      group: radar-araras-producao
+      cancel-in-progress: false
     needs: verificar_reserva
     if: >-
       !cancelled() && needs.verificar_reserva.outputs.atualizado != 'sim' &&
